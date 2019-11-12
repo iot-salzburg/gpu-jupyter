@@ -105,5 +105,6 @@ venv.bak/
 
 
 # individual stuff
-/data
+/data/*
+!/data/.gitkeep
 *.save*
