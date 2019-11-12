@@ -1,0 +1,36 @@
+version: "3.4"
+services:
+  gpu-jupyter:
+    image: 127.0.0.1:5001/gpu-jupyter
+    build: ./src/
+    ports:
+      - 8848:8888
+    volumes:
+      - ./data:/home/jovyan/work
+    environment:
+      GRANT_SUDO: "yes"
+      JUPYTER_ENABLE_LAB: "yes"
+    # enable sudo permissions
+    user:
+      "root"
+    networks:
+      - default
+      - $JUPYTER_NETWORK
+    deploy:
+      placement:
+        constraints: [node.hostname == data-science]
+      resources:
+        limits:
+          cpus: "4"
+          memory: 8G
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+networks:
+  $JUPYTER_NETWORK:
+    external:
+      name: $JUPYTER_NETWORK
