@@ -4,7 +4,7 @@ services:
     image: 127.0.0.1:5001/gpu-jupyter
     build: ./src/
     ports:
-      - 8848:8888
+      - $JUPYTER_PORT:8888
     volumes:
       - ./data:/home/jovyan/work
     environment:

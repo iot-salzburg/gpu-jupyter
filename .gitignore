@@ -108,3 +108,4 @@ venv.bak/
 /data/*
 !/data/.gitkeep
 *.save*
+*.envsubst
