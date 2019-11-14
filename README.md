@@ -1,6 +1,7 @@
 # gpu-jupyter
 #### Leverage the power of Jupyter and use your NVIDEA GPU and use Tensorflow and Pytorch in collaborative notebooks. 
 
+![Jupyterlab Overview](/extra/jupyterlab-overview.png)
 
 ## Contents
 
@@ -30,7 +31,7 @@ As soon as you have access to your GPU locally (it can be tested via a Tensorflo
   ./start-local.sh
   ```
   
-This will run jupyter on the default port [localhost:8888](localhost:8888). The general usage is:
+This will run jupyter on the default port [localhost:8888](http://localhost:8888). The general usage is:
   ```bash
   ./start-local.sh -p [port]  # port must be an integer with 4 or more digits.
   ```
@@ -40,4 +41,5 @@ In order to stop the local deployment, run:
   ./stop-local.sh
   ```
  
+ ## Deployment in the Docker Swarm
   
