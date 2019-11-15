@@ -130,8 +130,8 @@ In order to remove the service from the swarm, use:
 
 The password can be set in `src/jupyter_notebook_config.json`. Therefore, hash your 
 password in the form (password)(salt) using a sha1 hash generator, 
-e.g. the sha1 generator of [passwordsgenerator.net](https://passwordsgenerator.net/sha1-hash-generator/). 
-The input with the default password and salt `asdfe49e73b0eb0e` should yield the hash string as shown in the config file below. **Never give away your own unhashed password!**
+e.g. the sha1 generator of [sha1-online.com](http://www.sha1-online.com/). 
+The input with the default password `asdf` and salt `asdfe49e73b0eb0e` should yield the hash string as shown in the config file below. **Never give away your own unhashed password!**
 
 Then update the config file as shown below and restart the service.
 
