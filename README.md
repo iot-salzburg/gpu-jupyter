@@ -3,6 +3,8 @@
 
 ![Jupyterlab Overview](/extra/jupyterlab-overview.png)
 
+First of all, thanks to [hub.docker.com/u/jupyter](https://hub.docker.com/u/jupyter) for creating and maintaining a robost  Python, R and Julia toolstack. This project uses their toolstack and uses the NVIDIA CUDA drivers as a basis to enable GPU calculations in the Jupyter notebooks.
+
 ## Contents
 
 1. [Requirements](#requirements)
