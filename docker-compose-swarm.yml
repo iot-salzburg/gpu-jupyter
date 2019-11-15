@@ -18,7 +18,7 @@ services:
       - $JUPYTER_NETWORK
     deploy:
       placement:
-        constraints: [node.hostname == data-science]
+        constraints: [node.hostname == $HOSTNAME]
       resources:
         limits:
           cpus: "4"

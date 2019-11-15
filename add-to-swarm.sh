@@ -31,9 +31,10 @@ if [[ "$result" != *" $NETWORK "* ]]; then
 fi
 
 # starting in swarm
-echo "Adding gpu-jupyter to the swarm in the network $NETWORK on port $PORT."
+export HOSTNAME=$(hostname)
 export JUPYTER_PORT=$PORT
 export JUPYTER_NETWORK=$NETWORK
+echo "Adding gpu-jupyter to the swarm on the node $HOSTNAME in the network $NETWORK on port $PORT."
 # echo $JUPYTER_NETWORK
 envsubst < docker-compose-swarm.yml > .docker-compose-swarm.yml.envsubst
 docker-compose -f .docker-compose-swarm.yml.envsubst build
