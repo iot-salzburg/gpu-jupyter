@@ -8,8 +8,6 @@
 1. [Requirements](#requirements)
 2. [Quickstart](#quickstart)
 3. [Deployment](#deployment-in-the-docker-swarm)
-3. [Configuration](#configuration)
-4. [Trouble-Shooting](#trouble-shooting)
 
 
 ## Requirements
@@ -31,7 +29,7 @@ As soon as you have access to your GPU locally (it can be tested via a Tensorflo
   ./start-local.sh
   ```
   
-This will run jupyter on the default port [localhost:8888](http://localhost:8888). The general usage is:
+This will run *gpu-jupyter* on the default port [localhost:8888](http://localhost:8888). The general usage is:
   ```bash
   ./start-local.sh -p [port]  # port must be an integer with 4 or more digits.
   ```
@@ -93,6 +91,15 @@ networks:
     ```
   The docker network name **elk_datastack** is used in the next step as a parameter.
    
-### Start GPU-Jupyter
+### Start GPU-Jupyter in Docker Swarm
 
-If so, the *gpu-jupyter* can be deployed in the Docker Swarm using
+Finally, *gpu-jupyter* can be deployed in the Docker Swarm with the shared network, using:
+
+```bash
+./add-to-swarm.sh -p [port] -n [docker-network]
+```
+where:
+* port specifies the port on which the service will be available.
+* and docker-network is the name of the attachable network from the previous step, e.g., here it is **elk_datastack**.
+
+Now, *gpu-jupyter* will be accessable on [localhost:port](http://localhost:8888) and shares the network with the other data-source. I.e, all ports of the data-source will be accessable within *gpu-jupyter*, even if they aren't routed it the source's `docker-compose` file.
