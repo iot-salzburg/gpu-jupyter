@@ -42,4 +42,57 @@ In order to stop the local deployment, run:
   ```
  
  ## Deployment in the Docker Swarm
-  
+ 
+A Jupyter instance often requires data from other services. 
+If that data-source is containerized in Docker and sharing a port for communication shouldn't be allowed, e.g., for security reasons,
+then connecting the data-source with *gpu-jupyter* within a Docker Swarm is a great option! \
+
+### Set up a Docker Swarm
+
+This step requires a running [Docker Swarm](https://www.youtube.com/watch?v=x843GyFRIIY) on a cluster or at least on this node.
+In order to register custom images in a local Docker Swarm cluster, 
+a registry instance must be deployed in advance.
+Note that the we are using the port 5001, as many services use the default port 5000.
+
+```bash
+sudo docker service create --name registry --publish published=5001,target=5000 registry:2
+curl 127.0.0.1:5001/v2/
+```
+This should output `{}`. \
+
+Afterwards, check if the registry service is available using `docker service ls`.
+
+
+### Configure the shared Docker network
+
+Additionally, *gpu-jupyter* is connected to the data-source via the same *docker-network*. Therefore, This network must be set to **attachable** in the source's `docker-compose.yml`:
+
+```yml
+services:
+  data-source-service:
+  ...
+      networks:
+      - default
+      - datastack
+  ...
+networks:
+  datastack:
+    driver: overlay
+    attachable: true  
+```
+ In this example, 
+ * the docker stack was deployed in Docker swarm with the name **elk** (`docker stack deploy ... elk`),
+ * the docker network has the name **datastack** within the `docker-compose.yml` file,
+ * this network is configured to be attachable in the `docker-compose.yml` file
+ * and the docker network has the name **elk_datastack**, see the following output:
+    ```bash
+    sudo docker network ls
+    # ...
+    # [UID]        elk_datastack                   overlay             swarm
+    # ...
+    ```
+  The docker network name **elk_datastack** is used in the next step as a parameter.
+   
+### Start GPU-Jupyter
+
+If so, the *gpu-jupyter* can be deployed in the Docker Swarm using
