@@ -8,6 +8,7 @@
 1. [Requirements](#requirements)
 2. [Quickstart](#quickstart)
 3. [Deployment](#deployment-in-the-docker-swarm)
+4. [Configuration](#configuration)
 
 
 ## Requirements
@@ -33,11 +34,19 @@ This will run *gpu-jupyter* on the default port [localhost:8888](http://localhos
   ```bash
   ./start-local.sh -p [port]  # port must be an integer with 4 or more digits.
   ```
+  
+With these commands we can see if everything worked well:
+```bash
+docker-compose ps
+docker logs [service-name]
+```
+
 In order to stop the local deployment, run:
 
   ```bash
   ./stop-local.sh
   ```
+ 
  
  ## Deployment in the Docker Swarm
  
@@ -103,3 +112,31 @@ where:
 * and docker-network is the name of the attachable network from the previous step, e.g., here it is **elk_datastack**.
 
 Now, *gpu-jupyter* will be accessable on [localhost:port](http://localhost:8888) and shares the network with the other data-source. I.e, all ports of the data-source will be accessable within *gpu-jupyter*, even if they aren't routed it the source's `docker-compose` file.
+
+Check if everything works well using:
+```bash
+sudo docker service ps gpu_gpu-jupyter
+docker service ps gpu_gpu-jupyter
+```
+
+In order to remove the service from the swarm, use:
+```bash
+./remove-from-swarm.sh
+```
+
+## Configuration
+
+The password can be set in `src/jupyter_notebook_config.json`. Therefore, hash your 
+password in the form (password)(salt) using a sha1 hash generator, 
+e.g. the sha1 generator of [passwordsgenerator.net](https://passwordsgenerator.net/sha1-hash-generator/). 
+The input with the default password and salt `asdfe49e73b0eb0e` should yield the hash string as shown in the config file below. **Never give away your own unhashed password!**
+
+Then update the config file as shown below and restart the service.
+
+```json
+{
+  "NotebookApp": {
+    "password": "sha1:e49e73b0eb0e:32edae7a5fd119045e699a0bd04f90819ca90cd6"
+  }
+}
+```
