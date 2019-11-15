@@ -1,5 +1,5 @@
 # gpu-jupyter
-#### Leverage the power of Jupyter and use your NVIDEA GPU and use Tensorflow and Pytorch in collaborative notebooks. 
+#### Leverage Jupyter Notebooks with the power of your NVIDEA GPU and perform GPU calculations using Tensorflow and Pytorch in collaborative notebooks. 
 
 ![Jupyterlab Overview](/extra/jupyterlab-overview.png)
 
@@ -30,7 +30,7 @@ As soon as you have access to your GPU locally (it can be tested via a Tensorflo
   ./start-local.sh
   ```
   
-This will run *gpu-jupyter* on the default port [localhost:8888](http://localhost:8888). The general usage is:
+This will run *gpu-jupyter* on the default port [localhost:8888](http://localhost:8888) with the default password `asdf`. The general usage is:
   ```bash
   ./start-local.sh -p [port]  # port must be an integer with 4 or more digits.
   ```
@@ -111,7 +111,7 @@ where:
 * port specifies the port on which the service will be available.
 * and docker-network is the name of the attachable network from the previous step, e.g., here it is **elk_datastack**.
 
-Now, *gpu-jupyter* will be accessable on [localhost:port](http://localhost:8888) and shares the network with the other data-source. I.e, all ports of the data-source will be accessable within *gpu-jupyter*, even if they aren't routed it the source's `docker-compose` file.
+Now, *gpu-jupyter* will be accessable on [localhost:port](http://localhost:8888) with the default password `asdf` and shares the network with the other data-source. I.e, all ports of the data-source will be accessable within *gpu-jupyter*, even if they aren't routed it the source's `docker-compose` file.
 
 Check if everything works well using:
 ```bash
