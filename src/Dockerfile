@@ -417,6 +417,44 @@ RUN conda install -y -c pytorch \
 ############################ Useful packages ###############################
 ############################################################################
 
+# Update conda
+RUN conda update -n base conda -y
+
+# Install elasticsearch libs
+USER root
+RUN apt-get update \
+ && curl -sL http://central.maven.org/maven2/org/elasticsearch/elasticsearch-hadoop/6.8.1/elasticsearch-hadoop-6.8.1.jar
+RUN pip install --no-cache-dir elasticsearch==7.1.0
+
+# Install rpy2 to share data between Python and R
+RUN conda install rpy2=2.9.4 plotly=4.4.1
+RUN conda install -c conda-forge ipyleaflet
+
+# Install important packages and Graphviz
+RUN set -ex \
+ && buildDeps=' \
+    graphviz==0.11 \
+' \
+ && apt-get update \
+ && apt-get -y install htop apt-utils graphviz libgraphviz-dev \
+ && pip install --no-cache-dir $buildDeps
+
+# Install various extensions
+RUN jupyter labextension install @jupyterlab/github
+RUN jupyter labextension install jupyterlab-drawio
+RUN jupyter labextension install jupyter-leaflet
+RUN jupyter labextension install @jupyterlab/plotly-extension
+RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager
+RUN pip install --no-cache-dir jupyter-tabnine==1.0.2  && \
+  jupyter nbextension install --py jupyter_tabnine && \
+  jupyter nbextension enable --py jupyter_tabnine && \
+  jupyter serverextension enable --py jupyter_tabnine
+RUN conda install -c conda-forge jupyter_contrib_nbextensions && \
+  conda install -c conda-forge jupyter_nbextensions_configurator && \
+  jupyter nbextension enable codefolding/main
+RUN jupyter labextension install @ijmbarr/jupyterlab_spellchecker
+
+# Copying config and fix permissions
 COPY jupyter_notebook_config.json /etc/jupyter/
 RUN fix-permissions /home/$NB_USER
 
