@@ -1,5 +1,5 @@
 # gpu-jupyter
-#### Leverage Jupyter Notebooks with the power of your NVIDEA GPU and perform GPU calculations using Tensorflow and Pytorch in collaborative notebooks. 
+#### Leverage Jupyter Notebooks with the power of your NVIDIA GPU and perform GPU calculations using Tensorflow and Pytorch in collaborative notebooks. 
 
 ![Jupyterlab Overview](/extra/jupyterlab-overview.png)
 
