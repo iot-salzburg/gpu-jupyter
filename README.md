@@ -108,7 +108,7 @@ Finally, *GPU-Jupyter* can be deployed in the Docker Swarm with the shared netwo
 
 ```bash
 ./add-to-swarm.sh -p [port] -n [docker-network] -r [registry-port]
-# e.g. ./add-to-swarm.sh.save -p 8848 -n elk_datastack -r 5001
+# e.g. ./add-to-swarm.sh -p 8848 -n elk_datastack -r 5001
 ```
 where:
 * **-p:** port specifies the port on which the service will be available.
