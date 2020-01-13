@@ -56,7 +56,7 @@ A Jupyter instance often requires data from other services.
 If that data-source is containerized in Docker and sharing a port for communication shouldn't be allowed, e.g., for security reasons,
 then connecting the data-source with *GPU-Jupyter* within a Docker Swarm is a great option! \
 
-### Set up a Docker Swarm
+### Set up Docker Swarm and Registry
 
 This step requires a running [Docker Swarm](https://www.youtube.com/watch?v=x843GyFRIIY) on a cluster or at least on this node.
 In order to register custom images in a local Docker Swarm cluster, 
@@ -107,13 +107,15 @@ networks:
 Finally, *GPU-Jupyter* can be deployed in the Docker Swarm with the shared network, using:
 
 ```bash
-./add-to-swarm.sh -p [port] -n [docker-network]
+./add-to-swarm.sh -p [port] -n [docker-network] -r [registry-port]
+# e.g. ./add-to-swarm.sh.save -p 8848 -n elk_datastack -r 5001
 ```
 where:
-* port specifies the port on which the service will be available.
-* and docker-network is the name of the attachable network from the previous step, e.g., here it is **elk_datastack**.
+* **-p:** port specifies the port on which the service will be available.
+* **-n:** docker-network is the name of the attachable network from the previous step, e.g., here it is **elk_datastack**.
+* **-r:** registry port is the port that is published by the registry service, see [Set up Docker Swarm and Registry](set-up-docker-swarm-and-registry).
 
-Now, *gpu-jupyter* will be accessable on [localhost:port](http://localhost:8888) with the default password `asdf` and shares the network with the other data-source. I.e, all ports of the data-source will be accessable within *GPU-Jupyter*, even if they aren't routed it the source's `docker-compose` file.
+Now, *gpu-jupyter* will be accessable here on [localhost:8848](http://localhost:8848) with the default password `asdf` and shares the network with the other data-source, i.e., all ports of the data-source will be accessable within *GPU-Jupyter*, even if they aren't routed it the source's `docker-compose` file.
 
 Check if everything works well using:
 ```bash
