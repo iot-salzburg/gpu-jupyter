@@ -449,6 +449,7 @@ RUN pip install --no-cache-dir jupyter-tabnine==1.0.2  && \
   jupyter nbextension install --py jupyter_tabnine && \
   jupyter nbextension enable --py jupyter_tabnine && \
   jupyter serverextension enable --py jupyter_tabnine
+RUN fix-permissions $CONDA_DIR
 RUN conda install -c conda-forge jupyter_contrib_nbextensions && \
   conda install -c conda-forge jupyter_nbextensions_configurator && \
   jupyter nbextension enable codefolding/main
