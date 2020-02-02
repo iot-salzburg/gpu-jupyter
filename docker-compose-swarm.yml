@@ -1,7 +1,7 @@
 version: "3.4"
 services:
   gpu-jupyter:
-    image: 127.0.0.1:5001/gpu-jupyter
+    image: 127.0.0.1:$REGISTRY_PORT/gpu-jupyter
     build: ./src/
     ports:
       - $JUPYTER_PORT:8888
@@ -19,10 +19,6 @@ services:
     deploy:
       placement:
         constraints: [node.hostname == $HOSTNAME]
-      resources:
-        limits:
-          cpus: "4"
-          memory: 8G
       replicas: 1
       update_config:
         parallelism: 2
