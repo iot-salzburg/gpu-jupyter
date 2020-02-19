@@ -423,7 +423,7 @@ RUN conda update -n base conda -y
 # Install elasticsearch libs
 USER root
 RUN apt-get update \
- && curl -sL http://central.maven.org/maven2/org/elasticsearch/elasticsearch-hadoop/6.8.1/elasticsearch-hadoop-6.8.1.jar
+ && curl -sL https://repo1.maven.org/maven2/org/elasticsearch/elasticsearch-hadoop/6.8.1/elasticsearch-hadoop-6.8.1.jar
 RUN pip install --no-cache-dir elasticsearch==7.1.0
 
 # Install rpy2 to share data between Python and R
