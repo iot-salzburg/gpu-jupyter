@@ -15,7 +15,7 @@ cd $STACKS_DIR && git pull && cd -
 # Write the contents into the DOCKERFILE and start with the header
 cat src/Dockerfile.header > $DOCKERFILE
 cp src/jupyter_notebook_config.json .build/
-ln -sf .build/jupyter_notebook_config.json jupyter_notebook_config.json
+cp src/jupyter_notebook_config.json .
 
 echo "
 ############################################################################
@@ -24,19 +24,18 @@ echo "
 " >> $DOCKERFILE
 cat $STACKS_DIR/base-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
 
-# copy files that are used during the build
+# copy files that are used during the build in two directories:
 cp $STACKS_DIR/base-notebook/jupyter_notebook_config.py .build/
 cp $STACKS_DIR/base-notebook/fix-permissions .build/
 cp $STACKS_DIR/base-notebook/start.sh .build/
 cp $STACKS_DIR/base-notebook/start-notebook.sh .build/
 cp $STACKS_DIR/base-notebook/start-singleuser.sh .build/
 
-# create softlinks for files used during the build
-ln -sf .build/jupyter_notebook_config.py jupyter_notebook_config.py
-ln -sf .build/fix-permissions fix-permissions
-ln -sf .build/start.sh start.sh
-ln -sf .build/start-notebook.sh start-notebook.sh
-ln -sf .build/start-singleuser.sh start-singleuser.sh
+cp $STACKS_DIR/base-notebook/jupyter_notebook_config.py .
+cp $STACKS_DIR/base-notebook/fix-permissions .
+cp $STACKS_DIR/base-notebook/start.sh .
+cp $STACKS_DIR/base-notebook/start-notebook.sh .
+cp $STACKS_DIR/base-notebook/start-singleuser.sh .
 
 echo "
 ############################################################################
