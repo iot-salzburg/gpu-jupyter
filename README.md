@@ -3,7 +3,10 @@
 
 ![Jupyterlab Overview](/extra/jupyterlab-overview.png)
 
-First of all, thanks to [hub.docker.com/u/jupyter](https://hub.docker.com/u/jupyter) for creating and maintaining a robost  Python, R and Julia toolstack. This project uses their toolstack and uses the NVIDIA CUDA drivers as a basis to enable GPU calculations in the Jupyter notebooks.
+First of all, thanks to [hub.docker.com/u/jupyter](https://hub.docker.com/u/jupyter) 
+for creating and maintaining a robost  Python, R and Julia toolstack for Data Analytics/Science 
+applications. This project uses the NVIDIA CUDA image as a basis image and installs their 
+toolstack on top of it to enable GPU calculations in the Jupyter notebooks.
 
 ## Contents
 
@@ -16,25 +19,42 @@ First of all, thanks to [hub.docker.com/u/jupyter](https://hub.docker.com/u/jupy
 ## Requirements
 
 1.  Install [Docker](https://www.docker.com/community-edition#/download) version **1.10.0+**
-2.  Install [Docker Compose](https://docs.docker.com/compose/install/) version **1.6.0+**
-3.  A NVIDIA GPU
-3.  Get access to use your GPU via the CUDA drivers, check out this [medium](https://medium.com/@christoph.schranz/set-up-your-own-gpu-based-jupyterlab-e0d45fcacf43) article.
-4.  Clone this repository
-    ```bash
-    git clone https://github.com/iot-salzburg/gpu-jupyter.git
-    cd gpu-jupyter
-    ```
+ and [Docker Compose](https://docs.docker.com/compose/install/) version **1.6.0+**.
+2.  A NVIDIA GPU
+3.  Get access to use your GPU via the CUDA drivers, check out this 
+[medium article](https://medium.com/@christoph.schranz/set-up-your-own-gpu-based-jupyterlab-e0d45fcacf43).
+4. Clone the Repository:
+      ```bash
+        git clone https://github.com/iot-salzburg/gpu-jupyter.git
+        cd gpu-jupyter
+      ```
 
 ## Quickstart
 
-As soon as you have access to your GPU locally (it can be tested via a Tensorflow or PyTorch), you can run these commands to start the jupyter notebook via docker-compose:
+First of all, it is necessary to generate the `Dockerfile` based on the latest toolstack of 
+[hub.docker.com/u/jupyter](https://hub.docker.com/u/jupyter).
+As soon as you have access to your GPU locally (it can be tested via a Tensorflow or PyTorch 
+directly on the host node), you can run these commands to start the jupyter notebook via 
+docker-compose (internally):
+
   ```bash
+  ./generate_Dockerfile.sh
+  docker build -t gpu-jupyter .
+  docker run -d -p [port]:8888 gpu-jupyter
+  ``` 
+
+Alternatively, you can configure the environment in `docker-compose.yml` and run this to deploy 
+the `GPU-Jupyter` via docker-compose (under-the-hood):
+
+  ```bash
+  ./generate_Dockerfile.sh
   ./start-local.sh
   ```
   
-This will run *GPU-Jupyter* by default on [localhost:8888](http://localhost:8888) with the default password `asdf`. The general usage is:
+Both options will run *GPU-Jupyter* by default on [localhost:8888](http://localhost:8888) with the default 
+password `asdf`. The general usage of the `docker-compose` variant is:
   ```bash
-  ./start-local.sh -p [port:8888]  # port must be an integer with 4 or more digits.
+  ./start-local.sh -p [port]  # port must be an integer with 4 or more digits.
   ```
   
 With these commands we can see if everything worked well:
@@ -107,6 +127,7 @@ networks:
 Finally, *GPU-Jupyter* can be deployed in the Docker Swarm with the shared network, using:
 
 ```bash
+./generate_Dockerfile.sh
 ./add-to-swarm.sh -p [port] -n [docker-network] -r [registry-port]
 # e.g. ./add-to-swarm.sh -p 8848 -n elk_datastack -r 5001
 ```
