@@ -2,7 +2,7 @@ version: "3.4"
 services:
   gpu-jupyter:
     image: 127.0.0.1:5001/gpu-jupyter
-    build: ./src/
+    build: .
     ports:
       - ${JUPYTER_PORT}:8888
     volumes:

@@ -9,7 +9,8 @@ export STACKS_DIR=".build/docker-stacks"
 # Clone if docker-stacks doesn't exist, and pull.
 ls $STACKS_DIR/README.md  > /dev/null 2>&1  || (echo "Docker-stacks was not found, cloning repository" \
  && git clone https://github.com/jupyter/docker-stacks.git $STACKS_DIR)
-git pull -f $STACKS_DIR
+cd $STACKS_DIR && git pull && cd -
+
 
 # Write the contents into the DOCKERFILE and start with the header
 cat src/Dockerfile.header > $DOCKERFILE
