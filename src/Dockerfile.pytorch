@@ -5,9 +5,9 @@ RUN conda install --quiet --yes \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
 
-# Install PyTorch
+# Install PyTorch, version of cudatoolkit must match those of the base image
 RUN conda install -y -c pytorch \
-    cudatoolkit=10.1 \
+    cudatoolkit=10.2 \
     'pytorch=1.3.1' \
     torchvision && \
     conda clean --all -f -y && \
