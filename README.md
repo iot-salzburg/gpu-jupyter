@@ -39,7 +39,7 @@ docker-compose (internally):
 
   ```bash
   ./generate_Dockerfile.sh
-  docker build -t gpu-jupyter .
+  docker build -t gpu-jupyter .build/
   docker run -d -p [port]:8888 gpu-jupyter
   ``` 
 
