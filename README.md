@@ -52,8 +52,8 @@ this to deploy the `GPU-Jupyter` via docker-compose (under-the-hood):
   ./start-local.sh -p 8888  # where -p stands for the port of the service
   ```
   
-**Both options will run *GPU-Jupyter* by default on [localhost:8888](http://localhost:8888) with the default 
-password `asdf`**.
+Both options will run *GPU-Jupyter* by default on [localhost:8888](http://localhost:8888) with the default 
+password `asdf`.
 
 
 ## Tracing

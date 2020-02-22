@@ -1,5 +1,6 @@
 # Use NVIDIA CUDA as base image and run the same installation as in the other packages.
-FROM nvidia/cuda:10.1-base-ubuntu18.04
+# The version of cudatoolkit must match those of the base image, see Dockerfile.pytorch
+FROM nvidia/cuda:10.2-base-ubuntu18.04
 LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
 
 ############################################################################
@@ -377,9 +378,9 @@ RUN conda install --quiet --yes \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
 
-# Install PyTorch
+# Install PyTorch, version of cudatoolkit must match those of the base image
 RUN conda install -y -c pytorch \
-    cudatoolkit=10.1 \
+    cudatoolkit=10.2 \
     'pytorch=1.3.1' \
     torchvision && \
     conda clean --all -f -y && \

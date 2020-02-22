@@ -76,7 +76,7 @@ echo "
 cat src/Dockerfile.usefulpackages >> $DOCKERFILE
 
 # Copy the content from the build directory to .
-cp $(find $(dirname $DOCKERFILE) -type f | grep -v $STACKS_DIR | grep -v .gitkeep) .
+#cp $(find $(dirname $DOCKERFILE) -type f | grep -v $STACKS_DIR | grep -v .gitkeep) .
 
 echo "GPU Dockerfile was generated sucessfully in file ${DOCKERFILE} and copied with build files to $(pwd)"
 echo "Run 'bash run_Dockerfile.sh -p [PORT]' to start the GPU-based Juyterlab instance."
