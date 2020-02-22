@@ -15,7 +15,6 @@ cd $STACKS_DIR && git pull && cd -
 # Write the contents into the DOCKERFILE and start with the header
 cat src/Dockerfile.header > $DOCKERFILE
 cp src/jupyter_notebook_config.json .build/
-cp src/jupyter_notebook_config.json .
 
 echo "
 ############################################################################
@@ -24,18 +23,12 @@ echo "
 " >> $DOCKERFILE
 cat $STACKS_DIR/base-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
 
-# copy files that are used during the build in two directories:
+# copy files that are used during the build:
 cp $STACKS_DIR/base-notebook/jupyter_notebook_config.py .build/
 cp $STACKS_DIR/base-notebook/fix-permissions .build/
 cp $STACKS_DIR/base-notebook/start.sh .build/
 cp $STACKS_DIR/base-notebook/start-notebook.sh .build/
 cp $STACKS_DIR/base-notebook/start-singleuser.sh .build/
-
-cp $STACKS_DIR/base-notebook/jupyter_notebook_config.py .
-cp $STACKS_DIR/base-notebook/fix-permissions .
-cp $STACKS_DIR/base-notebook/start.sh .
-cp $STACKS_DIR/base-notebook/start-notebook.sh .
-cp $STACKS_DIR/base-notebook/start-singleuser.sh .
 
 echo "
 ############################################################################
@@ -82,6 +75,8 @@ echo "
 " >> $DOCKERFILE
 cat src/Dockerfile.usefulpackages >> $DOCKERFILE
 
-cp $DOCKERFILE Dockerfile
-echo "GPU Dockerfile was generated sucessfully in file $(pwd)/${DOCKERFILE} and copied to ./Dockerfile"
+# Copy the content from the build directory to .
+cp $(find $(dirname $DOCKERFILE) -type f | grep -v $STACKS_DIR | grep -v .gitkeep) .
+
+echo "GPU Dockerfile was generated sucessfully in file ${DOCKERFILE} and copied with build files to $(pwd)"
 echo "Run 'bash run_Dockerfile.sh -p [PORT]' to start the GPU-based Juyterlab instance."
