@@ -12,6 +12,7 @@ toolstack on top of it to enable GPU calculations in the Jupyter notebooks.
 
 1. [Requirements](#requirements)
 2. [Quickstart](#quickstart)
+2. [Tracing](#tracing)
 3. [Deployment](#deployment-in-the-docker-swarm)
 4. [Configuration](#configuration)
 
@@ -43,19 +44,19 @@ docker-compose (internally):
   docker run -d -p [port]:8888 gpu-jupyter
   ``` 
 
-Alternatively, you can configure the environment in `docker-compose.yml` and run this to deploy 
-the `GPU-Jupyter` via docker-compose (under-the-hood):
+Alternatively, you can configure the environment in `docker-compose.yml` and run 
+this to deploy the `GPU-Jupyter` via docker-compose (under-the-hood):
 
   ```bash
   ./generate_Dockerfile.sh
-  ./start-local.sh
+  ./start-local.sh -p 8888  # where -p stands for the port of the service
   ```
   
-Both options will run *GPU-Jupyter* by default on [localhost:8888](http://localhost:8888) with the default 
-password `asdf`. The general usage of the `docker-compose` variant is:
-  ```bash
-  ./start-local.sh -p [port]  # port must be an integer with 4 or more digits.
-  ```
+**Both options will run *GPU-Jupyter* by default on [localhost:8888](http://localhost:8888) with the default 
+password `asdf`**.
+
+
+## Tracing
   
 With these commands we can see if everything worked well:
 ```bash
