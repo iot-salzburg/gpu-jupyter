@@ -64,7 +64,7 @@ password `asdf`.
   
 With these commands we can see if everything worked well:
 ```bash
-docker-compose ps
+docker ps
 docker logs [service-name]
 ```
 
@@ -171,6 +171,23 @@ Then update the config file as shown below and restart the service.
 }
 ```
 
+### Update CUDA to another version
+
+To update CUDA to another version, change in `Dockerfile.header`
+the line:
+
+    FROM nvidia/cuda:10.1-base-ubuntu18.04
+    
+and in the `Dockerfile.pytorch` the line:
+
+    cudatoolkit=10.1
+
+Then re-generate and re-run the image, as closer described above:
+
+```bash
+./generate_Dockerfile.sh
+./start-local.sh -p [port]:8888  
+```
 
 ## Issues and Contributing
 
