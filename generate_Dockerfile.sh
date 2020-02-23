@@ -29,7 +29,7 @@ cp $STACKS_DIR/base-notebook/fix-permissions .build/
 cp $STACKS_DIR/base-notebook/start.sh .build/
 cp $STACKS_DIR/base-notebook/start-notebook.sh .build/
 cp $STACKS_DIR/base-notebook/start-singleuser.sh .build/
-chmod 755 .build/*.sh
+chmod 755 .build/*
 
 echo "
 ############################################################################
