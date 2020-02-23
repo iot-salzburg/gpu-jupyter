@@ -75,7 +75,7 @@ In order to stop the local deployment, run:
  
 A Jupyter instance often requires data from other services. 
 If that data-source is containerized in Docker and sharing a port for communication shouldn't be allowed, e.g., for security reasons,
-then connecting the data-source with *GPU-Jupyter* within a Docker Swarm is a great option! \
+then connecting the data-source with *GPU-Jupyter* within a Docker Swarm is a great option! 
 
 ### Set up Docker Swarm and Registry
 
