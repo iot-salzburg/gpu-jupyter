@@ -12,9 +12,10 @@ toolstack on top of it to enable GPU calculations in the Jupyter notebooks.
 
 1. [Requirements](#requirements)
 2. [Quickstart](#quickstart)
-2. [Tracing](#tracing)
-3. [Deployment](#deployment-in-the-docker-swarm)
-4. [Configuration](#configuration)
+3. [Tracing](#tracing)
+4. [Deployment](#deployment-in-the-docker-swarm)
+5. [Configuration](#configuration)
+6. [Issues and Contributing](#issues-and-contributing)
 
 
 ## Requirements
@@ -24,11 +25,14 @@ toolstack on top of it to enable GPU calculations in the Jupyter notebooks.
 2.  A NVIDIA GPU
 3.  Get access to use your GPU via the CUDA drivers, check out this 
 [medium article](https://medium.com/@christoph.schranz/set-up-your-own-gpu-based-jupyterlab-e0d45fcacf43).
-4. Clone the Repository:
-      ```bash
-        git clone https://github.com/iot-salzburg/gpu-jupyter.git
-        cd gpu-jupyter
-      ```
+    The CUDA toolkit is not required on the host system, as it will be deployed 
+    in [NVIDIA-docker](https://github.com/NVIDIA/nvidia-docker).
+4. Clone the Repository or pull the image from 
+    [Dockerhub](https://hub.docker.com/repository/docker/cschranz/gpu-jupyter):
+    ```bash
+    git clone https://github.com/iot-salzburg/gpu-jupyter.git
+    cd gpu-jupyter
+    ```
 
 ## Quickstart
 
@@ -166,3 +170,9 @@ Then update the config file as shown below and restart the service.
   }
 }
 ```
+
+
+## Issues and Contributing
+
+* Please let us know by [filing a new issue](https://github.com/iot-salzburg/gpu-jupyter/issues/new)
+* You can contribute by opening a [pull request](https://help.github.com/articles/using-pull-requests/)
