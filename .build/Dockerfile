@@ -353,23 +353,16 @@ RUN julia -e 'import Pkg; Pkg.update()' && \
     fix-permissions $JULIA_PKGDIR $CONDA_DIR/share/jupyter
 
 ############################################################################
-################ Dependency: jupyter/tensorflow-notebook ###################
+########################## Dependency: gpulibs #############################
 ############################################################################
-
-# Copyright (c) Jupyter Development Team.
-# Distributed under the terms of the Modified BSD License.
-
-LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
 
 # Install Tensorflow
-RUN pip install --quiet \
-    'tensorflow==2.1.0' && \
+RUN conda install --quiet --yes \
+    'tensorflow=1.13*' \
+    'keras=2.2*' && \
+    conda clean --all -f -y && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
-
-############################################################################
-########################## Dependency: pytorch #############################
-############################################################################
 
 # Install PyTorch dependencies
 RUN conda install --quiet --yes \

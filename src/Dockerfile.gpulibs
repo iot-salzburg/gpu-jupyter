@@ -1,3 +1,11 @@
+# Install Tensorflow
+RUN conda install --quiet --yes \
+    'tensorflow=1.13*' \
+    'keras=2.2*' && \
+    conda clean --all -f -y && \
+    fix-permissions $CONDA_DIR && \
+    fix-permissions /home/$NB_USER
+
 # Install PyTorch dependencies
 RUN conda install --quiet --yes \
     pyyaml mkl mkl-include setuptools cmake cffi typing && \
