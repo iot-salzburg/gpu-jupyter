@@ -30,6 +30,7 @@ cp $STACKS_DIR/base-notebook/start.sh .build/
 cp $STACKS_DIR/base-notebook/start-notebook.sh .build/
 cp $STACKS_DIR/base-notebook/start-singleuser.sh .build/
 chmod 755 .build/*
+chmod -R 755 data/
 
 echo "
 ############################################################################
