@@ -110,7 +110,6 @@ venv.bak/
 *.save*
 *.envsubst
 
-# Added config to hide hashe of changed password
+# Added config to hide hash of changed password
 src/jupyter_notebook_config.json
-.build/docker-stacks
 .idea
