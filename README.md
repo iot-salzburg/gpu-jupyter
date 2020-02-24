@@ -171,7 +171,9 @@ Then update the config file as shown below and restart the service.
 }
 ```
 
-### Update CUDA to another version
+### Updates
+ 
+#### Update CUDA to another version
 
 To update CUDA to another version, change in `Dockerfile.header`
 the line:
@@ -188,6 +190,21 @@ Then re-generate and re-run the image, as closer described above:
 ./generate_Dockerfile.sh
 ./start-local.sh -p [port]:8888  
 ```
+
+#### Update Docker-Stack
+
+The [docker-stacks](https://github.com/jupyter/docker-stacks) are used as 
+submodule within `.build/docker-stacks`. To update the generated Dockerfile these run:
+
+```bash
+cd .build/docker-stacks/ && git pull && cd -
+./generate_Dockerfile.sh
+```
+
+A new build can last some time and may consume a lot of data.
+More info to submodules can be found in
+ [this tutorial](https://www.vogella.com/tutorials/GitSubmodules/article.html).
+
 
 ## Issues and Contributing
 
