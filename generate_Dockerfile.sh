@@ -30,7 +30,6 @@ cp $STACKS_DIR/base-notebook/start.sh .build/
 cp $STACKS_DIR/base-notebook/start-notebook.sh .build/
 cp $STACKS_DIR/base-notebook/start-singleuser.sh .build/
 chmod 755 .build/*
-chmod -R 755 data/
 
 echo "
 ############################################################################
@@ -71,7 +70,9 @@ echo "
 " >> $DOCKERFILE
 cat src/Dockerfile.usefulpackages >> $DOCKERFILE
 
-# Copy the content from the build directory to .
+# Copy the demo notebooks and change permissions
+cp -r extra/Getting_Started data
+chmod -R 755 data/
 #cp $(find $(dirname $DOCKERFILE) -type f | grep -v $STACKS_DIR | grep -v .gitkeep) .
 
 echo "GPU Dockerfile was generated sucessfully in file ${DOCKERFILE}."
