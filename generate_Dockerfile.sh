@@ -72,7 +72,12 @@ cat src/Dockerfile.usefulpackages >> $DOCKERFILE
 # Copy the demo notebooks and change permissions
 cp -r extra/Getting_Started data
 chmod -R 755 data/
+
+# Copying config and fix permissions
 cp src/jupyter_notebook_config.json .build/
+echo >> $DOCKERFILE
+echo "COPY jupyter_notebook_config.json /etc/jupyter/"  >> $DOCKERFILE
+
 #cp $(find $(dirname $DOCKERFILE) -type f | grep -v $STACKS_DIR | grep -v .gitkeep) .
 
 echo "GPU Dockerfile was generated sucessfully in file ${DOCKERFILE}."
