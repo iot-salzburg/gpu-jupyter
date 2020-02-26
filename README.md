@@ -211,4 +211,3 @@ More info to submodules can be found in
 
 * Please let us know by [filing a new issue](https://github.com/iot-salzburg/gpu-jupyter/issues/new)
 * You can contribute by opening a [pull request](https://help.github.com/articles/using-pull-requests/)
-* [This](https://ropenscilabs.github.io/r-docker-tutorial/04-Dockerhub.html) is an excellent guide to tag an existing image and push it to Dockerhub.
