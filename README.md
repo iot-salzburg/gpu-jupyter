@@ -6,7 +6,8 @@
 First of all, thanks to [hub.docker.com/u/jupyter](https://hub.docker.com/u/jupyter) 
 for creating and maintaining a robost  Python, R and Julia toolstack for Data Analytics/Science 
 applications. This project uses the NVIDIA CUDA image as a basis image and installs their 
-toolstack on top of it to enable GPU calculations in the Jupyter notebooks.
+toolstack on top of it to enable GPU calculations in the Jupyter notebooks. 
+The image of this repository is available on [Dockerhub](https://hub.docker.com/repository/docker/cschranz/gpu-jupyter).
 
 ## Contents
 
