@@ -1,7 +1,8 @@
 # Use NVIDIA CUDA as base image and run the same installation as in the other packages.
 # The version of cudatoolkit must match those of the base image, see Dockerfile.pytorch
 FROM nvidia/cuda:10.1-base-ubuntu18.04
-LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
+LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>"
+# The maintainers of subsequent sections may vary
 
 ############################################################################
 #################### Dependency: jupyter/base-image ########################
@@ -356,6 +357,8 @@ RUN julia -e 'import Pkg; Pkg.update()' && \
 ########################## Dependency: gpulibs #############################
 ############################################################################
 
+LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>"
+
 # Install Tensorflow
 RUN conda install --quiet --yes \
     'tensorflow=1.13*' \
@@ -383,6 +386,8 @@ RUN conda install -y -c pytorch \
 ############################################################################
 ############################ Useful packages ###############################
 ############################################################################
+
+LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>"
 
 # Update conda
 RUN conda update -n base conda -y
