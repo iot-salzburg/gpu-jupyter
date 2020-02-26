@@ -429,10 +429,10 @@ RUN conda install -c conda-forge jupyter_contrib_nbextensions && \
   jupyter nbextension enable codefolding/main
 RUN jupyter labextension install @ijmbarr/jupyterlab_spellchecker
 
-
 RUN fix-permissions /home/$NB_USER
 
 # Switch back to jovyan to avoid accidental container runs as root
 USER $NB_UID
 
+# Copy jupyter_notebook_config.json
 COPY jupyter_notebook_config.json /etc/jupyter/
