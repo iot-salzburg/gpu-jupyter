@@ -14,7 +14,6 @@ cd $STACKS_DIR && git pull && cd -
 
 # Write the contents into the DOCKERFILE and start with the header
 cat src/Dockerfile.header > $DOCKERFILE
-cp src/jupyter_notebook_config.json .build/
 
 echo "
 ############################################################################
@@ -73,6 +72,7 @@ cat src/Dockerfile.usefulpackages >> $DOCKERFILE
 # Copy the demo notebooks and change permissions
 cp -r extra/Getting_Started data
 chmod -R 755 data/
+cp src/jupyter_notebook_config.json .build/
 #cp $(find $(dirname $DOCKERFILE) -type f | grep -v $STACKS_DIR | grep -v .gitkeep) .
 
 echo "GPU Dockerfile was generated sucessfully in file ${DOCKERFILE}."
