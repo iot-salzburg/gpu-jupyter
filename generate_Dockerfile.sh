@@ -4,12 +4,22 @@ cd $(cd -P -- "$(dirname -- "$0")" && pwd -P)
 # Set the path of the generated Dockerfile
 export DOCKERFILE=".build/Dockerfile"
 export STACKS_DIR=".build/docker-stacks"
+export HEAD_COMMIT="c1c32938438151c7e2a22b5aa338caba2ec01da2"
+
+while [[ "$#" -gt 0 ]]; do case $1 in
+  -c|--commit) HEAD_COMMIT="$2"; shift;;
+  *) echo "Unknown parameter passed: $1" &&
+    echo "Usage: $0 -c [sha-commit] # set the head commit of the docker-stacks submodule
+    (https://github.com/jupyter/docker-stacks/commits/master). default: $HEAD_COMMIT."; exit 1;;
+esac; shift; done
 
 
 # Clone if docker-stacks doesn't exist, and pull.
 ls $STACKS_DIR/README.md  > /dev/null 2>&1  || (echo "Docker-stacks was not found, cloning repository" \
  && git clone https://github.com/jupyter/docker-stacks.git $STACKS_DIR)
-cd $STACKS_DIR && git pull && cd -
+#cd $STACKS_DIR && git pull && cd -
+echo "Set docker-stacks to commit $HEAD_COMMIT."
+cd $STACKS_DIR && git reset --hard $HEAD_COMMIT && cd -
 
 
 # Write the contents into the DOCKERFILE and start with the header
