@@ -359,27 +359,28 @@ RUN julia -e 'import Pkg; Pkg.update()' && \
 
 LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>"
 
+# Install cudatoolkit must match the version of the base image
+RUN conda install --quiet --yes \
+    cudatoolkit=10.1 && \
+    conda clean --all -f -y && \
+    fix-permissions $CONDA_DIR && \
+    fix-permissions /home/$NB_USER
+
 # Install Tensorflow
 RUN conda install --quiet --yes \
-    'tensorflow=1.13*' \
-    'keras=2.2*' && \
+    'tensorflow-gpu' \
+    'keras-gpu' && \
     conda clean --all -f -y && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
 
-# Install PyTorch dependencies
+# Install PyTorch with dependencies
 RUN conda install --quiet --yes \
-    pyyaml mkl mkl-include setuptools cmake cffi typing && \
-    conda clean --all -f -y && \
-    fix-permissions $CONDA_DIR && \
-    fix-permissions /home/$NB_USER
-
-# Install PyTorch, version of cudatoolkit must match those of the base image
-RUN conda install -y -c pytorch \
-    cudatoolkit=10.1 \
-    'pytorch=1.3.1' \
+    pyyaml mkl mkl-include setuptools cmake cffi typing \
+    pytorch \
     torchvision && \
     conda clean --all -f -y && \
+    pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cu90/torch_nightly.html && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
 
