@@ -194,15 +194,22 @@ Then re-generate and re-run the image, as closer described above:
 
 #### Update Docker-Stack
 
-The [docker-stacks](https://github.com/jupyter/docker-stacks) are used as 
-submodule within `.build/docker-stacks`. To update the generated Dockerfile these run:
+The [docker-stacks](https://github.com/jupyter/docker-stacks) are used as  a
+submodule within `.build/docker-stacks`. Per default, the head of the commit is reset to a stable commit. 
+To update the generated Dockerfile to a specific commit, run:
 
 ```bash
-cd .build/docker-stacks/ && git pull && cd -
-./generate_Dockerfile.sh
+./generate_Dockerfile.sh --commit c1c32938438151c7e2a22b5aa338caba2ec01da2
 ```
 
-A new build can last some time and may consume a lot of data.
+To update the generated Dockerfile to the commit, run:
+
+```bash
+./generate_Dockerfile.sh --commit latest
+```
+
+A new build can last some time and may consume a lot of data traffic. Note, that the latest version may result in
+a version conflict!
 More info to submodules can be found in
  [this tutorial](https://www.vogella.com/tutorials/GitSubmodules/article.html).
 
