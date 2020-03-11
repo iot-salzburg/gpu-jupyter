@@ -218,5 +218,7 @@ More info to submodules can be found in
 
 ## Issues and Contributing
 
-* Please let us know by [filing a new issue](https://github.com/iot-salzburg/gpu-jupyter/issues/new)
-* You can contribute by opening a [pull request](https://help.github.com/articles/using-pull-requests/)
+This project has the intention to create a robust image for CUDA-based GPU-applications, which is built on top of the [docker-stacks](https://github.com/jupyter/docker-stacks). You are free to help to improve this project, by:
+
+* [filing a new issue](https://github.com/iot-salzburg/gpu-jupyter/issues/new)
+* [open a pull request](https://help.github.com/articles/using-pull-requests/)
