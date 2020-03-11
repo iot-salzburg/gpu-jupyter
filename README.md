@@ -176,6 +176,8 @@ Then update the config file as shown below and restart the service.
  
 #### Update CUDA to another version
 
+Please check version compatibilities for [CUDA and Pytorch](https://pytorch.org/get-started/locally/)
+ respectively [CUDA and Tensorflow](https://www.tensorflow.org/install/gpu) previously. 
 To update CUDA to another version, change in `Dockerfile.header`
 the line:
 
