@@ -23,8 +23,8 @@ if [[ "$HEAD_COMMIT" == "latest" ]]; then
   cd $STACKS_DIR && git pull && cd -
 else
   export GOT_HEAD="false"
-  cd $STACKS_DIR && git reset --hard $HEAD_COMMIT > /dev/null 2>&1  && cd - && export GOT_HEAD="true"
-  echo $HEAD
+  cd $STACKS_DIR && git reset --hard "$HEAD_COMMIT" > /dev/null 2>&1  && cd - && export GOT_HEAD="true"
+  echo "$HEAD"
   if [[ "$GOT_HEAD" == "false" ]]; then
     echo "Given sha-commit is invalid."
     echo "Usage: $0 -c [sha-commit] # set the head commit of the docker-stacks submodule (https://github.com/jupyter/docker-stacks/commits/master)."
