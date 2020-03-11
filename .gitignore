@@ -113,8 +113,3 @@ venv.bak/
 # Added config to hide hash of changed password
 src/jupyter_notebook_config.json
 .idea
-Deployment-notes.md
-add-to-swarm-with-defaults.sh
-add-to-swarm.sh
-remove-from-swarm.sh
-docker-compose-swarm.yml
