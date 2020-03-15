@@ -197,14 +197,14 @@ Then re-generate and re-run the image, as closer described above:
 #### Update Docker-Stack
 
 The [docker-stacks](https://github.com/jupyter/docker-stacks) are used as  a
-submodule within `.build/docker-stacks`. Per default, the head of the commit is reset to a stable commit. 
+submodule within `.build/docker-stacks`. Per default, the head of the commit is reset to a commit on which `gpu-jupyter` runs stable. 
 To update the generated Dockerfile to a specific commit, run:
 
 ```bash
 ./generate_Dockerfile.sh --commit c1c32938438151c7e2a22b5aa338caba2ec01da2
 ```
 
-To update the generated Dockerfile to the commit, run:
+To update the generated Dockerfile to the latest commit, run:
 
 ```bash
 ./generate_Dockerfile.sh --commit latest
