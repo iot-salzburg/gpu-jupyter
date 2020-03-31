@@ -12,3 +12,4 @@ services:
     # enable sudo permissions
     user:
       "root"
+    restart: always
