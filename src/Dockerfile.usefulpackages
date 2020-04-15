@@ -37,6 +37,7 @@ RUN pip install --no-cache-dir jupyter-tabnine==1.0.2  && \
 RUN fix-permissions $CONDA_DIR
 RUN conda install -c conda-forge jupyter_contrib_nbextensions && \
   conda install -c conda-forge jupyter_nbextensions_configurator && \
+  conda install -c conda-forge rise && \
   jupyter nbextension enable codefolding/main
 RUN jupyter labextension install @ijmbarr/jupyterlab_spellchecker
 
