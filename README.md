@@ -63,12 +63,12 @@ First of all, it is necessary to generate the `Dockerfile` based on the
 As soon as you have access to your GPU within Docker containers 
 (make sure the command `docker run --runtime nvidia nvidia/cuda:10.1-base-ubuntu18.04 nvidia-smi` shows your
 GPU statistics), you can generate a Dockerfile and build it via docker-compose.
-The two commands will start *GPU-Jupyter* on [localhost:1234](http://localhost:1234) with the default 
+The two commands will start *GPU-Jupyter* on [localhost:8848](http://localhost:8848) with the default 
 password `asdf`.
 
   ```bash
   ./generate-Dockerfile.sh
-  ./start-local.sh -p 1234  # where -p stands for the port, default 8888
+  ./start-local.sh -p 8848  # where -p stands for the port, default 8888
   ``` 
 
 ## Parameter
@@ -228,7 +228,7 @@ Then re-generate and re-run the image, as closer described above:
 
 ```bash
 ./generate-Dockerfile.sh
-./start-local.sh -p [port]:8888  
+./start-local.sh -p 8848
 ```
 
 #### Update Docker-Stack
