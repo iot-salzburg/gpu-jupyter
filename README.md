@@ -44,7 +44,7 @@ directly on the host node), you can run these commands to start the jupyter note
 docker-compose (internally):
 
   ```bash
-  ./generate_Dockerfile.sh
+  ./generate-Dockerfile.sh
   docker build -t gpu-jupyter .build/
   docker run -d -p [port]:8888 gpu-jupyter
   ``` 
@@ -53,7 +53,7 @@ Alternatively, you can configure the environment in `docker-compose.yml` and run
 this to deploy the `GPU-Jupyter` via docker-compose (under-the-hood):
 
   ```bash
-  ./generate_Dockerfile.sh
+  ./generate-Dockerfile.sh
   ./start-local.sh -p 8888  # where -p stands for the port of the service
   ```
   
@@ -133,7 +133,7 @@ networks:
 Finally, *GPU-Jupyter* can be deployed in the Docker Swarm with the shared network, using:
 
 ```bash
-./generate_Dockerfile.sh
+./generate-Dockerfile.sh
 ./add-to-swarm.sh -p [port] -n [docker-network] -r [registry-port]
 # e.g. ./add-to-swarm.sh -p 8848 -n elk_datastack -r 5001
 ```
@@ -190,7 +190,7 @@ and in the `Dockerfile.pytorch` the line:
 Then re-generate and re-run the image, as closer described above:
 
 ```bash
-./generate_Dockerfile.sh
+./generate-Dockerfile.sh
 ./start-local.sh -p [port]:8888  
 ```
 
@@ -201,13 +201,13 @@ submodule within `.build/docker-stacks`. Per default, the head of the commit is 
 To update the generated Dockerfile to a specific commit, run:
 
 ```bash
-./generate_Dockerfile.sh --commit c1c32938438151c7e2a22b5aa338caba2ec01da2
+./generate-Dockerfile.sh --commit c1c32938438151c7e2a22b5aa338caba2ec01da2
 ```
 
 To update the generated Dockerfile to the latest commit, run:
 
 ```bash
-./generate_Dockerfile.sh --commit latest
+./generate-Dockerfile.sh --commit latest
 ```
 
 A new build can last some time and may consume a lot of data traffic. Note, that the latest version may result in
