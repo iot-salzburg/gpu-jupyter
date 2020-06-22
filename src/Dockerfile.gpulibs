@@ -1,11 +1,15 @@
 LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>"
 
-# Install Tensorflow, check compatibility here: https://www.tensorflow.org/install/gpu 
-RUN conda install --quiet --yes \
-    'tensorflow-gpu=2.1*' \
-    'keras-gpu' && \
-    fix-permissions $CONDA_DIR && \
-    fix-permissions /home/$NB_USER
+# Install Tensorflow, check compatibility here: https://www.tensorflow.org/install/gpu
+# installation via conda leads to errors in version 4.8.2
+#RUN conda install --quiet --yes \
+#    'tensorflow-gpu=2.1*' \
+#    'keras-gpu' && \
+#    fix-permissions $CONDA_DIR && \
+#    fix-permissions /home/$NB_USER
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir "tensorflow-gpu>=2.1.*" && \
+    pip install --no-cache-dir keras
 
 # Install PyTorch with dependencies
 RUN conda install --quiet --yes \

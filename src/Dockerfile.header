@@ -2,4 +2,4 @@
 # The version of cudatoolkit must match those of the base image, see Dockerfile.pytorch
 FROM nvidia/cuda:10.1-base-ubuntu18.04
 LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>"
-# The maintainers of subsequent sections may vary
+# This is a concatenated Dockerfile, the maintainers of subsequent sections may vary.
