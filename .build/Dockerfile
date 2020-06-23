@@ -414,9 +414,6 @@ RUN conda clean --all -f -y && \
   
 LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>"
 
-# Update conda
-RUN conda update -n base conda -y
-
 USER root
 
 # Install elasticsearch libs
