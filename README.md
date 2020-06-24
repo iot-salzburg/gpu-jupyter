@@ -5,7 +5,7 @@
 
 First of all, thanks to [docker-stacks](https://github.com/jupyter/docker-stacks) 
 for creating and maintaining a robost  Python, R and Julia toolstack for Data Analytics/Science 
-applications. This project uses the NVIDIA CUDA image as a basis image and installs their 
+applications. This project uses the NVIDIA CUDA image as the base image and installs their 
 toolstack on top of it to enable GPU calculations in the Jupyter notebooks. 
 The image of this repository is available on [Dockerhub](https://hub.docker.com/r/cschranz/gpu-jupyter).
 
@@ -21,13 +21,34 @@ The image of this repository is available on [Dockerhub](https://hub.docker.com/
 
 ## Requirements
 
-1.  Install [Docker](https://www.docker.com/community-edition#/download) version **1.10.0+**
+1.  A NVIDIA GPU
+2.  Install [Docker](https://www.docker.com/community-edition#/download) version **1.10.0+**
  and [Docker Compose](https://docs.docker.com/compose/install/) version **1.6.0+**.
-2.  A NVIDIA GPU
-3.  Get access to use your GPU via the CUDA drivers, check out this 
+3.  Get access to your GPU via CUDA drivers within Docker containers. Therfore, check out this 
 [medium article](https://medium.com/@christoph.schranz/set-up-your-own-gpu-based-jupyterlab-e0d45fcacf43).
     The CUDA toolkit is not required on the host system, as it will be deployed 
-    in [NVIDIA-docker](https://github.com/NVIDIA/nvidia-docker).
+    in [NVIDIA-docker](https://github.com/NVIDIA/nvidia-docker). 
+    You can be sure that you can access your GPU within Docker, 
+    if the command `docker run --runtime nvidia nvidia/cuda:10.1-base-ubuntu18.04 nvidia-smi`
+    returns a result similar to this one:
+    ```bash
+    Mon Jun 22 09:06:28 2020       
+    +-----------------------------------------------------------------------------+
+    | NVIDIA-SMI 440.82       Driver Version: 440.82       CUDA Version: 10.1     |
+    |-------------------------------+----------------------+----------------------+
+    | GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+    | Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+    |===============================+======================+======================|
+    |   0  GeForce RTX 207...  Off  | 00000000:01:00.0  On |                  N/A |
+    |  0%   46C    P8     9W / 215W |    424MiB /  7974MiB |      6%      Default |
+    +-------------------------------+----------------------+----------------------+
+                                                                                   
+    +-----------------------------------------------------------------------------+
+    | Processes:                                                       GPU Memory |
+    |  GPU       PID   Type   Process name                             Usage      |
+    |=============================================================================|
+    +-----------------------------------------------------------------------------+
+    ```
 4. Clone the Repository or pull the image from 
     [Dockerhub](https://hub.docker.com/repository/docker/cschranz/gpu-jupyter):
     ```bash
@@ -37,29 +58,45 @@ The image of this repository is available on [Dockerhub](https://hub.docker.com/
 
 ## Quickstart
 
-First of all, it is necessary to generate the `Dockerfile` based on the latest toolstack of 
-[hub.docker.com/u/jupyter](https://hub.docker.com/u/jupyter).
-As soon as you have access to your GPU locally (it can be tested via a Tensorflow or PyTorch 
-directly on the host node), you can run these commands to start the jupyter notebook via 
-docker-compose (internally):
-
-  ```bash
-  ./generate_Dockerfile.sh
-  docker build -t gpu-jupyter .build/
-  docker run -d -p [port]:8888 gpu-jupyter
-  ``` 
-
-Alternatively, you can configure the environment in `docker-compose.yml` and run 
-this to deploy the `GPU-Jupyter` via docker-compose (under-the-hood):
-
-  ```bash
-  ./generate_Dockerfile.sh
-  ./start-local.sh -p 8888  # where -p stands for the port of the service
-  ```
-  
-Both options will run *GPU-Jupyter* by default on [localhost:8888](http://localhost:8888) with the default 
+First of all, it is necessary to generate the `Dockerfile` based on the
+[docker-stacks](https://github.com/jupyter/docker-stacks).
+As soon as you have access to your GPU within Docker containers 
+(make sure the command `docker run --runtime nvidia nvidia/cuda:10.1-base-ubuntu18.04 nvidia-smi` shows your
+GPU statistics), you can generate a Dockerfile and build it via docker-compose.
+The two commands will start *GPU-Jupyter* on [localhost:8848](http://localhost:8848) with the default 
 password `asdf`.
 
+  ```bash
+  ./generate-Dockerfile.sh
+  ./start-local.sh -p 8848  # where -p stands for the port, default 8888
+  ``` 
+
+## Parameter
+
+The script `generate-Dockerfile.sh` has multiple parameters:
+
+* `-c|--commit`: specify a commit or `"latest"` for the `docker-stacks`, the default commit is a working one.
+
+* `-s|--slim`: Generate a slim Dockerfile. 
+As some installations are not needed by everyone, there is the possibility to skip some installations 
+to reduce the size of the image.
+Here the `docker-stack` `scipy-notebook` is used instead of `datascience-notebook` that comes with Julia and R. 
+Moreover, none of the packages within `src/Dockerfile.usefulpackages` is installed.
+
+* `--no-datascience-notebook`: As the name suggests, the `docker-stack` `datascience-notebook` is not installed
+on top of the `scipy-notebook`, but the packages within `src/Dockerfile.usefulpackages` are.
+
+* `--no-useful-packages`: On top of the `docker-stack` `datascience-notebook`, the essential `gpulibs` are installed
+but not the packages within `src/Dockerfile.usefulpackages`.
+
+
+The script `start-local.sh` is a wrapper for a quick configuration of the underlying `docker-compose.yml`.
+It is equal to these commands:
+
+  ```bash
+  docker build -t gpu-jupyter .build/
+  docker run -d -p [port]:8888 gpu-jupyter
+  ```
 
 ## Tracing
   
@@ -133,7 +170,7 @@ networks:
 Finally, *GPU-Jupyter* can be deployed in the Docker Swarm with the shared network, using:
 
 ```bash
-./generate_Dockerfile.sh
+./generate-Dockerfile.sh
 ./add-to-swarm.sh -p [port] -n [docker-network] -r [registry-port]
 # e.g. ./add-to-swarm.sh -p 8848 -n elk_datastack -r 5001
 ```
@@ -190,8 +227,8 @@ and in the `Dockerfile.pytorch` the line:
 Then re-generate and re-run the image, as closer described above:
 
 ```bash
-./generate_Dockerfile.sh
-./start-local.sh -p [port]:8888  
+./generate-Dockerfile.sh
+./start-local.sh -p 8848
 ```
 
 #### Update Docker-Stack
@@ -201,13 +238,13 @@ submodule within `.build/docker-stacks`. Per default, the head of the commit is 
 To update the generated Dockerfile to a specific commit, run:
 
 ```bash
-./generate_Dockerfile.sh --commit c1c32938438151c7e2a22b5aa338caba2ec01da2
+./generate-Dockerfile.sh --commit c1c32938438151c7e2a22b5aa338caba2ec01da2
 ```
 
 To update the generated Dockerfile to the latest commit, run:
 
 ```bash
-./generate_Dockerfile.sh --commit latest
+./generate-Dockerfile.sh --commit latest
 ```
 
 A new build can last some time and may consume a lot of data traffic. Note, that the latest version may result in
