@@ -102,6 +102,7 @@ It is equal to these commands:
   
 With these commands we can see if everything worked well:
 ```bash
+bash show-local.sh  # a env-var safe wrapper for a 'docker-compose logs -f'
 docker ps
 docker logs [service-name]
 ```
