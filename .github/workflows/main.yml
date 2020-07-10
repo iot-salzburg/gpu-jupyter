@@ -12,17 +12,47 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  docker:
-    # The type of runner that the job will run on
+  docker-default:
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    # Use docker to handle dependencies and prepend executables to PATH
     - name: Test Quickstart (defaults)
       run: |
         ./generate-Dockerfile.sh
         ./start-local.sh -p 8848 
+
+  docker-slim:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Test Quickstart (defaults)
+      run: |
+        ./generate-Dockerfile.sh --slim
+        ./start-local.sh -p 8848 
+ 
+  docker-nods:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Test Quickstart (defaults)
+      run: |
+        ./generate-Dockerfile.sh --no-datascience-notebook
+        ./start-local.sh -p 8848
+
+  docker-noup:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Test Quickstart (defaults)
+      run: |
+        ./generate-Dockerfile.sh --no-useful-packages
+        ./start-local.sh -p 8848 
+
