@@ -5,6 +5,7 @@
 FROM nvidia/cuda:10.1-base-ubuntu18.04
 LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>"
 # This is a concatenated Dockerfile, the maintainers of subsequent sections may vary.
+RUN chmod 1777 /tmp && chmod 1777 /var/tmp
 
 ############################################################################
 #################### Dependency: jupyter/base-image ########################
