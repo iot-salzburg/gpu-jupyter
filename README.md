@@ -74,7 +74,7 @@ password `asdf`.
 
 To run the container with GPU support, a local data volume and , run:
   ```bash
-docker run -d -it --rm --gpus all -p [JUPYTER_PORT]:8888 -v ./data:/home/jovyan/work -e GRANT_SUDO="yes" -e JUPYTER_ENABLE_LAB="yes" gpu-jupyter
+docker run -d -it --rm --gpus all -p [JUPYTER_PORT]:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO="yes" -e JUPYTER_ENABLE_LAB="yes" gpu-jupyter
   ``` 
   
 Or on windows:
