@@ -67,7 +67,7 @@ The following commands will start *GPU-Jupyter* on [localhost:8848](http://local
 password `asdf`.
 
   ```bash
-  ./generate_Dockerfile.sh
+  ./generate-Dockerfile.sh
   docker build -t gpu-jupyter .build/  # will take a while
   docker run -d -p [port]:8888 gpu-jupyter  # starts gpu-jupyter WITHOUT GPU support
   ``` 
