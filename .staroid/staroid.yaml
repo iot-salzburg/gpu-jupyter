@@ -3,7 +3,8 @@ apiVersion: beta/v1
 starRank:
   rate: 1.0 # set community rate here. https://staroid.com/site/starrank
 build:
-  skaffold: {}
+  skaffold:
+    file: .staroid/skaffold.yaml
 ingress:
 - serviceName: jupyter
   port: 8888

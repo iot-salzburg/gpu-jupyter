@@ -9,10 +9,10 @@ build:
 deploy:
   kubectl:
     manifests:
-      - k8s.yaml
+      - .staroid/k8s.yaml
 profiles:
   - name: minikube
     patches:
       - op: add
         path: /deploy/kubectl/manifests/0
-        value: minikube.yaml
+        value: .staroid/minikube.yaml
