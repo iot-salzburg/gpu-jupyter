@@ -28,18 +28,10 @@ spec:
         - "bash"
         - "-c"
         - >-
-          mkdir -p ~/.ssh && chmod 700 ~/.ssh &&
-          echo -n "$(echo $MLFLOW_TRACKING_URI | sed 's/.*\(mlflow[^:]*\).*/\1/g') " >> ~/.ssh/known_hosts &&
-          echo $MLFLOW_ARTIFACT_STORE_RSA_PUB | base64 --decode >> ~/.ssh/known_hosts &&
-          echo $MLFLOW_ARTIFACT_STORE_RSA_PRI | base64 --decode >> ~/.ssh/id_rsa &&
-          chmod 600 ~/.ssh/* &&
           jupyter-lab --ip='*' --NotebookApp.token='' --NotebookApp.password='' --NotebookApp.allow_origin='*'
         env:
         - name: JUPYTER_ENABLE_LAB
           value: "yes"
-        envFrom:
-        - configMapRef:
-            name: mlflow-env
         volumeMounts:
           - name: work-volume
             mountPath: /home/jovyan/work

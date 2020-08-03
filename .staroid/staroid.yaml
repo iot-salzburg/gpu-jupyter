@@ -9,9 +9,6 @@ ingress:
 - serviceName: jupyter
   port: 8888
 deploy:
-  dependencies:
-  - project: open-datastudio/mlflow-server
-    level: OPTIONAL
   paramGroups:
   - name: Configurations
     params:
