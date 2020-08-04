@@ -7,6 +7,9 @@
 ./generate-Dockerfile.sh -s --no-datascience-notebook --no-useful-packages
 cd .build
 
+# apply staroid patch
+cat ../Dockerfile.staroid >> Dockerfile
+
 # print Dockerfile
 cat Dockerfile
 
