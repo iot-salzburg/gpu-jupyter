@@ -8,7 +8,7 @@
 cd .build
 
 # apply staroid patch
-cat ../Dockerfile.staroid >> Dockerfile
+cat ../.staroid/Dockerfile.staroid >> Dockerfile
 
 # print Dockerfile
 cat Dockerfile
