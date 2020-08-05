@@ -13,13 +13,13 @@ spec:
     metadata:
       labels:
         app: jupyter
-        pod.staroid.com/isolation: dedicated
+        pod.staroid.com/isolation: dedicated # see https://docs.staroid.com/ske/pod.html#pod for more available options
         pod.staroid.com/spot: "false"
         pod.staroid.com/instance-type: gpu-1
     spec:
       automountServiceAccountToken: true
       securityContext:
-        runAsUser: 1000 # will be overrided by staroid
+        runAsUser: 1000 # staroid requires non-root container
         runAsGroup: 100 # writable directories are accessible with GID 100. see https://github.com/jupyter/docker-stacks/blob/master/base-notebook/Dockerfile
       containers:
       - name: jupyter
@@ -56,8 +56,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: work
   annotations:
-    storage.staroid.com/scope: Instance
-    storage.staroid.com/file-manager: "1000:100"
+    storage.staroid.com/scope: Instance # see https://docs.staroid.com/ske/storage.html for available scope
+    storage.staroid.com/file-manager: "1000:100" # <uid:gid> of file manager pod. This will display file manager button on staroid management console
 spec:
   storageClassName: nfs
   accessModes:
