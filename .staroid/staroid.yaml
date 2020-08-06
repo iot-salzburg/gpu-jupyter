@@ -1,0 +1,33 @@
+# See https://docs.staroid.com/references/staroid_yaml.html for more configuration detail
+apiVersion: beta/v1
+starRank:
+  rate: 1.0 # set community rate here. https://staroid.com/site/starrank
+build:
+  skaffold:
+    file: .staroid/skaffold.yaml
+ingress:
+- serviceName: jupyter
+  port: 8888
+deploy:
+  paramGroups:
+  - name: Configurations
+    params:
+    - name: "Instance type"
+      description: "GPU instance is supported only in AWS for now"
+      type: STRING
+      defaultValue: gpu-1
+      options:
+      - name: gpu-1 (8CPU, 61GB Mem, 1 GPU - Tesla V100 16GB Mem)
+        value: gpu-1
+      paths:
+      - Deployment:jupyter-deployment:spec.template.metadata.labels["pod.staroid.com/instance-type"]
+    - name: "Spot instance"
+      type: STRING
+      defaultValue: "false"
+      options:
+      - name: "false"
+        value: "false"
+      - name: "true"
+        value: "true"
+      paths:
+      - Deployment:jupyter-deployment:spec.template.metadata.labels["pod.staroid.com/spot"]
