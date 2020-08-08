@@ -1,4 +1,4 @@
-LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>"
+LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathematical Michael <consistentbayes@gmail.com>"
 
 USER root
 
@@ -16,7 +16,7 @@ RUN set -ex \
     graphviz==0.11 \
 ' \
  && apt-get update \
- && apt-get -y install htop apt-utils graphviz libgraphviz-dev \
+ && apt-get -y install htop apt-utils graphviz libgraphviz-dev openssh-client \
  && pip install --no-cache-dir $buildDeps
 
 # Install various extensions
