@@ -15,6 +15,9 @@ RUN pip install --upgrade pip && \
 RUN conda install --quiet --yes \
     pyyaml mkl mkl-include setuptools cmake cffi typing
 
+# Deep-NN libs
+RUN apt-get update && apt-get install -y libcudnn7-dev && rm -rf /var/lib/apt/lists/* 
+
 # Check compatibility here: https://pytorch.org/get-started/locally/
 RUN conda install --quiet --yes \
      pytorch \ 
