@@ -29,7 +29,7 @@ The image of this repository is available on [Dockerhub](https://hub.docker.com/
     The CUDA toolkit is not required on the host system, as it will be deployed 
     in [NVIDIA-docker](https://github.com/NVIDIA/nvidia-docker). 
     You can be sure that you can access your GPU within Docker, 
-    if the command `docker run --runtime nvidia nvidia/cuda:10.1-base-ubuntu18.04 nvidia-smi`
+    if the command `docker run --gpus all nvidia/cuda:10.1-base-ubuntu18.04 nvidia-smi`
     returns a result similar to this one:
     ```bash
     Mon Jun 22 09:06:28 2020       
@@ -58,18 +58,25 @@ The image of this repository is available on [Dockerhub](https://hub.docker.com/
 
 ## Quickstart
 
-First of all, it is necessary to generate the `Dockerfile` based on the
+First of all, it is necessary to generate the `Dockerfile` based on the NIVIDA base image and the 
 [docker-stacks](https://github.com/jupyter/docker-stacks).
 As soon as you have access to your GPU within Docker containers 
-(make sure the command `docker run --runtime nvidia nvidia/cuda:10.1-base-ubuntu18.04 nvidia-smi` shows your
-GPU statistics), you can generate a Dockerfile and build it via docker-compose.
-The two commands will start *GPU-Jupyter* on [localhost:8848](http://localhost:8848) with the default 
+(make sure the command `docker run --gpus all nvidia/cuda:10.1-base-ubuntu18.04 nvidia-smi` shows your
+GPU statistics), you can generate a Dockerfile, build and run it.
+The following commands will start *GPU-Jupyter* on [localhost:8848](http://localhost:8848) with the default 
 password `asdf`.
 
   ```bash
   ./generate-Dockerfile.sh
-  ./start-local.sh -p 8848  # where -p stands for the port, default 8888
+  docker build -t gpu-jupyter .build/  # will take a while
+  docker run -d -p [port]:8888 gpu-jupyter  # starts gpu-jupyter WITHOUT GPU support
   ``` 
+
+To run the container with GPU support, a local data volume and , run:
+  ```bash
+docker run -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root --restart always --name gpu-jupyter_1 gpu-jupyter 
+``` 
+
 
 ## Parameter
 
@@ -102,6 +109,7 @@ It is equal to these commands:
   
 With these commands we can see if everything worked well:
 ```bash
+bash show-local.sh  # a env-var safe wrapper for a 'docker-compose logs -f'
 docker ps
 docker logs [service-name]
 ```

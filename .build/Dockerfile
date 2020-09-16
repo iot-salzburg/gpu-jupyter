@@ -2,9 +2,10 @@
 
 # Use NVIDIA CUDA as base image and run the same installation as in the other packages.
 # The version of cudatoolkit must match those of the base image, see Dockerfile.pytorch
-FROM nvidia/cuda:10.1-base-ubuntu18.04
-LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>"
+FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04
+LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathematical Michael <consistentbayes@gmail.com>"
 # This is a concatenated Dockerfile, the maintainers of subsequent sections may vary.
+RUN chmod 1777 /tmp && chmod 1777 /var/tmp
 
 ############################################################################
 #################### Dependency: jupyter/base-image ########################
@@ -383,11 +384,6 @@ LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>"
 
 # Install Tensorflow, check compatibility here: https://www.tensorflow.org/install/gpu
 # installation via conda leads to errors in version 4.8.2
-#RUN conda install --quiet --yes \
-#    'tensorflow-gpu=2.1*' \
-#    'keras-gpu' && \
-#    fix-permissions $CONDA_DIR && \
-#    fix-permissions /home/$NB_USER
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir "tensorflow-gpu>=2.1.*" && \
     pip install --no-cache-dir keras
@@ -412,7 +408,7 @@ RUN conda clean --all -f -y && \
   ############################ Useful packages ###############################
   ############################################################################
   
-LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>"
+LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathematical Michael <consistentbayes@gmail.com>"
 
 USER root
 
@@ -430,7 +426,7 @@ RUN set -ex \
     graphviz==0.11 \
 ' \
  && apt-get update \
- && apt-get -y install htop apt-utils graphviz libgraphviz-dev \
+ && apt-get -y install htop apt-utils graphviz libgraphviz-dev openssh-client \
  && pip install --no-cache-dir $buildDeps
 
 # Install various extensions
