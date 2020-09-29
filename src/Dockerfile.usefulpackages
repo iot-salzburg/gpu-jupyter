@@ -2,12 +2,6 @@ LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathem
 
 USER root
 
-# Install elasticsearch libs
-USER root
-RUN apt-get update \
- && curl -sL https://repo1.maven.org/maven2/org/elasticsearch/elasticsearch-hadoop/6.8.1/elasticsearch-hadoop-6.8.1.jar
-RUN pip install --no-cache-dir elasticsearch==7.1.0
-
 RUN pip install --no-cache-dir ipyleaflet plotly==4.8.* "ipywidgets>=7.5"
 
 # Install important packages and Graphviz
