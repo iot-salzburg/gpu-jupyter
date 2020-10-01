@@ -21,8 +21,8 @@ jobs:
     - name: Generate Dockerfile
       run: ./generate-Dockerfile.sh --slim
 
-	- name: Build Image
+    - name: Build Image
       run: docker build -t gpu-jupyter .build/  # will take a while
 
-	- name: Quickstart Entrypoint Script
+    - name: Quickstart Entrypoint Script
       run: ./start-local.sh -p 8848 
