@@ -1,7 +1,7 @@
 # See https://docs.staroid.com/references/staroid_yaml.html for more configuration detail
 apiVersion: beta/v1
 starRank:
-  rate: 1.0 # set community rate here. https://staroid.com/site/starrank
+  rate: 1.2 # set community rate here. https://staroid.com/site/starrank
 build:
   skaffold:
     file: .staroid/skaffold.yaml
