@@ -15,7 +15,7 @@ deploy:
     - name: "Instance type"
       description: "GPU instance is supported only in AWS for now. It is required to support the GPU capability."
       type: STRING
-      defaultValue: standard-2
+      defaultValue: gpu-1
       options:
       - name: standard-2 (2CPU, 8GB Mem)
         value: standard-2

@@ -15,7 +15,7 @@ spec:
         app: jupyter
         pod.staroid.com/isolation: dedicated # see https://docs.staroid.com/ske/pod.html#pod for more available options
         pod.staroid.com/spot: "false"
-        pod.staroid.com/instance-type: standard-2
+        pod.staroid.com/instance-type: gpu-1
     spec:
       automountServiceAccountToken: true
       securityContext:
