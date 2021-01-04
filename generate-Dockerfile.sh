@@ -118,5 +118,9 @@ echo "COPY jupyter_notebook_config.json /etc/jupyter/"  >> $DOCKERFILE
 
 #cp $(find $(dirname $DOCKERFILE) -type f | grep -v $STACKS_DIR | grep -v .gitkeep) .
 
+echo >> $DOCKERFILE
+echo "# Clone environment to build up conda cache" >> $DOCKERFILE
+echo "RUN conda create -p /tmp/.conda --clone base && rm -rf /tmp/.conda" >> $DOCKERFILE
+
 echo "GPU Dockerfile was generated successfully in file ${DOCKERFILE}."
 echo "Run 'bash start-local.sh -p [PORT]' to start the GPU-based Juyterlab instance."

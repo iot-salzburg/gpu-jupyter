@@ -452,3 +452,6 @@ USER $NB_UID
 
 # Copy jupyter_notebook_config.json
 COPY jupyter_notebook_config.json /etc/jupyter/
+
+# Clone environment to build up conda cache
+RUN conda create -p /tmp/.conda --clone base && rm -rf /tmp/.conda
