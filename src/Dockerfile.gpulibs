@@ -16,6 +16,8 @@ RUN conda install --quiet --yes \
      torchvision \
      cudatoolkit=10.1 -c pytorch
 #    pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cu90/torch_nightly.html && \
+RUN pip install  --no-cache-dir torchviz
+
 
 # Clean installation
 RUN conda clean --all -f -y && \

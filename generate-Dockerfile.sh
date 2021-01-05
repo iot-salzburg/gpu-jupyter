@@ -5,7 +5,7 @@ cd $(cd -P -- "$(dirname -- "$0")" && pwd -P)
 export DOCKERFILE=".build/Dockerfile"
 export STACKS_DIR=".build/docker-stacks"
 # please test the build of the commit in https://github.com/jupyter/docker-stacks/commits/master in advance
-export HEAD_COMMIT="04f7f60d34a674a2964d96a6cb97c57a7870a828"
+export HEAD_COMMIT="703d8b2dcb886be2fe5aa4660a48fbcef647e7aa"
 
 while [[ "$#" -gt 0 ]]; do case $1 in
   -c|--commit) HEAD_COMMIT="$2"; shift;;

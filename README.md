@@ -21,62 +21,81 @@ The image of this repository is available on [Dockerhub](https://hub.docker.com/
 
 ## Requirements
 
-1.  A NVIDIA GPU
+1.  A computer with a NVIDIA GPU
 2.  Install [Docker](https://www.docker.com/community-edition#/download) version **1.10.0+**
  and [Docker Compose](https://docs.docker.com/compose/install/) version **1.6.0+**.
-3.  Get access to your GPU via CUDA drivers within Docker containers. Therfore, check out this 
-[medium article](https://medium.com/@christoph.schranz/set-up-your-own-gpu-based-jupyterlab-e0d45fcacf43).
-    The CUDA toolkit is not required on the host system, as it will be deployed 
-    in [NVIDIA-docker](https://github.com/NVIDIA/nvidia-docker). 
+3.  Get access to your GPU via CUDA drivers within Docker containers.
     You can be sure that you can access your GPU within Docker, 
-    if the command `docker run --gpus all nvidia/cuda:10.1-base-ubuntu18.04 nvidia-smi`
+    if the command `docker run --gpus all nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04 nvidia-smi`
     returns a result similar to this one:
     ```bash
-    Mon Jun 22 09:06:28 2020       
+    Tue Jan  5 09:38:21 2021       
     +-----------------------------------------------------------------------------+
-    | NVIDIA-SMI 440.82       Driver Version: 440.82       CUDA Version: 10.1     |
+    | NVIDIA-SMI 450.80.02    Driver Version: 450.80.02    CUDA Version: 10.1     |
     |-------------------------------+----------------------+----------------------+
     | GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
     | Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+    |                               |                      |               MIG M. |
     |===============================+======================+======================|
     |   0  GeForce RTX 207...  Off  | 00000000:01:00.0  On |                  N/A |
-    |  0%   46C    P8     9W / 215W |    424MiB /  7974MiB |      6%      Default |
+    |  0%   40C    P8     7W / 215W |    360MiB /  7974MiB |      1%      Default |
+    |                               |                      |                  N/A |
     +-------------------------------+----------------------+----------------------+
                                                                                    
     +-----------------------------------------------------------------------------+
-    | Processes:                                                       GPU Memory |
-    |  GPU       PID   Type   Process name                             Usage      |
+    | Processes:                                                                  |
+    |  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
+    |        ID   ID                                                   Usage      |
     |=============================================================================|
     +-----------------------------------------------------------------------------+
-    ```
-4. Clone the Repository or pull the image from 
-    [Dockerhub](https://hub.docker.com/repository/docker/cschranz/gpu-jupyter):
-    ```bash
-    git clone https://github.com/iot-salzburg/gpu-jupyter.git
-    cd gpu-jupyter
-    ```
+    ``` 
+    If you don't get an output similar than this one, follow the installation steps in this 
+[medium article](https://medium.com/@christoph.schranz/set-up-your-own-gpu-based-jupyterlab-e0d45fcacf43).
+    The CUDA toolkit is not required on the host system, as it will be 
+    installed within the Docker containers using [NVIDIA-docker](https://github.com/NVIDIA/nvidia-docker).
+    It is also important to keep your installed CUDA version in mind, when you pull images. 
+    **You can't run images based on `nvidia/cuda:11.1` if you have only CUDA version 10.1 installed.**
+    Check your host's CUDA-version with `nvcc --version` and update to at least 
+    the same version you want to pull.
+    
+4. Pull and run the image. This can last some hours, as a whole data-science 
+    environment will be downloaded:
+   ```bash
+   cd your-working-directory 
+   docker run --gpus all -d -it -p 8848:8888 -v data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.1_cuda-10.1_ubuntu-18.04_python-only
+   ```
+   This starts a new instance of the GPU-Jupyter service on at [http://localhost:8848](http://localhost:8848) (port `8484`).
+   The default password is `asdf` which should be changed as described [below](#set-password). 
+   Furthermore, data within the host's `data` directory is shared with the container.
+   
+Within the Jupyterlab instance, you can check if you can access your GPU by opening a new terminal window and running
+`nvidia-smi`. In terminal windows, you can also install new packages for your own projects. 
+Some example code can be found in the repository under `extra/Getting_Started`.
+If you want to learn more about Jupyterlab, check out this [tutorial](https://www.youtube.com/watch?v=7wfPqAyYADY). 
 
-## Quickstart
 
-First of all, it is necessary to generate the `Dockerfile` that is based on 
+## Build a modified version
+
+First, it is necessary to generate the `Dockerfile` in `.build`, that is based on 
 the NIVIDA base image and the [docker-stacks](https://github.com/jupyter/docker-stacks).
 As soon as you have access to your GPU within Docker containers 
-(make sure the command `docker run --gpus all nvidia/cuda:10.1-base-ubuntu18.04 nvidia-smi` 
+(make sure the command `docker run --gpus all nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04 nvidia-smi` 
 shows your GPU statistics), you can generate the Dockerfile, build and run it.
 The following commands will start *GPU-Jupyter* on [localhost:8848](http://localhost:8848) 
 with the default password `asdf`.
 
   ```bash
+  git clone https://github.com/iot-salzburg/gpu-jupyter.git
+  cd gpu-jupyter
   # generate a Dockerfile with python and without Julia and R
   ./generate-Dockerfile.sh --no-datascience-notebook  
   docker build -t gpu-jupyter .build/  # will take a while
-  docker run -d -p [port]:8888 gpu-jupyter  # starts gpu-jupyter WITHOUT GPU support
+  docker run --gpus all -d -it -p 8848:8888 -v $pwd/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root --restart always --name gpu-jupyter_1 gpu-jupyter 
   ``` 
 
-To run the container WITH GPU support, a local data volume and some other configurations, run:
-  ```bash
-docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root --restart always --name gpu-jupyter_1 gpu-jupyter 
-``` 
+This starts a container WITH GPU support, a shared local data volume `data`  
+and some other configurations like root permissions which are necessary to install packages within the container.
+For more configurations, scroll down to [Configuration of the Dockerfile-Generation](#configuration-of-the-dockerfile-generation).
 
 ### Start via Docker Compose
 
@@ -92,14 +111,16 @@ underlying `docker-compose.yml`:
   
 With these commands we can see if everything worked well:
 ```bash
-bash show-local.sh  # a env-var safe wrapper for 'docker-compose logs -f'
 docker ps
-docker logs [service-name]
+docker logs [service-name]  # or
+bash show-local.sh  # a env-var safe wrapper for 'docker-compose logs -f'
 ```
 
 In order to stop the local deployment, run:
 
   ```bash
+docker ps
+docker rm -f [service-name]  # or
   ./stop-local.sh
   ```
  
@@ -134,13 +155,16 @@ the essential `gpulibs` are installed, but not the packages within `src/Dockerfi
 
 ### Custom Installations
 
-**As `.build/Dockerfile` is overwritten, it is suggested to append custom installations either
+Custom packages can be installed within a container, or by modifying the file
+`src/Dockerfile.usefulpackages`.
+**As `.build/Dockerfile` is overwritten each time a Dockerfile is generated, 
+it is suggested to append custom installations either
 within `src/Dockerfile.usefulpackages` or in `generate-Dockerfile.sh`.**
-If you think some package is missing in the default stack, please let us know!
+If an essential package is missing in the default stack, please let us know!
 
 
 
-### Set the Password
+### Set Password
 
 Please set a new password using `src/jupyter_notebook_config.json`.
 Therefore, hash your password in the form (password)(salt) using a sha1 hash generator, e.g., the sha1 generator of [sha1-online.com](http://www.sha1-online.com/). 
@@ -162,23 +186,29 @@ Then update the config file as shown below and restart the service.
  
 #### Update CUDA to another version
 
-Please check version compatibilities for [CUDA and Pytorch](https://pytorch.org/get-started/locally/)
- respectively [CUDA and Tensorflow](https://www.tensorflow.org/install/gpu) previously. 
-To update CUDA to another version, change in `Dockerfile.header`
+The host's CUDA-version must be equal or higher than that of the
+container itself (in `Dockerfile.header`). 
+Check the host's version with `nvcc --version` and the version compatibilities 
+for CUDA-dependent packages as [Pytorch](https://pytorch.org/get-started/locally/)
+ respectively [Tensorflow](https://www.tensorflow.org/install/gpu) previously.
+Then modify, if supported, the CUDA-version in `Dockerfile.header` to, e.g.:
 the line:
 
-    FROM nvidia/cuda:10.1-base-ubuntu18.04
+    FROM nvidia/cuda:11.1-base-ubuntu20.04
     
 and in the `Dockerfile.pytorch` the line:
 
-    cudatoolkit=10.1
+    cudatoolkit=11.1
 
-Then re-generate and re-run the image, as closer described above:
+Then re-generate, re-build and run the updated image, as closer described above:
+Note that a change in the first line of the Dockerfile will re-build the whole image.
 
 ```bash
 ./generate-Dockerfile.sh
-./start-local.sh -p 8848
+docker build -t gpu-jupyter .build/  # will take a while
+docker run --gpus all -d -it -p 8848:8888 -v $pwd/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root --restart always --name gpu-jupyter_1 gpu-jupyter 
 ```
+
 
 #### Update Docker-Stack
 
