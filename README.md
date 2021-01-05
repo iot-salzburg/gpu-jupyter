@@ -11,17 +11,17 @@ The image of this repository is available on [Dockerhub](https://hub.docker.com/
 
 ## Contents
 
-1. [Requirements](#requirements)
-2. [Quickstart](#quickstart)
+1. [Quickstart](#quickstart)
+2. [Build your own image](#build-your-own-image)
 3. [Tracing](#tracing)
 4. [Configuration](#configuration)
 5. [Deployment](#deployment-in-the-docker-swarm)
 6. [Issues and Contributing](#issues-and-contributing)
 
 
-## Requirements
+## Quickstart
 
-1.  A computer with a NVIDIA GPU
+1.  A computer with an NVIDIA GPU is required.
 2.  Install [Docker](https://www.docker.com/community-edition#/download) version **1.10.0+**
  and [Docker Compose](https://docs.docker.com/compose/install/) version **1.6.0+**.
 3.  Get access to your GPU via CUDA drivers within Docker containers.
@@ -62,11 +62,13 @@ The image of this repository is available on [Dockerhub](https://hub.docker.com/
     environment will be downloaded:
    ```bash
    cd your-working-directory 
-   docker run --gpus all -d -it -p 8848:8888 -v data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.1_cuda-10.1_ubuntu-18.04_python-only
+   docker run --gpus all -d -it -p 8848:8888 -v data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.2_cuda-10.1_ubuntu-18.04_python-only
    ```
-   This starts a new instance of the GPU-Jupyter service on at [http://localhost:8848](http://localhost:8848) (port `8484`).
+   This starts an instance with of *GPU-Jupyter* the tag `v1.2_cuda-10.1_ubuntu-18.04_python-only` at [http://localhost:8848](http://localhost:8848) (port `8484`).
    The default password is `asdf` which should be changed as described [below](#set-password). 
    Furthermore, data within the host's `data` directory is shared with the container.
+   Other versions of GPU-Jupyter are available and listed on Dockerhub under  [Tags](https://hub.docker.com/r/cschranz/gpu-jupyter/tags?page=1&ordering=last_updated).
+
    
 Within the Jupyterlab instance, you can check if you can access your GPU by opening a new terminal window and running
 `nvidia-smi`. In terminal windows, you can also install new packages for your own projects. 
@@ -74,7 +76,7 @@ Some example code can be found in the repository under `extra/Getting_Started`.
 If you want to learn more about Jupyterlab, check out this [tutorial](https://www.youtube.com/watch?v=7wfPqAyYADY). 
 
 
-## Build a modified version
+## Build your own Image
 
 First, it is necessary to generate the `Dockerfile` in `.build`, that is based on 
 the NIVIDA base image and the [docker-stacks](https://github.com/jupyter/docker-stacks).
