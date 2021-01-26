@@ -19,6 +19,8 @@ fi
 # starting in docker-compose
 echo "Starting gpu-jupyter via docker-compose on port $PORT."
 export JUPYTER_PORT=$PORT
+export UID=$(id -u)
+export GID=$(id -g)
 
 # echo $JUPYTER_PORT
 docker-compose up --build -d
