@@ -92,7 +92,7 @@ with the default password `asdf`.
   # generate a Dockerfile with python and without Julia and R
   ./generate-Dockerfile.sh --no-datascience-notebook  
   docker build -t gpu-jupyter .build/  # will take a while
-  docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root --restart always --name gpu-jupyter_1 gpu-jupyter 
+  docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes -e NB_UID="$(id -u)" -e NB_GID="$(id -g)" --user root --restart always --name gpu-jupyter_1 gpu-jupyter
   ``` 
 
 This starts a container WITH GPU support, a shared local data volume `data`  
