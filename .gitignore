@@ -116,4 +116,6 @@ venv.bak/
 src/jupyter_notebook_config.json
 .idea
 /Deployment-notes.md
-/push_tag.sh
+/push_tag_full.sh
+/push_tag_python-only.sh
+/push_tag_slim.sh

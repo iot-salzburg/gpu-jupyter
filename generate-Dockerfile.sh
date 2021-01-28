@@ -10,6 +10,7 @@ export HEAD_COMMIT="703d8b2dcb886be2fe5aa4660a48fbcef647e7aa"
 while [[ "$#" -gt 0 ]]; do case $1 in
   -c|--commit) HEAD_COMMIT="$2"; shift;;
   --no-datascience-notebook) no_datascience_notebook=1;;
+  --python-only) no_datascience_notebook=1;;
   --no-useful-packages) no_useful_packages=1;;
   -s|--slim) no_datascience_notebook=1 && no_useful_packages=1;;
   *) echo "Unknown parameter passed: $1" &&
@@ -87,7 +88,7 @@ if [[ "$no_datascience_notebook" != 1 ]]; then
   " >> $DOCKERFILE
   cat $STACKS_DIR/datascience-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
 else
-  echo "Set 'no-datascience-notebook', not installing the datascience-notebook with Julia and R."
+  echo "Set 'no-datascience-notebook' = 'python-only', not installing the datascience-notebook with Julia and R."
 fi
 
 # Note that the following step also installs the cudatoolkit, which is

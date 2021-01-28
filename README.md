@@ -65,7 +65,7 @@ The image of this repository is available on [Dockerhub](https://hub.docker.com/
    docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.2_cuda-10.1_ubuntu-18.04_python-only
    ```
    This starts an instance with of *GPU-Jupyter* the tag `v1.2_cuda-10.1_ubuntu-18.04_python-only` at [http://localhost:8848](http://localhost:8848) (port `8484`).
-   The default password is `asdf` which should be changed as described [below](#set-password). 
+   The default password is `gpu-jupyter` (previously `asdf`) which should be changed as described [below](#set-password). 
    Furthermore, data within the host's `data` directory is shared with the container.
    Other versions of GPU-Jupyter are available and listed on Dockerhub under  [Tags](https://hub.docker.com/r/cschranz/gpu-jupyter/tags?page=1&ordering=last_updated).
 
@@ -84,13 +84,13 @@ As soon as you have access to your GPU within Docker containers
 (make sure the command `docker run --gpus all nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04 nvidia-smi` 
 shows your GPU statistics), you can generate the Dockerfile, build and run it.
 The following commands will start *GPU-Jupyter* on [localhost:8848](http://localhost:8848) 
-with the default password `asdf`.
+with the default password `gpu-jupyter` (previously `asdf`).
 
   ```bash
   git clone https://github.com/iot-salzburg/gpu-jupyter.git
   cd gpu-jupyter
   # generate a Dockerfile with python and without Julia and R
-  ./generate-Dockerfile.sh --no-datascience-notebook  
+  ./generate-Dockerfile.sh --python-only
   docker build -t gpu-jupyter .build/  # will take a while
   docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes -e NB_UID="$(id -u)" -e NB_GID="$(id -g)" --user root --restart always --name gpu-jupyter_1 gpu-jupyter
   ``` 
@@ -147,7 +147,7 @@ Here the `docker-stack` `scipy-notebook` is used instead of `datascience-noteboo
 that comes with Julia and R. 
 Moreover, none of the packages within `src/Dockerfile.usefulpackages` is installed.
 
-* `--no-datascience-notebook`: As the name suggests, the `docker-stack` `datascience-notebook` 
+* `--python-only|--no-datascience-notebook`: As the name suggests, the `docker-stack` `datascience-notebook` 
 is not installed
 on top of the `scipy-notebook`, but the packages within `src/Dockerfile.usefulpackages` are.
 
@@ -170,7 +170,8 @@ If an essential package is missing in the default stack, please let us know!
 
 Please set a new password using `src/jupyter_notebook_config.json`.
 Therefore, hash your password in the form (password)(salt) using a sha1 hash generator, e.g., the sha1 generator of [sha1-online.com](http://www.sha1-online.com/). 
-The input with the default password `asdf` is appended by a arbitrary salt `e49e73b0eb0e` to `asdfe49e73b0eb0e` and should yield the hash string as shown in the config below.
+The input with the default password `gpu-jupyter` (previously `asdf`) is concatenated by an arbitrary salt `3b4b6378355` to `gpu-jupyter3b4b6378355` and is hashed to `642693b20f0a33bcad27b94293d0ed7db3408322`.
+
 **Never give away your own unhashed password!**
 
 Then update the config file as shown below and restart the service.
@@ -178,7 +179,7 @@ Then update the config file as shown below and restart the service.
 ```json
 {
   "NotebookApp": {
-    "password": "sha1:e49e73b0eb0e:32edae7a5fd119045e699a0bd04f90819ca90cd6"
+    "password": "sha1:3b4b6378355:642693b20f0a33bcad27b94293d0ed7db3408322"
   }
 }
 ```
@@ -303,7 +304,7 @@ e.g., here it is **elk_datastack**.
 * **-r:** registry port is the port that is published by the registry service, default is `5000`.
 
 Now, *gpu-jupyter* will be accessible here on [localhost:8848](http://localhost:8848) 
-with the default password `asdf` and shares the network with the other data-source, i.e., 
+with the default password `gpu-jupyter` (previously `asdf`) and shares the network with the other data-source, i.e., 
 all ports of the data-source will be accessible within *GPU-Jupyter*, 
 even if they aren't routed it the source's `docker-compose` file.
 
