@@ -9,6 +9,8 @@ services:
     environment:
       GRANT_SUDO: "yes"
       JUPYTER_ENABLE_LAB: "yes"
+      NB_UID: '${UID}'
+      NB_GID: '${GID}'
     # enable sudo permissions
     user:
       "root"
