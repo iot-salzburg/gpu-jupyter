@@ -3,7 +3,7 @@ LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>"
 # Install Tensorflow, check compatibility here: https://www.tensorflow.org/install/gpu
 # installation via conda leads to errors in version 4.8.2
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir "tensorflow-gpu>=2.1.*" && \
+    pip install --no-cache-dir "tensorflow==2.3.2" && \
     pip install --no-cache-dir keras
 
 # Install PyTorch with dependencies
