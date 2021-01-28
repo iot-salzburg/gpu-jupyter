@@ -62,9 +62,9 @@ The image of this repository is available on [Dockerhub](https://hub.docker.com/
     environment will be downloaded:
    ```bash
    cd your-working-directory 
-   docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.2_cuda-10.1_ubuntu-18.04_python-only
+   docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.3_cuda-10.1_ubuntu-18.04_python-only
    ```
-   This starts an instance with of *GPU-Jupyter* the tag `v1.2_cuda-10.1_ubuntu-18.04_python-only` at [http://localhost:8848](http://localhost:8848) (port `8484`).
+   This starts an instance with of *GPU-Jupyter* the tag `v1.3_cuda-10.1_ubuntu-18.04_python-only` at [http://localhost:8848](http://localhost:8848) (port `8484`).
    The default password is `gpu-jupyter` (previously `asdf`) which should be changed as described [below](#set-password). 
    Furthermore, data within the host's `data` directory is shared with the container.
    Other versions of GPU-Jupyter are available and listed on Dockerhub under  [Tags](https://hub.docker.com/r/cschranz/gpu-jupyter/tags?page=1&ordering=last_updated).
