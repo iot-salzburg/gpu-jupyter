@@ -11,7 +11,8 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   -c|--commit) HEAD_COMMIT="$2"; shift;;
   --no-datascience-notebook) no_datascience_notebook=1;;
   --no-useful-packages) no_useful_packages=1;;
-  -s|--slim) no_datascience_notebook=1 && no_useful_packages=1;;
+  --no-frameworks) no_frameworks=1;;
+  -s|--slim) no_datascience_notebook=1 && no_useful_packages=1 && no_frameworks=1;;
   *) echo "Unknown parameter passed: $1" &&
     echo "Usage: $0 -c [sha-commit] # set the head commit of the docker-stacks submodule
     (https://github.com/jupyter/docker-stacks/commits/master). default: $HEAD_COMMIT."; exit 1;;
@@ -85,14 +86,19 @@ else
   echo "Set 'no-datascience-notebook', not installing the datascience-notebook with Julia and R."
 fi
 
-# Note that the following step also installs the cudatoolkit, which is
-# essential to access the GPU.
-echo "
-############################################################################
-########################## Dependency: gpulibs #############################
-############################################################################
-" >> $DOCKERFILE
-cat src/Dockerfile.gpulibs >> $DOCKERFILE
+# install gpulibs packages if not excluded or spare mode is used
+if [[ "$no_frameworks" != 1 ]]; then
+  # Note that the following step also installs the cudatoolkit, which is
+  # essential to access the GPU.
+  echo "
+  ############################################################################
+  ########################## Dependency: gpulibs #############################
+  ############################################################################
+  " >> $DOCKERFILE
+  cat src/Dockerfile.gpulibs >> $DOCKERFILE
+else
+  echo "Set 'no-frameworks', not installing stuff within src/Dockerfile.gpulibs."
+fi
 
 # install useful packages if not excluded or spare mode is used
 if [[ "$no_useful_packages" != 1 ]]; then
@@ -117,6 +123,14 @@ echo "# Copy jupyter_notebook_config.json" >> $DOCKERFILE
 echo "COPY jupyter_notebook_config.json /etc/jupyter/"  >> $DOCKERFILE
 
 #cp $(find $(dirname $DOCKERFILE) -type f | grep -v $STACKS_DIR | grep -v .gitkeep) .
+
+# cache conda packages on slim mode
+if [[ "$no_frameworks" = 1 ]]; then
+  echo >> $DOCKERFILE
+  echo "# Clone environment to build up conda cache" >> $DOCKERFILE
+  echo "RUN conda create -p /tmp/.conda --clone base && rm -rf /tmp/.conda" >> $DOCKERFILE
+  echo "ENV BDRK_CONDA 1" >> $DOCKERFILE
+fi
 
 echo "GPU Dockerfile was generated successfully in file ${DOCKERFILE}."
 echo "Run 'bash start-local.sh -p [PORT]' to start the GPU-based Juyterlab instance."
