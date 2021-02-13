@@ -1,7 +1,13 @@
-version: "3.4"
+version: "3.8"
 services:
   gpu-jupyter:
     build: .build
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities:
+              - gpu
     ports:
       - ${JUPYTER_PORT}:8888
     volumes:
