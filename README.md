@@ -4,7 +4,7 @@
 ![Jupyterlab Overview](https://raw.githubusercontent.com/iot-salzburg/gpu-jupyter/master/extra/jupyterlab-overview.png)
 
 First of all, thanks to [docker-stacks](https://github.com/jupyter/docker-stacks) 
-for creating and maintaining a robost  Python, R and Julia toolstack for Data Analytics/Science 
+for creating and maintaining a robust Python, R and Julia toolstack for Data Analytics/Science 
 applications. This project uses the NVIDIA CUDA image as the base image and installs their 
 toolstack on top of it to enable GPU calculations in the Jupyter notebooks. 
 The image of this repository is available on [Dockerhub](https://hub.docker.com/r/cschranz/gpu-jupyter).
@@ -86,14 +86,14 @@ shows your GPU statistics), you can generate the Dockerfile, build and run it.
 The following commands will start *GPU-Jupyter* on [localhost:8848](http://localhost:8848) 
 with the default password `gpu-jupyter` (previously `asdf`).
 
-  ```bash
-  git clone https://github.com/iot-salzburg/gpu-jupyter.git
-  cd gpu-jupyter
-  # generate a Dockerfile with python and without Julia and R
-  ./generate-Dockerfile.sh --python-only
-  docker build -t gpu-jupyter .build/  # will take a while
-  docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes -e NB_UID="$(id -u)" -e NB_GID="$(id -g)" --user root --restart always --name gpu-jupyter_1 gpu-jupyter
-  ``` 
+```bash
+git clone https://github.com/iot-salzburg/gpu-jupyter.git
+cd gpu-jupyter
+# generate a Dockerfile with python and without Julia and R
+./generate-Dockerfile.sh --python-only
+docker build -t gpu-jupyter .build/  # will take a while
+docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes -e NB_UID="$(id -u)" -e NB_GID="$(id -g)" --user root --restart always --name gpu-jupyter_1 gpu-jupyter
+``` 
 
 This starts a container WITH GPU support, a shared local data volume `data`  
 and some other configurations like root permissions which are necessary to install packages within the container.
@@ -104,9 +104,9 @@ For more configurations, scroll down to [Configuration of the Dockerfile-Generat
 The script `start-local.sh` is a wrapper for a quick configuration of the 
 underlying `docker-compose.yml`:
 
-  ```bash
-  ./start-local.sh -p 8848  # the default port is 8888
-  ```
+```bash
+./start-local.sh -p 8848  # the default port is 8888
+```
 
 
 ## Tracing
