@@ -24,6 +24,14 @@ export GID=$(id -g)
 
 # echo $JUPYTER_PORT
 docker-compose up --build -d
-echo
-echo "Started gpu-jupyter via docker-compose on localhost:$JUPYTER_PORT."
-echo "See docker-compose logs -f for logs."
+
+if [ $? -eq 0 ]; then
+  echo
+  echo "Started gpu-jupyter via docker-compose on localhost:$JUPYTER_PORT."
+  echo "See docker-compose logs -f for logs."
+else
+  echo
+  echo "Could not start the container with docker-compose."
+  echo "Please check the logs and if your docker-compose version is at least 1.28.0. Your version is:"
+  docker-compose --version
+fi
