@@ -23,7 +23,7 @@ The image of this repository is available on [Dockerhub](https://hub.docker.com/
 
 1.  A computer with an NVIDIA GPU is required.
 2.  Install [Docker](https://www.docker.com/community-edition#/download) version **1.10.0+**
- and [Docker Compose](https://docs.docker.com/compose/install/) version **1.6.0+**.
+ and [Docker Compose](https://docs.docker.com/compose/install/) version **1.28.0+**.
 3.  Get access to your GPU via CUDA drivers within Docker containers.
     You can be sure that you can access your GPU within Docker, 
     if the command `docker run --gpus all nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04 nvidia-smi`
@@ -107,6 +107,11 @@ underlying `docker-compose.yml`:
 ```bash
 ./start-local.sh -p 8848  # the default port is 8888
 ```
+
+This step requires a `docker-compose` version of at least `1.28.0`, 
+as the dockerfile requests GPU resources 
+(see [changelog](https://docs.docker.com/compose/release-notes/#1280)).
+To update `docker-compose`, this [discussion](https://stackoverflow.com/a/50454860) may be useful.
 
 
 ## Tracing
