@@ -149,7 +149,7 @@ RUN wget --quiet "https://github.com/conda-forge/miniforge/releases/download/${m
 RUN conda install --quiet --yes \
     'notebook=6.2.0' \
     'jupyterhub=1.3.0' \
-    'jupyterlab=3.0.5' && \
+    'jupyterlab=3.0.7' && \
     conda clean --all -f -y && \
     npm cache clean --force && \
     jupyter notebook --generate-config && \
@@ -247,7 +247,7 @@ RUN conda install --quiet --yes \
     'bottleneck=1.3.*' \
     'cloudpickle=1.6.*' \
     'cython=0.29.*' \
-    'dask=2021.1.*' \
+    'dask=2021.2.*' \
     'dill=0.3.*' \
     'h5py=3.1.*' \
     'ipywidgets=7.6.*' \
@@ -355,7 +355,7 @@ USER $NB_UID
 RUN conda install --quiet --yes \
     'r-base=4.0.3'  \
     'r-caret=6.0*' \
-    'r-crayon=1.3*' \
+    'r-crayon=1.4*' \
     'r-devtools=2.3*' \
     'r-forecast=8.13*' \ 
     'r-hexbin=1.28*' \
@@ -367,7 +367,7 @@ RUN conda install --quiet --yes \
     'r-rcurl=1.98*' \
     'r-rmarkdown=2.6*' \
     'r-rsqlite=2.2*' \
-    'r-shiny=1.5*' \
+    'r-shiny=1.6*' \
     'r-tidyverse=1.3*' \
     'rpy2=3.4*' && \
     conda clean --all -f -y && \
