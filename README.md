@@ -101,11 +101,10 @@ For more configurations, scroll down to [Configuration of the Dockerfile-Generat
 
 ### Start via Docker Compose
 
-The script `start-local.sh` is a wrapper for a quick configuration of the 
-underlying `docker-compose.yml`:
+Start *GPU-Jupyter* using `docker-compose.yml`:
 
 ```bash
-./start-local.sh -p 8848  # the default port is 8888
+docker-compose up --build -d
 ```
 
 This step requires a `docker-compose` version of at least `1.28.0`, 
@@ -120,7 +119,7 @@ With these commands we can see if everything worked well:
 ```bash
 docker ps
 docker logs [service-name]  # or
-bash show-local.sh  # a env-var safe wrapper for 'docker-compose logs -f'
+docker-compose logs -f
 ```
 
 In order to stop the local deployment, run:
@@ -128,8 +127,8 @@ In order to stop the local deployment, run:
   ```bash
 docker ps
 docker rm -f [service-name]  # or
-  ./stop-local.sh
-  ```
+docker-compose down
+```
  
 
 ## Configuration
@@ -345,7 +344,7 @@ In order to remove the service from the swarm, use:
     *Edit* - *EOL Conversion*, or using `dos2unix`
     ```bash
     sudo apt install dos2unix
-    dos2unix generate-Dockerfile.sh start-local.sh show-local.sh stop-local.sh
+    dos2unix generate-Dockerfile.sh
     ```
 
 This project has the intention to create a robust image for CUDA-based GPU-applications, 

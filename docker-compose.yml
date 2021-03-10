@@ -9,7 +9,7 @@ services:
             - capabilities:
               - gpu
     ports:
-      - ${JUPYTER_PORT}:8888
+      - 8848:8888
     volumes:
       - ./data:/home/jovyan/work
     environment:
