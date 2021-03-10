@@ -359,10 +359,10 @@ RUN pip install jupyterlab-drawio
 RUN jupyter nbextension enable --py --sys-prefix ipyleaflet
 RUN jupyter labextension install jupyterlab-plotly
 RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager plotlywidget
-RUN pip install --no-cache-dir jupyter-tabnine  --user && \
-  jupyter nbextension install --py jupyter_tabnine --user && \
-  jupyter nbextension enable --py jupyter_tabnine --user && \
-  jupyter serverextension enable --py jupyter_tabnine --user
+# RUN pip install --no-cache-dir jupyter-tabnine  --user && \
+#   jupyter nbextension install --py jupyter_tabnine --user && \
+#   jupyter nbextension enable --py jupyter_tabnine --user && \
+#   jupyter serverextension enable --py jupyter_tabnine --user
 RUN pip install --no-cache-dir jupyter_contrib_nbextensions \
   jupyter_nbextensions_configurator rise
 #  jupyter nbextension enable codefolding/main
