@@ -119,6 +119,3 @@ src/jupyter_notebook_config.json
 /push_tag_full.sh
 /push_tag_python-only.sh
 /push_tag_slim.sh
-
-# Do not track the generated Dockerfile.
-.build/Dockerfile
