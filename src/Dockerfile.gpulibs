@@ -18,3 +18,13 @@ RUN pip install torch torchvision torchaudio torchviz
 RUN conda clean --all -f -y && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
+
+USER root
+# Install nvtop to monitor the gpu tasks
+RUN git clone https://github.com/Syllo/nvtop.git /run/nvtop && \
+    mkdir -p /run/nvtop/build && cd /run/nvtop/build && \
+    cmake .. -DNVML_RETRIEVE_HEADER_ONLINE=True && \
+    make && make install && \
+    cd /tmp && rm -rf /tmp/nvtop
+
+USER $NB_UID
