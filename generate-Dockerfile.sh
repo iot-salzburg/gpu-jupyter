@@ -134,6 +134,10 @@ echo >> $DOCKERFILE
 echo "# Copy jupyter_notebook_config.json" >> $DOCKERFILE
 echo "COPY jupyter_notebook_config.json /etc/jupyter/"  >> $DOCKERFILE
 
+# Set environment variables
+export UID=$(id -u)
+export GID=$(id -g)
+
 #cp $(find $(dirname $DOCKERFILE) -type f | grep -v $STACKS_DIR | grep -v .gitkeep) .
 echo
 echo "The GPU Dockerfile was generated successfully in file ${DOCKERFILE}."

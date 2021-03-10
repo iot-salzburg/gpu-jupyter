@@ -9,14 +9,14 @@ services:
             - capabilities:
               - gpu
     ports:
-      - 8848:8888
+      - 8849:8888
     volumes:
       - ./data:/home/jovyan/work
     environment:
       GRANT_SUDO: "yes"
       JUPYTER_ENABLE_LAB: "yes"
-      NB_UID: ${id -u:-1000}
-      NB_GID: ${id -g:-1000}
+      NB_UID: ${UID:-1000}
+      NB_GID: ${GID:-1000}
     # enable sudo permissions
     user:
       "root"
