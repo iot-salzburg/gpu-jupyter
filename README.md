@@ -327,6 +327,27 @@ In order to remove the service from the swarm, use:
 
 ## Issues and Contributing
 
+### Frequent Issues:
+
+- **Can't execute the bash scripts.**
+    ```bash
+    $ bash generate-Dockerfile.sh
+    generate-Dockerfile.sh: line 2: cd: $'/path/to/gpu-jupyter\r': No such file or directory
+    generate-Dockerfile.sh: line 3: $'\r': command not found
+    generate-Dockerfile.sh: line 9: $'\r': command not found
+    generate-Dockerfile.sh: line 11: syntax error near unexpected token `$'in\r''
+    generate-Dockerfile.sh: line 11: `while [[ "$#" -gt 0 ]]; do case $1 in
+    ```
+    The reason for this issue is that the line-breaks between Unix and Windows based systems are different and 
+    in the current version different.
+      
+    **Solution**: Change the line-endings of the bash scripts. This can be done e.g. in the *Notepad++* under 
+    *Edit* - *EOL Conversion*, or using `dos2unix`
+    ```bash
+    sudo apt install dos2unix
+    dos2unix generate-Dockerfile.sh start-local.sh show-local.sh stop-local.sh
+    ```
+
 This project has the intention to create a robust image for CUDA-based GPU-applications, 
 which is built on top of the [docker-stacks](https://github.com/jupyter/docker-stacks). 
 You are free to help to improve this project, by:
