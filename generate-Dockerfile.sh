@@ -7,17 +7,29 @@ export STACKS_DIR=".build/docker-stacks"
 # please test the build of the commit in https://github.com/jupyter/docker-stacks/commits/master in advance
 export HEAD_COMMIT="70a7cb8e13fb3e89264d21bd7bc86b1599d1b1f3"
 
+HELP="false"
 while [[ "$#" -gt 0 ]]; do case $1 in
   -c|--commit) HEAD_COMMIT="$2"; shift;;
   --no-datascience-notebook) no_datascience_notebook=1;;
   --python-only) no_datascience_notebook=1;;
   --no-useful-packages) no_useful_packages=1;;
   -s|--slim) no_datascience_notebook=1 && no_useful_packages=1;;
+  -h|--help) HELP="true";;
   *) echo "Unknown parameter passed: $1" &&
-    echo "Usage: $0 -c [sha-commit] # set the head commit of the docker-stacks submodule
+    echo "Usage: $0 [parameters] # set the head commit of the docker-stacks submodule
     (https://github.com/jupyter/docker-stacks/commits/master). default: $HEAD_COMMIT."; exit 1;;
 esac; shift; done
 
+if [[ $HELP == "true" ]]; then
+    echo "Help for ./generate-Dockerfile.sh:"
+    echo "Usage: $0 [parameters]"
+    echo "    -h|--help: Show this help."
+    echo "    -c|--commit: Set the head commit of the jupyter/docker-stacks submodule (https://github.com/jupyter/docker-stacks/commits/master). default: $HEAD_COMMIT."
+    echo "    --no-datascience-notebook|--python-only: Use not the datascience-notebook from jupyter/docker-stacks, don't install Julia and R."
+    echo "    --no-useful-packages: Don't install the useful packages, specified in src/Dockerfile.usefulpackages"
+    echo "    --slim: no useful packages and no datascience notebook."
+    exit 21
+fi
 
 # Clone if docker-stacks doesn't exist, and set to the given commit or the default commit
 ls $STACKS_DIR/README.md  > /dev/null 2>&1  || (echo "Docker-stacks was not found, cloning repository" \
