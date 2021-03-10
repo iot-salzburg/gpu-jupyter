@@ -3,11 +3,19 @@ cd $(cd -P -- "$(dirname -- "$0")" && pwd -P)
 
 # Fetching port and network as input
 PORT=8888
+HELP="false"
 while [[ "$#" -gt 0 ]]; do case $1 in
   -p|--port) PORT="$2"; shift;;
+  -h|--help) HELP="true";;
 #  -u|--uglify) uglify=1;;
   *) echo "Unknown parameter passed: $1"; exit 1;;
 esac; shift; done
+
+if [[ $HELP == "true" ]]; then
+    echo "Help for ./start-local.sh:"
+    echo "Usage: $0 -p [port]  # port must be an integer with 4 or more digits."
+    exit 21
+fi
 
 # Check if arguments are valid
 if [[ $PORT != [0-9][0-9][0-9][0-9]* ]]; then
