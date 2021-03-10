@@ -347,6 +347,19 @@ In order to remove the service from the swarm, use:
     dos2unix generate-Dockerfile.sh
     ```
 
+- **No GPU available - error**
+    The docker-compose start breaks with:
+    ```bash
+    ERROR: for fc8d8dfbebe9_gpu-jupyter_gpu-jupyter_1  Cannot start service gpu-jupyter: OCI runtime create failed: container_linux.go:370: starting container process caused: process_linux.go:459: container init ca
+    used: Running hook #0:: error running hook: exit status 1, stdout: , stderr: nvidia-container-cli: initialization error: driver error: failed to process request: unknown
+    ```
+    **Solution**:  
+    Check if the GPU is available on the host node via `nvidia-smi` and run with the described `docker`-commands.
+    If the error still occurs, so try there could be an issue that docker can't visualize the GPU.
+  
+
+### Contribution
+
 This project has the intention to create a robust image for CUDA-based GPU-applications, 
 which is built on top of the [docker-stacks](https://github.com/jupyter/docker-stacks). 
 You are free to help to improve this project, by:
