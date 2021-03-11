@@ -141,6 +141,11 @@ This implies that this Dockerfile is overwritten by each generation.
 The Dockerfile-generation script `generate-Dockerfile.sh`
 has the following parameters (note that 2, 3 and 4 are exclusive): 
 
+* `-h|--help`: Show a help message.
+
+* `-p|--pw|--password`: Set the password for *GPU-Jupyter* by updating
+ the salted hashed token in `src/jupyter_notebook_config.json`.
+
 * `-c|--commit`: specify a commit or `"latest"` for the `docker-stacks`, 
 the default commit is a working one.
 
@@ -172,13 +177,22 @@ If an essential package is missing in the default stack, please let us know!
 
 ### Set Password
 
-Please set a new password using `src/jupyter_notebook_config.json`.
-Therefore, hash your password in the form (password)(salt) using a sha1 hash generator, e.g., the sha1 generator of [sha1-online.com](http://www.sha1-online.com/). 
-The input with the default password `gpu-jupyter` (previously `asdf`) is concatenated by an arbitrary salt `3b4b6378355` to `gpu-jupyter3b4b6378355` and is hashed to `642693b20f0a33bcad27b94293d0ed7db3408322`.
+The easiest way to set a password is by giving it as an parameter:
+```bash
+bash generate-Dockerfile.sh --password your_password
+```
+This updates the salted hashed token within `src/jupyter_notebook_config.json`.
+
+
+Another way to specify your password is to directly change the token in `src/jupyter_notebook_config.json`.
+Therefore, hash your password in the form (password)(salt) using a sha1 hash generator, e.g., 
+the sha1 generator of [sha1-online.com](http://www.sha1-online.com/). The input with the 
+default password `gpu-jupyter` (previously `asdf`) is concatenated by an arbitrary salt 
+`3b4b6378355` to `gpu-jupyter3b4b6378355` and is hashed to `642693b20f0a33bcad27b94293d0ed7db3408322`.
 
 **Never give away your own unhashed password!**
 
-Then update the config file as shown below and restart the service.
+Then update the config file as shown below, generate the Dockerfile and restart *GPU-Jupyter*.
 
 ```json
 {

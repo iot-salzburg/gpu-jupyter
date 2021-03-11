@@ -7,23 +7,22 @@ export STACKS_DIR=".build/docker-stacks"
 # please test the build of the commit in https://github.com/jupyter/docker-stacks/commits/master in advance
 export HEAD_COMMIT="70a7cb8e13fb3e89264d21bd7bc86b1599d1b1f3"
 
-HELP="false"
 while [[ "$#" -gt 0 ]]; do case $1 in
+  -p|--pw|--password) PASSWORD="$2" && USE_PASSWORD=1; shift;;
   -c|--commit) HEAD_COMMIT="$2"; shift;;
   --no-datascience-notebook) no_datascience_notebook=1;;
   --python-only) no_datascience_notebook=1;;
   --no-useful-packages) no_useful_packages=1;;
   -s|--slim) no_datascience_notebook=1 && no_useful_packages=1;;
-  -h|--help) HELP="true";;
-  *) echo "Unknown parameter passed: $1" &&
-    echo "Usage: $0 [parameters] # set the head commit of the docker-stacks submodule
-    (https://github.com/jupyter/docker-stacks/commits/master). default: $HEAD_COMMIT."; exit 1;;
+  -h|--help) HELP=1;;
+  *) echo "Unknown parameter passed: $1" && HELP=1;;
 esac; shift; done
 
-if [[ $HELP == "true" ]]; then
+if [[ "$HELP" == 1 ]]; then
     echo "Help for ./generate-Dockerfile.sh:"
     echo "Usage: $0 [parameters]"
     echo "    -h|--help: Show this help."
+    echo "    -p|--pw|--password: Set the password (and update in src/jupyter_notebook_config.json)"
     echo "    -c|--commit: Set the head commit of the jupyter/docker-stacks submodule (https://github.com/jupyter/docker-stacks/commits/master). default: $HEAD_COMMIT."
     echo "    --no-datascience-notebook|--python-only: Use not the datascience-notebook from jupyter/docker-stacks, don't install Julia and R."
     echo "    --no-useful-packages: Don't install the useful packages, specified in src/Dockerfile.usefulpackages"
@@ -128,15 +127,28 @@ fi
 cp -r extra/Getting_Started data
 chmod -R 755 data/
 
-# Copying config
+# set password
+if [[ "$USE_PASSWORD" == 1 ]]; then
+  echo "Set password to given input"
+  SALT="3b4b6378355"
+  HASHED=$(echo -n ${PASSWORD}${SALT} | sha1sum | awk '{print $1}')
+  unset PASSWORD  # delete variable PASSWORD
+  # build jupyter_notebook_config.json
+  echo "{
+  \"NotebookApp\": {
+    \"password\": \"sha1:$SALT:$HASHED\"
+  }
+}" > src/jupyter_notebook_config.json
+fi
+
 cp src/jupyter_notebook_config.json .build/
 echo >> $DOCKERFILE
 echo "# Copy jupyter_notebook_config.json" >> $DOCKERFILE
 echo "COPY jupyter_notebook_config.json /etc/jupyter/"  >> $DOCKERFILE
 
 # Set environment variables
-export UID=$(id -u)
-export GID=$(id -g)
+export JUPYTER_UID=$(id -u)
+export JUPYTER_GID=$(id -g)
 
 #cp $(find $(dirname $DOCKERFILE) -type f | grep -v $STACKS_DIR | grep -v .gitkeep) .
 echo
