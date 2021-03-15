@@ -12,7 +12,8 @@ RUN conda install --quiet --yes \
 
 # Check compatibility here: https://pytorch.org/get-started/locally/
 # Installation via conda leads to errors installing cudatoolkit=10.2
-RUN pip install torch torchvision torchaudio torchviz
+RUN conda install pytorch torchvision torchaudio cudatoolkit=10.1 -c pytorch
+# RUN pip install torch torchvision torchaudio torchviz
 
 # Clean installation
 RUN conda clean --all -f -y && \
@@ -28,8 +29,11 @@ RUN apt-get update && \
 
 RUN git clone https://github.com/Syllo/nvtop.git /run/nvtop && \
     mkdir -p /run/nvtop/build && cd /run/nvtop/build && \
-    unlink cmake .. -DNVML_RETRIEVE_HEADER_ONLINE=True || : && \
-    unlink make || : && unlink make install || : && \
+    (cmake .. -DNVML_RETRIEVE_HEADER_ONLINE=True 2> /dev/null || echo "cmake was not successful") && \
+    (make 2> /dev/null || echo "make was not successful") && \
+    (make install 2> /dev/null || echo "make install was not successful") && \
     cd /tmp && rm -rf /tmp/nvtop
+
+RUN fix-permissions /home/$NB_USER
 
 USER $NB_UID
