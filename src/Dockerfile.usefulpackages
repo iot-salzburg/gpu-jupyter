@@ -2,7 +2,7 @@ LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathem
 
 USER root
 
-RUN pip install --no-cache-dir ipyleaflet plotly>=4.14.3 "ipywidgets>=7.5"
+RUN pip install --no-cache-dir ipyleaflet "plotly>=4.14.3" "ipywidgets>=7.5"
 
 # Install important packages and Graphviz
 RUN set -ex \

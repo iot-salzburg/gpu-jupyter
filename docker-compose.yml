@@ -9,7 +9,7 @@ services:
             - capabilities:
               - gpu
     ports:
-      - 8849:8888
+      - 8848:8888
     volumes:
       - ./data:/home/jovyan/work
     environment:
