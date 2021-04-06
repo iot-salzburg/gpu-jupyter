@@ -26,12 +26,12 @@ The image of this repository is available on [Dockerhub](https://hub.docker.com/
  and [Docker Compose](https://docs.docker.com/compose/install/) version **1.28.0+**.
 3.  Get access to your GPU via CUDA drivers within Docker containers.
     You can be sure that you can access your GPU within Docker, 
-    if the command `docker run --gpus all nvidia/cuda:10.2-cudnn8-runtime-ubuntu18.04 nvidia-smi`
+    if the command `docker run --gpus all nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04 nvidia-smi`
     returns a result similar to this one:
     ```bash
     Fri Feb 26 12:45:19 2021       
     +-----------------------------------------------------------------------------+
-    | NVIDIA-SMI 460.39       Driver Version: 460.39       CUDA Version: 10.2     |
+    | NVIDIA-SMI 460.39       Driver Version: 460.39       CUDA Version: 10.1     |
     |-------------------------------+----------------------+----------------------+
     | GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
     | Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
@@ -54,7 +54,7 @@ The image of this repository is available on [Dockerhub](https://hub.docker.com/
     The CUDA toolkit is not required on the host system, as it will be 
     installed within the Docker containers using [NVIDIA-docker](https://github.com/NVIDIA/nvidia-docker).
     It is also important to keep your installed CUDA version in mind, when you pull images. 
-    **You can't run images based on `nvidia/cuda:11.2` if you have only CUDA version 10.2 installed.**
+    **You can't run images based on `nvidia/cuda:11.2` if you have only CUDA version 10.1 installed.**
     Check your host's CUDA-version with `nvcc --version` and update to at least 
     the same version you want to pull.
     
@@ -62,12 +62,23 @@ The image of this repository is available on [Dockerhub](https://hub.docker.com/
     environment will be downloaded:
    ```bash
    cd your-working-directory 
-   docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.3_cuda-10.2_ubuntu-18.04_python-only
+   docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.3_cuda-10.1_ubuntu-18.04_python-only
    ```
-   This starts an instance with of *GPU-Jupyter* the tag `v1.3_cuda-10.2_ubuntu-18.04_python-only` at [http://localhost:8848](http://localhost:8848) (port `8484`).
+   This starts an instance with of *GPU-Jupyter* the tag `v1.3_cuda-10.1_ubuntu-18.04_python-only` at [http://localhost:8848](http://localhost:8848) (port `8484`).
    The default password is `gpu-jupyter` (previously `asdf`) which should be changed as described [below](#set-password). 
    Furthermore, data within the host's `data` directory is shared with the container.
-   Other versions of GPU-Jupyter are available and listed on Dockerhub under  [Tags](https://hub.docker.com/r/cschranz/gpu-jupyter/tags?page=1&ordering=last_updated).
+   The following images of GPU-Jupyter are available on Dockerhub:
+     - `v1.3_cuda-10.1_ubuntu-18.04` (full image)
+     - `v1.3_cuda-10.1_ubuntu-18.04_python-only` (only with a python interpreter and without Julia and R)
+     - `v1.3_cuda-10.1_ubuntu-18.04_python-only` (only with a python interpreter and without additional packages)
+     - `v1.3_cuda-11.0_ubuntu-18.04` (full image)
+     - `v1.3_cuda-11.0_ubuntu-18.04_python-only` (only with a python interpreter and without Julia and R)
+     - `v1.3_cuda-11.0_ubuntu-18.04_python-only` (only with a python interpreter and without additional packages)
+    
+    The version, e.g. `v1.3`, specifies a certain commit of the underlying docker-stacks.
+   The Cuda version, e.g. `cuda-10.1`, has to match the host's driver version 
+   and must be supported by the gpu-libraries. 
+   These and older versions of GPU-Jupyter are listed on [Dockerhub](https://hub.docker.com/r/cschranz/gpu-jupyter/tags?page=1&ordering=last_updated).
 
    
 Within the Jupyterlab instance, you can check if you can access your GPU by opening a new terminal window and running
@@ -81,7 +92,7 @@ If you want to learn more about Jupyterlab, check out this [tutorial](https://ww
 First, it is necessary to generate the `Dockerfile` in `.build`, that is based on 
 the NIVIDA base image and the [docker-stacks](https://github.com/jupyter/docker-stacks).
 As soon as you have access to your GPU within Docker containers 
-(make sure the command `docker run --gpus all nvidia/cuda:10.2-cudnn8-runtime-ubuntu18.04 nvidia-smi` 
+(make sure the command `docker run --gpus all nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04 nvidia-smi` 
 shows your GPU statistics), you can generate the Dockerfile, build and run it.
 The following commands will start *GPU-Jupyter* on [localhost:8848](http://localhost:8848) 
 with the default password `gpu-jupyter` (previously `asdf`).

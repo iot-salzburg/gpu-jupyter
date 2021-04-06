@@ -7,8 +7,8 @@
 
 # Use NVIDIA CUDA as base image and run the same installation as in the other packages.
 # The version of cudatoolkit must match those of the base image, see Dockerfile.pytorch
-FROM nvidia/cuda:10.2-cudnn8-runtime-ubuntu18.04
-LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathematical Michael <consistentbayes@gmail.com>"
+ FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04
+ LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathematical Michael <consistentbayes@gmail.com>"
 # This is a concatenated Dockerfile, the maintainers of subsequent sections may vary.
 RUN chmod 1777 /tmp && chmod 1777 /var/tmp
 
@@ -398,22 +398,21 @@ WORKDIR $HOME
 
 LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>"
 
-# Install Tensorflow, check compatibility here: https://www.tensorflow.org/install/gpu
+# Install Tensorflow, check compatibility here:
+# https://www.tensorflow.org/install/source#gpu
 # installation via conda leads to errors in version 4.8.2
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir "tensorflow==2.3.2" && \
     pip install --no-cache-dir keras
 
-# Update cudatoolkit and install PyTorch with dependencies
+# Install PyTorch with dependencies
 RUN conda install --quiet --yes \
     pyyaml mkl mkl-include setuptools cmake cffi typing
-# RUN conda install --quiet --yes \
-#    cudatoolkit=10.1 -c pytorch
 
-# Check compatibility here: https://pytorch.org/get-started/locally/
-# Installation via conda leads to errors installing cudatoolkit=10.2
-RUN conda install pytorch torchvision torchaudio cudatoolkit=10.1 -c pytorch
-# RUN pip install torch torchvision torchaudio torchviz
+# Check compatibility here:
+# https://pytorch.org/get-started/locally/
+# Installation via conda leads to errors installing cudatoolkit=10.1
+RUN pip install torch torchvision torchaudio torchviz
 
 # Clean installation
 RUN conda clean --all -f -y && \
@@ -436,6 +435,48 @@ RUN git clone https://github.com/Syllo/nvtop.git /run/nvtop && \
 
 RUN fix-permissions /home/$NB_USER
 
+USER $NB_UID
+
+  ############################################################################
+  ############################ Useful packages ###############################
+  ############################################################################
+  
+LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathematical Michael <consistentbayes@gmail.com>"
+
+USER root
+
+RUN pip install --no-cache-dir ipyleaflet "plotly>=4.14.3" "ipywidgets>=7.5"
+
+# Install important packages and Graphviz
+RUN set -ex \
+ && buildDeps=' \
+    graphviz==0.11 \
+' \
+ && apt-get update \
+ && apt-get -y install htop apt-utils iputils-ping graphviz libgraphviz-dev openssh-client \
+ && pip install --no-cache-dir $buildDeps
+
+# Install various extensions
+RUN fix-permissions $CONDA_DIR
+# jupyterlab/github Does not support jlab 3.x yet, install well maintained alternative instead.
+# RUN jupyter labextension install @jupyterlab/github
+RUN pip install jupyterlab-git
+RUN pip install jupyterlab-drawio
+RUN jupyter nbextension enable --py --sys-prefix ipyleaflet
+RUN jupyter labextension install jupyterlab-plotly
+RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager plotlywidget
+# RUN pip install --no-cache-dir jupyter-tabnine  --user && \
+#   jupyter nbextension install --py jupyter_tabnine --user && \
+#   jupyter nbextension enable --py jupyter_tabnine --user && \
+#   jupyter serverextension enable --py jupyter_tabnine --user
+RUN pip install --no-cache-dir jupyter_contrib_nbextensions \
+  jupyter_nbextensions_configurator rise
+#  jupyter nbextension enable codefolding/main
+RUN jupyter labextension install @ijmbarr/jupyterlab_spellchecker
+
+RUN fix-permissions /home/$NB_USER
+
+# Switch back to jovyan to avoid accidental container runs as root
 USER $NB_UID
 
 # Copy jupyter_notebook_config.json

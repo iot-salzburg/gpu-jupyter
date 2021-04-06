@@ -1,6 +1,7 @@
 LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>"
 
-# Install Tensorflow, check compatibility here: https://www.tensorflow.org/install/gpu
+# Install Tensorflow, check compatibility here:
+# https://www.tensorflow.org/install/source#gpu
 # installation via conda leads to errors in version 4.8.2
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir "tensorflow==2.3.2" && \
@@ -10,10 +11,10 @@ RUN pip install --upgrade pip && \
 RUN conda install --quiet --yes \
     pyyaml mkl mkl-include setuptools cmake cffi typing
 
-# Check compatibility here: https://pytorch.org/get-started/locally/
-# Installation via conda leads to errors installing cudatoolkit=10.2
-RUN conda install pytorch torchvision torchaudio cudatoolkit=10.1 -c pytorch
-# RUN pip install torch torchvision torchaudio torchviz
+# Check compatibility here:
+# https://pytorch.org/get-started/locally/
+# Installation via conda leads to errors installing cudatoolkit=10.1
+RUN pip install torch torchvision torchaudio torchviz
 
 # Clean installation
 RUN conda clean --all -f -y && \
