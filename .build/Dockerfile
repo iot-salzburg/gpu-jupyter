@@ -22,7 +22,7 @@ RUN chmod 1777 /tmp && chmod 1777 /var/tmp
 # Ubuntu 20.04 (focal)
 # https://hub.docker.com/_/ubuntu/?tab=tags&name=focal
 # OS/ARCH: linux/amd64
-ARG ROOT_CONTAINER=ubuntu:focal-20210119@sha256:3093096ee188f8ff4531949b8f6115af4747ec1c58858c091c8cb4579c39cc4e
+ARG ROOT_CONTAINER=ubuntu:focal-20210217@sha256:e3d7ff9efd8431d9ef39a144c45992df5502c995b9ba3c53ff70c5b52a848d9c
 
 
 LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
@@ -42,24 +42,25 @@ USER root
 # Conda version
 ARG conda_version="4.9.2"
 # Miniforge installer patch version
-ARG miniforge_patch_number="5"
+ARG miniforge_patch_number="7"
 # Miniforge installer architecture
 ARG miniforge_arch="x86_64"
-# Python implementation to use 
-# can be either Miniforge3 to use Python or Miniforge-pypy3 to use PyPy
-ARG miniforge_python="Miniforge3"
+# Package Manager and Python implementation to use (https://github.com/conda-forge/miniforge)
+# - conda only: either Miniforge3 to use Python or Miniforge-pypy3 to use PyPy
+# - conda + mamba: either Mambaforge to use Python or Mambaforge-pypy3 to use PyPy
+ARG miniforge_python="Mambaforge"
 
 # Miniforge archive to install
 ARG miniforge_version="${conda_version}-${miniforge_patch_number}"
 # Miniforge installer
 ARG miniforge_installer="${miniforge_python}-${miniforge_version}-Linux-${miniforge_arch}.sh"
 # Miniforge checksum
-ARG miniforge_checksum="49dddb3998550e40adc904dae55b0a2aeeb0bd9fc4306869cc4a600ec4b8b47c"
+ARG miniforge_checksum="5a827a62d98ba2217796a9dc7673380257ed7c161017565fba8ce785fb21a599"
 
 # Install all OS dependencies for notebook server that starts but lacks all
 # features (e.g., download as all possible file formats)
 ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get update \
+RUN apt-get -q update \
  && apt-get install -yq --no-install-recommends \
     wget \
     ca-certificates \
@@ -118,7 +119,7 @@ RUN mkdir "/home/$NB_USER/work" && \
 # Install conda as jovyan and check the sha256 sum provided on the download site
 WORKDIR /tmp
 
-# Prerequisites installation: conda, pip, tini
+# Prerequisites installation: conda, mamba, pip, tini
 RUN wget --quiet "https://github.com/conda-forge/miniforge/releases/download/${miniforge_version}/${miniforge_installer}" && \
     echo "${miniforge_checksum} *${miniforge_installer}" | sha256sum --check && \
     /bin/bash "${miniforge_installer}" -f -b -p $CONDA_DIR && \
@@ -149,7 +150,7 @@ RUN wget --quiet "https://github.com/conda-forge/miniforge/releases/download/${m
 RUN conda install --quiet --yes \
     'notebook=6.2.0' \
     'jupyterhub=1.3.0' \
-    'jupyterlab=3.0.7' && \
+    'jupyterlab=3.0.12' && \
     conda clean --all -f -y && \
     npm cache clean --force && \
     jupyter notebook --generate-config && \
@@ -243,27 +244,27 @@ USER $NB_UID
 RUN conda install --quiet --yes \
     'beautifulsoup4=4.9.*' \
     'conda-forge::blas=*=openblas' \
-    'bokeh=2.2.*' \
+    'bokeh=2.3.*' \
     'bottleneck=1.3.*' \
     'cloudpickle=1.6.*' \
     'cython=0.29.*' \
-    'dask=2021.2.*' \
+    'dask=2021.3.*' \
     'dill=0.3.*' \
     'h5py=3.1.*' \
     'ipywidgets=7.6.*' \
     'ipympl=0.6.*'\
     'matplotlib-base=3.3.*' \
-    'numba=0.52.*' \
+    'numba=0.53.*' \
     'numexpr=2.7.*' \
     'pandas=1.2.*' \
     'patsy=0.5.*' \
-    'protobuf=3.14.*' \
+    'protobuf=3.15.*' \
     'pytables=3.6.*' \
     'scikit-image=0.18.*' \
     'scikit-learn=0.24.*' \
     'scipy=1.6.*' \
     'seaborn=0.11.*' \
-    'sqlalchemy=1.3.*' \
+    'sqlalchemy=1.4.*' \
     'statsmodels=0.12.*' \
     'sympy=1.7.*' \
     'vincent=0.4.*' \
@@ -313,9 +314,9 @@ USER root
 # Default values can be overridden at build time
 # (ARGS are in lower case to distinguish them from ENV)
 # Check https://julialang.org/downloads/
-ARG julia_version="1.5.3"
+ARG julia_version="1.5.4"
 # SHA256 checksum
-ARG julia_checksum="f190c938dd6fed97021953240523c9db448ec0a6760b574afd4e9924ab5615f1"
+ARG julia_checksum="80dec351d1a593e8ad152636971a48d0c81bfcfab92c87f3604663616f1e8bc5"
 
 # R pre-requisites
 RUN apt-get update && \
@@ -357,7 +358,7 @@ RUN conda install --quiet --yes \
     'r-caret=6.0*' \
     'r-crayon=1.4*' \
     'r-devtools=2.3*' \
-    'r-forecast=8.13*' \ 
+    'r-forecast=8.14*' \ 
     'r-hexbin=1.28*' \
     'r-htmltools=0.5*' \
     'r-htmlwidgets=1.5*' \ 
@@ -365,7 +366,7 @@ RUN conda install --quiet --yes \
     'r-nycflights13=1.0*' \
     'r-randomforest=4.6*' \
     'r-rcurl=1.98*' \
-    'r-rmarkdown=2.6*' \
+    'r-rmarkdown=2.7*' \
     'r-rsqlite=2.2*' \
     'r-shiny=1.6*' \
     'r-tidyverse=1.3*' \
@@ -458,9 +459,9 @@ RUN set -ex \
 
 # Install various extensions
 RUN fix-permissions $CONDA_DIR
-# jupyterlab/github Does not support jlab 3.x yet, install well maintained alternative instead.
-# RUN jupyter labextension install @jupyterlab/github
-RUN pip install jupyterlab-git
+
+RUN jupyter labextension install @jupyterlab/github
+# RUN pip install jupyterlab-git
 RUN pip install jupyterlab-drawio
 RUN jupyter nbextension enable --py --sys-prefix ipyleaflet
 RUN jupyter labextension install jupyterlab-plotly

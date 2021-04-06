@@ -15,9 +15,9 @@ RUN set -ex \
 
 # Install various extensions
 RUN fix-permissions $CONDA_DIR
-# jupyterlab/github Does not support jlab 3.x yet, install well maintained alternative instead.
-# RUN jupyter labextension install @jupyterlab/github
-RUN pip install jupyterlab-git
+
+RUN jupyter labextension install @jupyterlab/github
+# RUN pip install jupyterlab-git
 RUN pip install jupyterlab-drawio
 RUN jupyter nbextension enable --py --sys-prefix ipyleaflet
 RUN jupyter labextension install jupyterlab-plotly
