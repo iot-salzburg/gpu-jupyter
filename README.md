@@ -71,9 +71,9 @@ The image of this repository is available on [Dockerhub](https://hub.docker.com/
      - `v1.4_cuda-10.1_ubuntu-18.04` (full image)
      - `v1.4_cuda-10.1_ubuntu-18.04_python-only` (only with a python interpreter and without Julia and R)
      - `v1.4_cuda-10.1_ubuntu-18.04_slim` (only with a python interpreter and without additional packages)
-     - `v1.4_cuda-11.0_ubuntu-20.04` (full image)
-     - `v1.4_cuda-11.0_ubuntu-20.04_python-only` (only with a python interpreter and without Julia and R)
-     - `v1.4_cuda-11.0_ubuntu-20.04_slim` (only with a python interpreter and without additional packages)
+     - `v1.4_cuda-11.0_ubuntu-18.04` (full image)
+     - `v1.4_cuda-11.0_ubuntu-18.04_python-only` (only with a python interpreter and without Julia and R)
+     - `v1.4_cuda-11.0_ubuntu-18.04_slim` (only with a python interpreter and without additional packages)
     
     The version, e.g. `v1.4`, specifies a certain commit of the underlying docker-stacks.
    The Cuda version, e.g. `cuda-10.1`, has to match the host's driver version 

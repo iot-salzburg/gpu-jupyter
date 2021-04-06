@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 cd $(cd -P -- "$(dirname -- "$0")" && pwd -P)
 
-export TAGNAME="v1.4_cuda-11.0_ubuntu-20.04"
+export TAGNAME="v1.4_cuda-11.0_ubuntu-18.04"
 
 
 ###################### build, run and push full image ##########################
