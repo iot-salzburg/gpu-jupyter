@@ -75,7 +75,7 @@ The image of this repository is available on [Dockerhub](https://hub.docker.com/
      - `v1.4_cuda-11.0_ubuntu-18.04_python-only` (only with a python interpreter and without Julia and R)
      - `v1.4_cuda-11.0_ubuntu-18.04_python-only` (only with a python interpreter and without additional packages)
     
-    The version, e.g. `v1.3`, specifies a certain commit of the underlying docker-stacks.
+    The version, e.g. `v1.4`, specifies a certain commit of the underlying docker-stacks.
    The Cuda version, e.g. `cuda-10.1`, has to match the host's driver version 
    and must be supported by the gpu-libraries. 
    These and older versions of GPU-Jupyter are listed on [Dockerhub](https://hub.docker.com/r/cschranz/gpu-jupyter/tags?page=1&ordering=last_updated).
