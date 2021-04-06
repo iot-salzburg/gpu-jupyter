@@ -100,8 +100,10 @@ with the default password `gpu-jupyter` (previously `asdf`).
 ```bash
 git clone https://github.com/iot-salzburg/gpu-jupyter.git
 cd gpu-jupyter
+git branch  # Check for available supported CUDA versions
+git checkout v1.3_cuda-10.1_ubuntu-18.04  # select the desired (CUDA)-version
 # generate a Dockerfile with python and without Julia and R
-./generate-Dockerfile.sh --python-only
+./generate-Dockerfile.sh --python-only   # generate the Dockerfile with only a python interpreter
 docker build -t gpu-jupyter .build/  # will take a while
 docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes -e NB_UID="$(id -u)" -e NB_GID="$(id -g)" --user root --restart always --name gpu-jupyter_1 gpu-jupyter
 ``` 
