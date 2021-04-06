@@ -16,7 +16,7 @@ RUN set -ex \
 # Install various extensions
 RUN fix-permissions $CONDA_DIR
 
-RUN jupyter labextension install @jupyterlab/github
+# RUN jupyter labextension install @jupyterlab/github
 # RUN pip install jupyterlab-git
 RUN pip install jupyterlab-drawio
 RUN jupyter nbextension enable --py --sys-prefix ipyleaflet
