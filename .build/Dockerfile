@@ -307,17 +307,15 @@ RUN pip install --upgrade pip && \
 
 # Install PyTorch with dependencies
 RUN conda install --quiet --yes \
-    pyyaml mkl mkl-include setuptools cmake cffi typing
+    pyyaml mkl mkl-include setuptools cmake cffi typing && \
+    conda clean --all -f -y && \
+    fix-permissions $CONDA_DIR && \
+    fix-permissions /home/$NB_USER
 
 # Check compatibility here:
 # https://pytorch.org/get-started/locally/
-# Installation via conda leads to errors installing cudatoolkit=10.1
-RUN pip install torch torchvision torchaudio torchviz
-
-# Clean installation
-RUN conda clean --all -f -y && \
-    fix-permissions $CONDA_DIR && \
-    fix-permissions /home/$NB_USER
+# Installation via conda leads to errors installing cudatoolkit=11.1
+RUN pip install --no-cache-dir torch torchvision torchaudio torchviz
 
 USER root
 
