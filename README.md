@@ -68,6 +68,12 @@ The image of this repository is available on [Dockerhub](https://hub.docker.com/
    The default password is `gpu-jupyter` (previously `asdf`) which should be changed as described [below](#set-password). 
    Furthermore, data within the host's `data` directory is shared with the container.
    The following images of GPU-Jupyter are available on Dockerhub:
+     - `v1.4_cuda-10.1_ubuntu-20.04` (full image)
+     - `v1.4_cuda-10.1_ubuntu-20.04_python-only` (only with a python interpreter and without Julia and R)
+     - `v1.4_cuda-10.1_ubuntu-20.04_slim` (only with a python interpreter and without additional packages)
+     - `v1.4_cuda-11.0_ubuntu-20.04` (full image)
+     - `v1.4_cuda-11.0_ubuntu-20.04_python-only` (only with a python interpreter and without Julia and R)
+     - `v1.4_cuda-11.0_ubuntu-20.04_slim` (only with a python interpreter and without additional packages)
      - `v1.4_cuda-10.1_ubuntu-18.04` (full image)
      - `v1.4_cuda-10.1_ubuntu-18.04_python-only` (only with a python interpreter and without Julia and R)
      - `v1.4_cuda-10.1_ubuntu-18.04_slim` (only with a python interpreter and without additional packages)
