@@ -7,8 +7,8 @@
 
 # Use NVIDIA CUDA as base image and run the same installation as in the other packages.
 # The version of cudatoolkit must match those of the base image, see Dockerfile.pytorch
- FROM nvidia/cuda:10.1-cudnn7-runtime-ubuntu18.04
- LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathematical Michael <consistentbayes@gmail.com>"
+FROM nvidia/cuda:11.0.3-cudnn8-runtime-ubuntu20.04
+LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathematical Michael <consistentbayes@gmail.com>"
 # This is a concatenated Dockerfile, the maintainers of subsequent sections may vary.
 RUN chmod 1777 /tmp && chmod 1777 /var/tmp
 
@@ -314,7 +314,7 @@ RUN conda install --quiet --yes \
 
 # Check compatibility here:
 # https://pytorch.org/get-started/locally/
-# Installation via conda leads to errors installing cudatoolkit=10.1
+# Installation via conda leads to errors installing cudatoolkit=11.1
 RUN pip install --no-cache-dir torch torchvision torchaudio torchviz
 
 USER root
