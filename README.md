@@ -109,11 +109,7 @@ with the default password `gpu-jupyter` (previously `asdf`).
 git clone https://github.com/iot-salzburg/gpu-jupyter.git
 cd gpu-jupyter
 git branch  # Check for available supported CUDA versions
-<<<<<<< HEAD
-git checkout v1.4_cuda-11.0_ubuntu-20.04_python-only  # select the desired versions of CUDA and ubuntu
-=======
 git checkout v1.4_cuda-11.0_ubuntu-20.04  # select the desired (CUDA)-version
->>>>>>> v1.4_cuda-11.0_ubuntu-20.04
 # generate a Dockerfile with python and without Julia and R
 ./generate-Dockerfile.sh --python-only   # generate the Dockerfile with only a python interpreter
 docker build -t gpu-jupyter .build/  # will take a while
