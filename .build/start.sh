@@ -47,19 +47,6 @@ if [ $(id -u) == 0 ] ; then
         usermod -d /home/$NB_USER -l $NB_USER jovyan
     fi
 
-    # Handle case where provisioned storage does not have the correct permissions by default
-    # Ex: default NFS/EFS (no auto-uid/gid)
-    if [[ "$CHOWN_HOME" == "1" || "$CHOWN_HOME" == 'yes' ]]; then
-        echo "Changing ownership of /home/$NB_USER to $NB_UID:$NB_GID with options '${CHOWN_HOME_OPTS}'"
-        chown $CHOWN_HOME_OPTS $NB_UID:$NB_GID /home/$NB_USER
-    fi
-    if [ ! -z "$CHOWN_EXTRA" ]; then
-        for extra_dir in $(echo $CHOWN_EXTRA | tr ',' ' '); do
-            echo "Changing ownership of ${extra_dir} to $NB_UID:$NB_GID with options '${CHOWN_EXTRA_OPTS}'"
-            chown $CHOWN_EXTRA_OPTS $NB_UID:$NB_GID $extra_dir
-        done
-    fi
-
     # handle home and working directory if the username changed
     if [[ "$NB_USER" != "jovyan" ]]; then
         # changing username, make sure homedir exists
@@ -76,11 +63,24 @@ if [ $(id -u) == 0 ] ; then
         fi
     fi
 
+    # Handle case where provisioned storage does not have the correct permissions by default
+    # Ex: default NFS/EFS (no auto-uid/gid)
+    if [[ "$CHOWN_HOME" == "1" || "$CHOWN_HOME" == 'yes' ]]; then
+        echo "Changing ownership of /home/$NB_USER to $NB_UID:$NB_GID with options '${CHOWN_HOME_OPTS}'"
+        chown $CHOWN_HOME_OPTS $NB_UID:$NB_GID /home/$NB_USER
+    fi
+    if [ ! -z "$CHOWN_EXTRA" ]; then
+        for extra_dir in $(echo $CHOWN_EXTRA | tr ',' ' '); do
+            echo "Changing ownership of ${extra_dir} to $NB_UID:$NB_GID with options '${CHOWN_EXTRA_OPTS}'"
+            chown $CHOWN_EXTRA_OPTS $NB_UID:$NB_GID $extra_dir
+        done
+    fi
+
     # Change UID:GID of NB_USER to NB_UID:NB_GID if it does not match
     if [ "$NB_UID" != $(id -u $NB_USER) ] || [ "$NB_GID" != $(id -g $NB_USER) ]; then
         echo "Set user $NB_USER UID:GID to: $NB_UID:$NB_GID"
         if [ "$NB_GID" != $(id -g $NB_USER) ]; then
-            groupadd -g $NB_GID -o ${NB_GROUP:-${NB_USER}}
+            groupadd -f -g $NB_GID -o ${NB_GROUP:-${NB_USER}}
         fi
         userdel $NB_USER
         useradd --home /home/$NB_USER -u $NB_UID -g $NB_GID -G 100 -l $NB_USER
@@ -101,7 +101,7 @@ if [ $(id -u) == 0 ] ; then
     echo "Executing the command: ${cmd[@]}"
     exec sudo -E -H -u $NB_USER PATH=$PATH XDG_CACHE_HOME=/home/$NB_USER/.cache PYTHONPATH=${PYTHONPATH:-} "${cmd[@]}"
 else
-    if [[ "$NB_UID" == "$(id -u jovyan)" && "$NB_GID" == "$(id -g jovyan)" ]]; then
+    if [[ "$NB_UID" == "$(id -u jovyan 2>/dev/null)" && "$NB_GID" == "$(id -g jovyan 2>/dev/null)" ]]; then
         # User is not attempting to override user/group via environment
         # variables, but they could still have overridden the uid/gid that
         # container runs as. Check that the user has an entry in the passwd

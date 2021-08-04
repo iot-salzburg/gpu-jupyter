@@ -1,23 +1,38 @@
 LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>"
 
-# Install Tensorflow, check compatibility here: https://www.tensorflow.org/install/gpu
+# Install Tensorflow, check compatibility here:
+# https://www.tensorflow.org/install/source#gpu
 # installation via conda leads to errors in version 4.8.2
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir "tensorflow-gpu>=2.1.*" && \
+    pip install --no-cache-dir "tensorflow==2.4.1" && \
     pip install --no-cache-dir keras
 
 # Install PyTorch with dependencies
 RUN conda install --quiet --yes \
-    pyyaml mkl mkl-include setuptools cmake cffi typing
-
-# Check compatibility here: https://pytorch.org/get-started/locally/
-RUN conda install --quiet --yes \
-     pytorch \ 
-     torchvision \
-     cudatoolkit=10.1 -c pytorch
-#    pip install torch_nightly -f https://download.pytorch.org/whl/nightly/cu90/torch_nightly.html && \
-
-# Clean installation
-RUN conda clean --all -f -y && \
+    pyyaml mkl mkl-include setuptools cmake cffi typing && \
+    conda clean --all -f -y && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
+
+# Check compatibility here:
+# https://pytorch.org/get-started/locally/
+# Installation via conda leads to errors installing cudatoolkit=11.1
+RUN pip install --no-cache-dir torch torchvision torchaudio torchviz
+
+USER root
+
+# Install nvtop to monitor the gpu tasks
+RUN apt-get update && \
+    apt-get install -y cmake libncurses5-dev libncursesw5-dev git && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN git clone https://github.com/Syllo/nvtop.git /run/nvtop && \
+    mkdir -p /run/nvtop/build && cd /run/nvtop/build && \
+    (cmake .. -DNVML_RETRIEVE_HEADER_ONLINE=True 2> /dev/null || echo "cmake was not successful") && \
+    (make 2> /dev/null || echo "make was not successful") && \
+    (make install 2> /dev/null || echo "make install was not successful") && \
+    cd /tmp && rm -rf /tmp/nvtop
+
+RUN fix-permissions /home/$NB_USER
+
+USER $NB_UID
