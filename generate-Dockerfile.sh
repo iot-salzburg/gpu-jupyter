@@ -14,7 +14,7 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   --python-only) no_datascience_notebook=1;;
   --no-useful-packages) no_useful_packages=1;;
   --no-frameworks) no_frameworks=1;;
-  -s|--slim) no_datascience_notebook=1 && no_useful_packages=1 && no_frameworks=1;;
+  -s|--slim) no_datascience_notebook=1 && no_frameworks=1;;
   -h|--help) HELP=1;;
   *) echo "Unknown parameter passed: $1" && HELP=1;;
 esac; shift; done
