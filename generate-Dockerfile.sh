@@ -13,7 +13,8 @@ while [[ "$#" -gt 0 ]]; do case $1 in
   --no-datascience-notebook) no_datascience_notebook=1;;
   --python-only) no_datascience_notebook=1;;
   --no-useful-packages) no_useful_packages=1;;
-  -s|--slim) no_datascience_notebook=1 && no_useful_packages=1;;
+  --no-frameworks) no_frameworks=1;;
+  -s|--slim) no_datascience_notebook=1 && no_useful_packages=1 && no_frameworks=1;;
   -h|--help) HELP=1;;
   *) echo "Unknown parameter passed: $1" && HELP=1;;
 esac; shift; done
@@ -102,14 +103,19 @@ else
   echo "Set 'no-datascience-notebook' = 'python-only', not installing the datascience-notebook with Julia and R."
 fi
 
-# Note that the following step also installs the cudatoolkit, which is
-# essential to access the GPU.
-echo "
-############################################################################
-########################## Dependency: gpulibs #############################
-############################################################################
-" >> $DOCKERFILE
-cat src/Dockerfile.gpulibs >> $DOCKERFILE
+# install gpulibs packages if not excluded or spare mode is used
+if [[ "$no_frameworks" != 1 ]]; then
+  # Note that the following step also installs the cudatoolkit, which is
+  # essential to access the GPU.
+  echo "
+  ############################################################################
+  ########################## Dependency: gpulibs #############################
+  ############################################################################
+  " >> $DOCKERFILE
+  cat src/Dockerfile.gpulibs >> $DOCKERFILE
+else
+  echo "Set 'no-frameworks', not installing stuff within src/Dockerfile.gpulibs."
+fi
 
 # install useful packages if not excluded or spare mode is used
 if [[ "$no_useful_packages" != 1 ]]; then
@@ -149,6 +155,14 @@ echo "COPY jupyter_notebook_config.json /etc/jupyter/"  >> $DOCKERFILE
 # Set environment variables
 export JUPYTER_UID=$(id -u)
 export JUPYTER_GID=$(id -g)
+
+# cache conda packages on slim mode
+if [[ "$no_frameworks" = 1 ]]; then
+  echo >> $DOCKERFILE
+  echo "# Clone environment to build up conda cache" >> $DOCKERFILE
+  echo "RUN conda create -p /tmp/.conda --clone base && rm -rf /tmp/.conda" >> $DOCKERFILE
+  echo "ENV BDRK_CONDA 1" >> $DOCKERFILE
+fi
 
 #cp $(find $(dirname $DOCKERFILE) -type f | grep -v $STACKS_DIR | grep -v .gitkeep) .
 echo
