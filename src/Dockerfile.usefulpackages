@@ -1,37 +1,16 @@
-LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathematical Michael <consistentbayes@gmail.com>"
-
-USER root
-
-RUN pip install --no-cache-dir ipyleaflet "plotly>=4.14.3" "ipywidgets>=7.5"
-
-# Install important packages and Graphviz
-RUN set -ex \
- && buildDeps=' \
-    graphviz==0.11 \
-' \
- && apt-get update \
- && apt-get -y install htop apt-utils iputils-ping graphviz libgraphviz-dev openssh-client \
- && pip install --no-cache-dir $buildDeps
-
-# Install various extensions
-RUN fix-permissions $CONDA_DIR
-
-# RUN jupyter labextension install @jupyterlab/github
-# RUN pip install jupyterlab-git
-RUN pip install jupyterlab-drawio
-RUN jupyter nbextension enable --py --sys-prefix ipyleaflet
-RUN jupyter labextension install jupyterlab-plotly
-RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager plotlywidget
-# RUN pip install --no-cache-dir jupyter-tabnine  --user && \
-#   jupyter nbextension install --py jupyter_tabnine --user && \
-#   jupyter nbextension enable --py jupyter_tabnine --user && \
-#   jupyter serverextension enable --py jupyter_tabnine --user
-RUN pip install --no-cache-dir jupyter_contrib_nbextensions \
-  jupyter_nbextensions_configurator rise
-#  jupyter nbextension enable codefolding/main
-RUN jupyter labextension install @ijmbarr/jupyterlab_spellchecker
-
-RUN fix-permissions /home/$NB_USER
-
-# Switch back to jovyan to avoid accidental container runs as root
-USER $NB_UID
+RUN conda config --append channels conda-forge \
+  && conda config --set channel_priority false \
+  && conda update --all --yes \
+  && conda install --quiet --yes 'ptvsd' 'xeus-python=0.12.5' \
+  && pip install --upgrade jupyterlab-git==0.30.1 folium plotly nbdev \
+  && jupyter labextension install plotlywidget@4.14.3 --no-build \
+  && jupyter labextension install jupyterlab-plotly@4.14.3 --no-build \
+  && jupyter labextension install @jupyterlab/debugger --no-build \
+  && jupyter lab build --dev-build=False --minimize=False \
+  && echo "-------- Jupyter server extensions --------" \
+  && jupyter serverextension list \
+  && echo "-------- Jupyter lab extensions --------" \
+  && jupyter labextension list \
+  && conda clean --all -f -y \
+  && fix-permissions $CONDA_DIR \
+  && fix-permissions /home/$NB_USER
