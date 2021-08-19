@@ -3,6 +3,8 @@ RUN conda config --append channels conda-forge \
   && conda update --all --yes \
   && conda install --quiet --yes 'ptvsd' 'xeus-python=0.12.5' \
   && pip install --upgrade jupyterlab-git==0.30.1 folium plotly nbdev \
+  && pip install git+https://github.com/cliffwoolley/jupyter_tensorboard.git@163a095a3e0392640cbd1b8f51f833c1a703a187 \
+  && pip install git+https://github.com/chaoleili/jupyterlab_tensorboard.git@8f5f201a2e7b7a96ed4bd7dd16c26443df020b26 \
   && jupyter labextension install plotlywidget@4.14.3 --no-build \
   && jupyter labextension install jupyterlab-plotly@4.14.3 --no-build \
   && jupyter labextension install @jupyterlab/debugger --no-build \
