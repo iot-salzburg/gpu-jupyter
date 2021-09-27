@@ -5,12 +5,7 @@
 # More information can be found in the README under configuration.
 
 
-# Use NVIDIA CUDA as base image and run the same installation as in the other packages.
-# The version of cudatoolkit must match those of the base image, see Dockerfile.pytorch
-FROM nvidia/cuda:11.0.3-cudnn8-runtime-ubuntu20.04
-LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathematical Michael <consistentbayes@gmail.com>"
-# This is a concatenated Dockerfile, the maintainers of subsequent sections may vary.
-RUN chmod 1777 /tmp && chmod 1777 /var/tmp
+FROM nvidia/cuda:10.0-cudnn7-runtime-ubuntu18.04
 
 ############################################################################
 #################### Dependency: jupyter/base-image ########################
@@ -22,7 +17,6 @@ RUN chmod 1777 /tmp && chmod 1777 /var/tmp
 # Ubuntu 20.04 (focal)
 # https://hub.docker.com/_/ubuntu/?tab=tags&name=focal
 # OS/ARCH: linux/amd64
-ARG ROOT_CONTAINER=ubuntu:focal-20210217@sha256:e3d7ff9efd8431d9ef39a144c45992df5502c995b9ba3c53ff70c5b52a848d9c
 
 
 LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
@@ -40,9 +34,9 @@ USER root
 # (ARGS are in lower case to distinguish them from ENV)
 # Check https://github.com/conda-forge/miniforge/releases
 # Conda version
-ARG conda_version="4.9.2"
+ARG conda_version="4.10.1"
 # Miniforge installer patch version
-ARG miniforge_patch_number="7"
+ARG miniforge_patch_number="0"
 # Miniforge installer architecture
 ARG miniforge_arch="x86_64"
 # Package Manager and Python implementation to use (https://github.com/conda-forge/miniforge)
@@ -55,22 +49,21 @@ ARG miniforge_version="${conda_version}-${miniforge_patch_number}"
 # Miniforge installer
 ARG miniforge_installer="${miniforge_python}-${miniforge_version}-Linux-${miniforge_arch}.sh"
 # Miniforge checksum
-ARG miniforge_checksum="5a827a62d98ba2217796a9dc7673380257ed7c161017565fba8ce785fb21a599"
+ARG miniforge_checksum="d4065b376f81b83cfef0c7316f97bb83337e4ae27eb988828363a578226e3a62"
 
 # Install all OS dependencies for notebook server that starts but lacks all
 # features (e.g., download as all possible file formats)
 ENV DEBIAN_FRONTEND noninteractive
-RUN apt-get -q update \
- && apt-get install -yq --no-install-recommends \
+RUN apt-get -q update && \
+    apt-get install -yq --no-install-recommends \
     wget \
     ca-certificates \
     sudo \
     locales \
     fonts-liberation \
-    run-one \
- && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
+    run-one && \
+    apt-get clean && rm -rf /var/lib/apt/lists/* && \
+    echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen
 
 # Configure environment
@@ -95,14 +88,14 @@ RUN chmod a+rx /usr/local/bin/fix-permissions
 # hadolint ignore=SC2016
 RUN sed -i 's/^#force_color_prompt=yes/force_color_prompt=yes/' /etc/skel/.bashrc && \
    # Add call to conda init script see https://stackoverflow.com/a/58081608/4413446
-   echo 'eval "$(command conda shell.bash hook 2> /dev/null)"' >> /etc/skel/.bashrc 
+   echo 'eval "$(command conda shell.bash hook 2> /dev/null)"' >> /etc/skel/.bashrc
 
 # Create NB_USER with name jovyan user with UID=1000 and in the 'users' group
 # and make sure these dirs are writable by the `users` group.
 RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
     sed -i.bak -e 's/^%admin/#%admin/' /etc/sudoers && \
     sed -i.bak -e 's/^%sudo/#%sudo/' /etc/sudoers && \
-    useradd -m -s /bin/bash -N -u $NB_UID $NB_USER && \
+    useradd -l -m -s /bin/bash -N -u $NB_UID $NB_USER && \
     mkdir -p $CONDA_DIR && \
     chown $NB_USER:$NB_GID $CONDA_DIR && \
     chmod g+w /etc/passwd && \
@@ -148,9 +141,9 @@ RUN wget --quiet "https://github.com/conda-forge/miniforge/releases/download/${m
 # Do all this in a single RUN command to avoid duplicating all of the
 # files across image layers when the permissions change
 RUN conda install --quiet --yes \
-    'notebook=6.2.0' \
-    'jupyterhub=1.3.0' \
-    'jupyterlab=3.0.12' && \
+    'notebook=6.3.0' \
+    'jupyterhub=1.4.1' \
+    'jupyterlab=3.0.15' && \
     conda clean --all -f -y && \
     npm cache clean --force && \
     jupyter notebook --generate-config && \
@@ -175,14 +168,51 @@ USER root
 
 # Prepare upgrade to JupyterLab V3.0 #1205
 RUN sed -re "s/c.NotebookApp/c.ServerApp/g" \
-    /etc/jupyter/jupyter_notebook_config.py > /etc/jupyter/jupyter_server_config.py
-
-RUN fix-permissions /etc/jupyter/
+    /etc/jupyter/jupyter_notebook_config.py > /etc/jupyter/jupyter_server_config.py && \
+    fix-permissions /etc/jupyter/
 
 # Switch back to jovyan to avoid accidental container runs as root
 USER $NB_UID
 
 WORKDIR $HOME
+
+############################################################################
+######################### Dependency: primehub #############################
+############################################################################
+
+USER root
+
+## Primehub Application Bundles
+RUN apt-get update && apt-get install -yq --no-install-recommends \
+    git \
+    openssh-server \
+    openssh-client \
+    vim \
+    curl \
+    htop \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+#
+# Install MLflow, boto3
+# Cleanup temporary files
+# Correct permissions
+# Do all this in a single RUN command to avoid duplicating all of the
+# files across image layers when the permissions change
+RUN mamba install --quiet --yes \
+    "mlflow" \
+    "boto3" \
+    "tqdm" && \
+    mamba clean --all -f -y && \
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
+
+USER ${NB_UID}
+
+#  install primehub extension
+ARG PRIMEHUB_EXTENSION_VERSION="0.1.4"
+RUN pip install --no-cache-dir jupyterlab_primehub~=$PRIMEHUB_EXTENSION_VERSION && \
+    jupyter serverextension enable jupyterlab_primehub && \
+    jupyter labextension install @infuseai/jupyterlab-primehub@~v$PRIMEHUB_EXTENSION_VERSION && \
+    jupyter-lab build
 
 ############################################################################
 ################# Dependency: jupyter/minimal-notebook #####################
@@ -248,12 +278,12 @@ RUN conda install --quiet --yes \
     'bottleneck=1.3.*' \
     'cloudpickle=1.6.*' \
     'cython=0.29.*' \
-    'dask=2021.3.*' \
+    'dask=2021.4.*' \
     'dill=0.3.*' \
-    'h5py=3.1.*' \
+    'h5py=3.2.*' \
     'ipywidgets=7.6.*' \
-    'ipympl=0.6.*'\
-    'matplotlib-base=3.3.*' \
+    'ipympl=0.7.*'\
+    'matplotlib-base=3.4.*' \
     'numba=0.53.*' \
     'numexpr=2.7.*' \
     'pandas=1.2.*' \
@@ -266,7 +296,7 @@ RUN conda install --quiet --yes \
     'seaborn=0.11.*' \
     'sqlalchemy=1.4.*' \
     'statsmodels=0.12.*' \
-    'sympy=1.7.*' \
+    'sympy=1.8.*' \
     'vincent=0.4.*' \
     'widgetsnbextension=3.5.*'\
     'xlrd=2.0.*' && \
@@ -291,91 +321,20 @@ RUN MPLBACKEND=Agg python -c "import matplotlib.pyplot" && \
 USER $NB_UID
 
 WORKDIR $HOME
-
-############################################################################
-########################## Dependency: gpulibs #############################
-############################################################################
-
-LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>"
-
-# Install Tensorflow, check compatibility here:
-# https://www.tensorflow.org/install/source#gpu
-# installation via conda leads to errors in version 4.8.2
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir "tensorflow==2.4.1" && \
-    pip install --no-cache-dir keras
-
-# Install PyTorch with dependencies
-RUN conda install --quiet --yes \
-    pyyaml mkl mkl-include setuptools cmake cffi typing && \
-    conda clean --all -f -y && \
-    fix-permissions $CONDA_DIR && \
-    fix-permissions /home/$NB_USER
-
-# Check compatibility here:
-# https://pytorch.org/get-started/locally/
-# Installation via conda leads to errors installing cudatoolkit=11.1
-RUN pip install --no-cache-dir torch torchvision torchaudio torchviz
-
-USER root
-
-# Install nvtop to monitor the gpu tasks
-RUN apt-get update && \
-    apt-get install -y cmake libncurses5-dev libncursesw5-dev git && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN git clone https://github.com/Syllo/nvtop.git /run/nvtop && \
-    mkdir -p /run/nvtop/build && cd /run/nvtop/build && \
-    (cmake .. -DNVML_RETRIEVE_HEADER_ONLINE=True 2> /dev/null || echo "cmake was not successful") && \
-    (make 2> /dev/null || echo "make was not successful") && \
-    (make install 2> /dev/null || echo "make install was not successful") && \
-    cd /tmp && rm -rf /tmp/nvtop
-
-RUN fix-permissions /home/$NB_USER
-
-USER $NB_UID
-
-  ############################################################################
-  ############################ Useful packages ###############################
-  ############################################################################
-  
-LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathematical Michael <consistentbayes@gmail.com>"
-
-USER root
-
-RUN pip install --no-cache-dir ipyleaflet "plotly>=4.14.3" "ipywidgets>=7.5"
-
-# Install important packages and Graphviz
-RUN set -ex \
- && buildDeps=' \
-    graphviz==0.11 \
-' \
- && apt-get update \
- && apt-get -y install htop apt-utils iputils-ping graphviz libgraphviz-dev openssh-client \
- && pip install --no-cache-dir $buildDeps
-
-# Install various extensions
-RUN fix-permissions $CONDA_DIR
-
-# RUN jupyter labextension install @jupyterlab/github
-# RUN pip install jupyterlab-git
-RUN pip install jupyterlab-drawio
-RUN jupyter nbextension enable --py --sys-prefix ipyleaflet
-RUN jupyter labextension install jupyterlab-plotly
-RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager plotlywidget
-# RUN pip install --no-cache-dir jupyter-tabnine  --user && \
-#   jupyter nbextension install --py jupyter_tabnine --user && \
-#   jupyter nbextension enable --py jupyter_tabnine --user && \
-#   jupyter serverextension enable --py jupyter_tabnine --user
-RUN pip install --no-cache-dir jupyter_contrib_nbextensions \
-  jupyter_nbextensions_configurator rise
-#  jupyter nbextension enable codefolding/main
-RUN jupyter labextension install @ijmbarr/jupyterlab_spellchecker
-
-RUN fix-permissions /home/$NB_USER
-
-# Switch back to jovyan to avoid accidental container runs as root
-USER $NB_UID
+ARG TENSORFLOW_VERSION=1.15.4
+ARG TENSORFLOW_PREFIX=-gpu
+# Install Tensorflow
+RUN pip install --no-cache-dir --quiet \
+        tensorflow${TENSORFLOW_PREFIX}==${TENSORFLOW_VERSION} && \
+        fix-permissions $CONDA_DIR && \
+        fix-permissions /home/$NB_USER
+# Install tensorboard patch
+RUN git clone https://github.com/InfuseAI/jupyter_tensorboard.git && \
+    cd jupyter_tensorboard && \
+    pip install . && \
+    pip install --no-cache-dir tensorboard && \
+    jupyter labextension install jupyterlab_tensorboard@^0.2.1 && \
+    jupyter-lab build
 
 # Copy jupyter_notebook_config.json
 COPY jupyter_notebook_config.json /etc/jupyter/

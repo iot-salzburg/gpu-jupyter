@@ -1,0 +1,7 @@
+# Install tensorboard patch
+RUN git clone https://github.com/InfuseAI/jupyter_tensorboard.git && \
+    cd jupyter_tensorboard && \
+    pip install . && \
+    pip install --no-cache-dir tensorboard && \
+    jupyter labextension install jupyterlab_tensorboard@^0.2.1 && \
+    jupyter-lab build

@@ -1,0 +1,33 @@
+USER root
+
+## Primehub Application Bundles
+RUN apt-get update && apt-get install -yq --no-install-recommends \
+    git \
+    openssh-server \
+    openssh-client \
+    vim \
+    curl \
+    htop \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+#
+# Install MLflow, boto3
+# Cleanup temporary files
+# Correct permissions
+# Do all this in a single RUN command to avoid duplicating all of the
+# files across image layers when the permissions change
+RUN mamba install --quiet --yes \
+    "mlflow" \
+    "boto3" \
+    "tqdm" && \
+    mamba clean --all -f -y && \
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
+
+USER ${NB_UID}
+
+#  install primehub extension
+ARG PRIMEHUB_EXTENSION_VERSION="0.1.4"
+RUN pip install --no-cache-dir jupyterlab_primehub~=$PRIMEHUB_EXTENSION_VERSION && \
+    jupyter serverextension enable jupyterlab_primehub && \
+    jupyter labextension install @infuseai/jupyterlab-primehub@~v$PRIMEHUB_EXTENSION_VERSION && \
+    jupyter-lab build
