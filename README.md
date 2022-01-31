@@ -239,16 +239,13 @@ container itself (in `Dockerfile.header`).
 Check the host's version with `nvcc --version` and the version compatibilities 
 for CUDA-dependent packages as [Pytorch](https://pytorch.org/get-started/locally/)
  respectively [Tensorflow](https://www.tensorflow.org/install/gpu) previously.
-Then modify, if supported, the CUDA-version in `Dockerfile.header` to, e.g.:
+Then modify, if supported, the CUDA-version (find all tags [here](https://hub.docker.com/r/nvidia/cuda/tags))
+in `src/Dockerfile.header` to, e.g.:
 the line:
 
-    FROM nvidia/cuda:11.1-base-ubuntu20.04
-    
-and in the `Dockerfile.pytorch` the line:
+    FROM nvidia/cuda:X.Y-base-ubuntu20.04
 
-    cudatoolkit=11.1
-
-Then re-generate, re-build and run the updated image, as closer described above:
+Then re-generate, re-build and run the updated image.
 Note that a change in the first line of the Dockerfile will re-build the whole image.
 
 ```bash
