@@ -7,7 +7,7 @@ RUN pip install --no-cache-dir ipyleaflet "plotly>=4.14.3" "ipywidgets>=7.5"
 # Install important packages and Graphviz
 RUN set -ex \
  && buildDeps=' \
-    graphviz==0.11 \
+    graphviz==0.19.1 \
 ' \
  && apt-get update \
  && apt-get -y install htop apt-utils iputils-ping graphviz libgraphviz-dev openssh-client \
