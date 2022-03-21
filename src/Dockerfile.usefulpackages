@@ -31,6 +31,18 @@ RUN pip install --no-cache-dir jupyter_contrib_nbextensions \
 #  jupyter nbextension enable codefolding/main
 RUN jupyter labextension install @ijmbarr/jupyterlab_spellchecker
 
+# clean staging folder with vulnerable npm packages from jupyterlab installs (builds) above
+RUN jupyter lab clean && \
+# delete private keys left in packages by other developers, which lead to failed security scans
+rm -f \
+  /opt/conda/lib/python3.9/site-packages/tornado/test/test.key \
+  /opt/julia/packages/MbedTLS/4YY6E/test/clntsrvr/test.key \
+  /opt/julia/packages/MbedTLS/4YY6E/test/key.pem \
+  /opt/julia-1.7.1/share/julia/stdlib/v1.7/LibGit2/test/keys/invalid \
+  /opt/julia-1.7.1/share/julia/stdlib/v1.7/LibGit2/test/keys/valid \
+  /opt/julia-1.7.1/share/julia/stdlib/v1.7/LibGit2/test/keys/valid-passphrase
+
+
 RUN fix-permissions /home/$NB_USER
 
 # Switch back to jovyan to avoid accidental container runs as root
