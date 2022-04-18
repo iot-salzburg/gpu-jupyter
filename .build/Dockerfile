@@ -199,9 +199,9 @@ LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathem
 
 USER root
 
-RUN pip install --no-cache-dir ipyleaflet "plotly>=4.14.3" "ipywidgets>=7.5"
+RUN pip install --no-cache-dir ipyleaflet "plotly>=4.14.3" "ipywidgets>=7.5" fiftyone
 
-# Install important packages and Graphviz
+# Install important packages and Graphviz 
 RUN set -ex \
  && buildDeps=' \
     graphviz==0.19.1 \
@@ -229,6 +229,44 @@ RUN pip install --no-cache-dir jupyter_contrib_nbextensions \
 RUN jupyter labextension install @ijmbarr/jupyterlab_spellchecker
 
 RUN fix-permissions /home/$NB_USER
+
+# Install FiftyOne
+RUN apt -y update \
+    && apt -y --no-install-recommends install software-properties-common \
+    && add-apt-repository -y ppa:deadsnakes/ppa \
+    && apt -y update \
+    && apt -y upgrade \
+    && apt -y --no-install-recommends install tzdata \
+    && TZ=Etc/UTC \
+    && apt -y --no-install-recommends install \
+        build-essential \
+        ca-certificates \
+        cmake \
+        cmake-data \
+        pkg-config \
+        libcurl4 \
+        libsm6 \
+        libxext6 \
+        libssl-dev \
+        libffi-dev \
+        libxml2-dev \
+        libxslt1-dev \
+        zlib1g-dev \
+        unzip \
+        curl \
+        wget \
+    && rm -rf /var/lib/apt/lists/*
+
+# install fiftyone and torch and torchvision
+RUN pip --no-cache-dir install --upgrade pip setuptools wheel ipython fiftyone
+RUN pip --no-cache-dir install torch torchvision
+
+ARG ROOT_DIR="${HOME}"
+
+ENV FIFTYONE_DATABASE_DIR=${ROOT_DIR}/db \
+    FIFTYONE_DEFAULT_DATASET_DIR=${ROOT_DIR}/default \
+    FIFTYONE_DATASET_ZOO_DIR=${ROOT_DIR}/zoo/datasets \
+    FIFTYONE_MODEL_ZOO_DIR=${ROOT_DIR}/zoo/models
 
 # Switch back to jovyan to avoid accidental container runs as root
 USER $NB_UID

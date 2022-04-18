@@ -9,9 +9,10 @@ services:
             - capabilities:
               - gpu
     ports:
-      - 8848:8888
+      - 5252:8888
+      - 5151:5151
     volumes:
-      - ./data:/home/jovyan/work
+      - ./data:/home/nodeflux/work
     environment:
       GRANT_SUDO: "yes"
       JUPYTER_ENABLE_LAB: "yes"
