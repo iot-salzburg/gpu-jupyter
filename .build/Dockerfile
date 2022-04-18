@@ -199,7 +199,7 @@ LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathem
 
 USER root
 
-RUN pip install --no-cache-dir ipyleaflet "plotly>=4.14.3" "ipywidgets>=7.5" fiftyone
+RUN pip install --no-cache-dir ipyleaflet "plotly>=4.14.3" "ipywidgets>=7.5"
 
 # Install important packages and Graphviz 
 RUN set -ex \
@@ -258,7 +258,7 @@ RUN apt -y update \
     && rm -rf /var/lib/apt/lists/*
 
 # install fiftyone and torch and torchvision
-RUN pip --no-cache-dir install --upgrade pip setuptools wheel ipython fiftyone
+RUN pip --no-cache-dir install --upgrade pip setuptools wheel ipython fiftyone umap-learn
 RUN pip --no-cache-dir install torch torchvision
 
 ARG ROOT_DIR="${HOME}"
