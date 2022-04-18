@@ -1,7 +1,9 @@
 version: "3.8"
+
 services:
-  gpu-jupyter:
-    build: .build
+  jupyterlab:
+    container_name: jupyterlab
+    image: ruhyadi/fiftyone:jupyter-1.0
     deploy:
       resources:
         reservations:
