@@ -76,40 +76,40 @@ cp $STACKS_DIR/base-notebook/start-notebook.sh .build/
 cp $STACKS_DIR/base-notebook/start-singleuser.sh .build/
 chmod 755 .build/*
 
-echo "
-############################################################################
-################# Dependency: jupyter/minimal-notebook #####################
-############################################################################
-" >> $DOCKERFILE
-cat $STACKS_DIR/minimal-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
+# echo "
+# ############################################################################
+# ################# Dependency: jupyter/minimal-notebook #####################
+# ############################################################################
+# " >> $DOCKERFILE
+# cat $STACKS_DIR/minimal-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
 
-echo "
-############################################################################
-################# Dependency: jupyter/scipy-notebook #######################
-############################################################################
-" >> $DOCKERFILE
-cat $STACKS_DIR/scipy-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
+# echo "
+# ############################################################################
+# ################# Dependency: jupyter/scipy-notebook #######################
+# ############################################################################
+# " >> $DOCKERFILE
+# cat $STACKS_DIR/scipy-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
 
-# install Julia and R if not excluded or spare mode is used
-if [[ "$no_datascience_notebook" != 1 ]]; then
-  echo "
-  ############################################################################
-  ################ Dependency: jupyter/datascience-notebook ##################
-  ############################################################################
-  " >> $DOCKERFILE
-  cat $STACKS_DIR/datascience-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
-else
-  echo "Set 'no-datascience-notebook' = 'python-only', not installing the datascience-notebook with Julia and R."
-fi
+# # install Julia and R if not excluded or spare mode is used
+# if [[ "$no_datascience_notebook" != 1 ]]; then
+#   echo "
+#   ############################################################################
+#   ################ Dependency: jupyter/datascience-notebook ##################
+#   ############################################################################
+#   " >> $DOCKERFILE
+#   cat $STACKS_DIR/datascience-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
+# else
+#   echo "Set 'no-datascience-notebook' = 'python-only', not installing the datascience-notebook with Julia and R."
+# fi
 
 # Note that the following step also installs the cudatoolkit, which is
 # essential to access the GPU.
-echo "
-############################################################################
-########################## Dependency: gpulibs #############################
-############################################################################
-" >> $DOCKERFILE
-cat src/Dockerfile.gpulibs >> $DOCKERFILE
+# echo "
+# ############################################################################
+# ########################## Dependency: gpulibs #############################
+# ############################################################################
+# " >> $DOCKERFILE
+# cat src/Dockerfile.gpulibs >> $DOCKERFILE
 
 # install useful packages if not excluded or spare mode is used
 if [[ "$no_useful_packages" != 1 ]]; then
