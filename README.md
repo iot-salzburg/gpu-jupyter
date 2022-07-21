@@ -285,18 +285,18 @@ To update the generated Dockerfile to the latest commit, run:
 A new build can last some time and may consume a lot of data traffic. Note, that untested versions often result in
 a version conflict, as some files have to be adapted. Here are some examples with solutions: 
 
-- **Some file is not found:**
-  ```Step 22/64 : COPY --chown="${NB_UID}:${NB_GID}" initial-condarc "${CONDA_DIR}/.condarc"
-COPY failed: file not found in build context or excluded by .dockerignore: stat initial-condarc: file does not exist```
--> Adapt `nano generate-Dockerfile.sh` so that it copies `initial-condarc` into the working directory as it does with other files. Renamed files result in a similar issue and solution.
+- **Some file is not found:**  
+    ```Step 22/64 : COPY --chown="${NB_UID}:${NB_GID}" initial-condarc "${CONDA_DIR}/.condarc"
+  COPY failed: file not found in build context or excluded by .dockerignore: stat initial-condarc: file does not exist```  
+  -> Adapt `nano generate-Dockerfile.sh` so that it copies `initial-condarc` into the working directory as it does with other files. Renamed files result in a similar issue and solution.
 
 - **The specified package version is not compatible with the drivers.**
-  ```Step 56/64 : RUN pip install --upgrade pip &&     pip install --no-cache-dir "tensorflow==2.6.2" &&     pip install --no-cache-dir keras
-   ---> Running in 7c5701a3d780
-  Requirement already satisfied: pip in /opt/conda/lib/python3.10/site-packages (22.1.2)
-  ERROR: Could not find a version that satisfies the requirement tensorflow==2.6.2 (from versions: 2.8.0rc0, 2.8.0rc1, 2.8.0, 2.8.1, 2.8.2, 2.9.0rc0, 2.9.0rc1, 2.9.0rc2, 2.9.0, 2.9.1)
-  ERROR: No matching distribution found for tensorflow==2.6.2```
-  -> Just update the package to a version that is compatible, here tensorflow 2.8.2 was.
+    ```Step 56/64 : RUN pip install --upgrade pip &&     pip install --no-cache-dir "tensorflow==2.6.2" &&     pip install --no-cache-dir keras
+     ---> Running in 7c5701a3d780
+    Requirement already satisfied: pip in /opt/conda/lib/python3.10/site-packages (22.1.2)
+    ERROR: Could not find a version that satisfies the requirement tensorflow==2.6.2 (from versions: 2.8.0rc0, 2.8.0rc1, 2.8.0, 2.8.1, 2.8.2, 2.9.0rc0, 2.9.0rc1, 2.9.0rc2, 2.9.0, 2.9.1)
+    ERROR: No matching distribution found for tensorflow==2.6.2```  
+    -> Just update the package to a version that is compatible, here tensorflow 2.8.2 was.
 
 
 More info to submodules can be found in
