@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 cd $(cd -P -- "$(dirname -- "$0")" && pwd -P)
 
-export TAGNAME="v1.4_cuda-11.2_ubuntu-20.04"
+export TAGNAME="v1.4_cuda-11.6_ubuntu-20.04"
 
 
 ###################### build, run and push full image ##########################
@@ -9,7 +9,7 @@ echo
 echo
 echo "build, run and push full image with tag $TAGNAME."
 bash generate-Dockerfile.sh
-docker build --no-cache -t cschranz/gpu-jupyter:$TAGNAME .build/
+docker build --no-cache -t cschranz/gpu-jupyter:$TAGNAME .build/  # build this from a fresh install
 
 export IMG_ID=$(docker image ls | grep $TAGNAME | grep -v _python-only | grep -v _slim | head -1 | awk '{print $3}')
 echo "push image with ID $IMG_ID and Tag $TAGNAME ."
