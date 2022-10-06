@@ -21,7 +21,7 @@ The image of this repository is available on [Dockerhub](https://hub.docker.com/
 
 ## Quickstart
 
-1.  A computer with an NVIDIA GPU is required.
+1.  A computer with an NVIDIA GPU is required.  If you don’t have an own setup with a NVIDIA GPU, check out [Saturn Cloud](https://saturncloud.io/?utm_source=Medium+&utm_medium=TDS&utm_campaign=ChristophSchranz&utm_term=GPUJupyter) for a free GPU-powered Jupyter solution.
 2.  Install [Docker](https://www.docker.com/community-edition#/download) version **1.10.0+**
  and [Docker Compose](https://docs.docker.com/compose/install/) version **1.28.0+**.
 3.  Get access to your GPU via CUDA drivers within Docker containers.
