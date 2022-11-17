@@ -20,6 +20,8 @@ RUN conda install --quiet --yes \
 # Installation via conda leads to errors installing cudatoolkit=11.1
 RUN pip install --no-cache-dir torch torchvision torchaudio torchviz --extra-index-url https://download.pytorch.org/whl/cu116
 
+ENV CUDA_PATH=/opt/conda/
+
 USER root
 
 # Install nvtop to monitor the gpu tasks
