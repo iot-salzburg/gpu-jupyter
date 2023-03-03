@@ -4,7 +4,7 @@ cd $(cd -P -- "$(dirname -- "$0")" && pwd -P)
 # Set the path of the generated Dockerfile
 export DOCKERFILE=".build/Dockerfile"
 export STACKS_DIR=".build/docker-stacks"
-# please test the build of the commit in https://github.com/jupyter/docker-stacks/commits/master in advance
+# please test the build of the commit in https://github.com/jupyter/docker-stacks/commits/main in advance
 export HEAD_COMMIT="efa95c2c5b9b095247cd2f5e55bc3b38c85da335"
 
 while [[ "$#" -gt 0 ]]; do case $1 in
@@ -23,7 +23,7 @@ if [[ "$HELP" == 1 ]]; then
     echo "Usage: $0 [parameters]"
     echo "    -h|--help: Show this help."
     echo "    -p|--pw|--password: Set the password (and update in src/jupyter_notebook_config.json)"
-    echo "    -c|--commit: Set the head commit of the jupyter/docker-stacks submodule (https://github.com/jupyter/docker-stacks/commits/master). default: $HEAD_COMMIT."
+    echo "    -c|--commit: Set the head commit of the jupyter/docker-stacks submodule (https://github.com/jupyter/docker-stacks/commits/main). default: $HEAD_COMMIT."
     echo "    --no-datascience-notebook|--python-only: Use not the datascience-notebook from jupyter/docker-stacks, don't install Julia and R."
     echo "    --no-useful-packages: Don't install the useful packages, specified in src/Dockerfile.usefulpackages"
     echo "    --slim: no useful packages and no datascience notebook."
@@ -42,7 +42,7 @@ else
   cd $STACKS_DIR && git pull && git reset --hard "$HEAD_COMMIT" > /dev/null 2>&1  && cd - && export GOT_HEAD="true"
   echo "$HEAD"
   if [[ "$GOT_HEAD" == "false" ]]; then
-    echo "Error: The given sha-commit is invalid."
+    echo "Error: The provided sha-commit is invalid."
     echo "Usage: $0 -c [sha-commit] # set the head commit of the docker-stacks submodule (https://github.com/jupyter/docker-stacks/commits/master)."
     echo "Exiting"
     exit 2
