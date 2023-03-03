@@ -24,7 +24,7 @@ if [[ "$HELP" == 1 ]]; then
     echo "    -h|--help: Show this help."
     echo "    -p|--pw|--password: Set the password (and update in src/jupyter_notebook_config.json)"
     echo "    -c|--commit: Set the head commit of the jupyter/docker-stacks submodule (https://github.com/jupyter/docker-stacks/commits/main). default: $HEAD_COMMIT."
-    echo "    --no-datascience-notebook|--python-only: Use not the datascience-notebook from jupyter/docker-stacks, don't install Julia and R."
+    echo "    --python-only|--no-datascience-notebook: Use not the datascience-notebook from jupyter/docker-stacks, don't install Julia and R."
     echo "    --no-useful-packages: Don't install the useful packages, specified in src/Dockerfile.usefulpackages"
     echo "    --slim: no useful packages and no datascience notebook."
     exit 21
