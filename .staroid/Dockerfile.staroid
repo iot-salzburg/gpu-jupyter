@@ -1,1 +1,0 @@
-RUN conda install cudnn=7.6.5 --yes
