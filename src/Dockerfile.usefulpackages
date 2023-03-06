@@ -20,7 +20,7 @@ RUN pip install --no-cache-dir jupyter_contrib_nbextensions==0.7.0 \
   jupyter_nbextensions_configurator==0.6.1
 
 # install git extension
-RUN pip install j--no-cache-dir upyterlab-git==0.41.0
+RUN pip install --no-cache-dir jupyterlab-git==0.41.0
 
 # install plotly extension
 RUN pip install --no-cache-dir plotly==5.13.1

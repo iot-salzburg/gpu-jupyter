@@ -445,10 +445,7 @@ RUN pip install --upgrade pip && \
 
 # Install PyTorch with dependencies
 RUN conda install --quiet --yes \
-    pyyaml mkl mkl-include setuptools cmake cffi typing && \
-    conda clean --all -f -y && \
-    fix-permissions $CONDA_DIR && \
-    fix-permissions /home/$NB_USER
+    pyyaml mkl mkl-include setuptools cmake cffi typing
 
 # Check compatibility here:
 # https://pytorch.org/get-started/locally/
@@ -485,7 +482,9 @@ RUN /opt/conda/bin/conda install -c nvidia cuda-nvcc -y
 RUN ln -s /opt/conda/bin/ptxas /usr/bin/ptxas
 
 # fix permissions of conda
-RUN fix-permissions /home/$NB_USER
+RUN conda clean --all -f -y && \
+    fix-permissions $CONDA_DIR && \
+    fix-permissions /home/$NB_USER
 
 USER $NB_UID
 
@@ -515,7 +514,7 @@ RUN pip install --no-cache-dir jupyter_contrib_nbextensions==0.7.0 \
   jupyter_nbextensions_configurator==0.6.1
 
 # install git extension
-RUN pip install j--no-cache-dir upyterlab-git==0.41.0
+RUN pip install --no-cache-dir jupyterlab-git==0.41.0
 
 # install plotly extension
 RUN pip install --no-cache-dir plotly==5.13.1
