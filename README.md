@@ -200,9 +200,10 @@ Note that only one of the parameters `--slim`, `--python-only`, and `--no-useful
 ### Custom Installations
 
 If you need to install custom packages within the container, you can modify the `src/Dockerfile.usefulpackages` file or do it directly within the container. 
-**Keep in mind that every time a Dockerfile is generated, the file `.build/Dockerfile` is overwritten, so it's best to append custom installations in `src/Dockerfile.usefulpackages` or `generate-Dockerfile.sh`.**
+**Keep in mind that every time a Dockerfile is generated, the file `.build/Dockerfile` is overwritten, so it's best to append custom installations in `src/Dockerfile.usefulpackages` or `generate-Dockerfile.sh`.** 
 
-If you notice that an essential package is missing in the default stack, please let us know so we can update it.
+Some useful packages are suggested in the [Extension docs](https://jupyterlab.readthedocs.io/en/stable/user/extensions.html) and in this blog article from [neptune.ai](https://neptune.ai/blog/jupyterlab-extensions-for-machine-learning).
+If you notice that an important package is missing in the default stack, please let us know so we can update it.
 
 
 ### Change the Password 
