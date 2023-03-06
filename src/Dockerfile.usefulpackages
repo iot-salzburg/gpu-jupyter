@@ -9,27 +9,28 @@ RUN fix-permissions $CONDA_DIR
 RUN set -ex \
  && buildDeps=' \
     graphviz==0.19.1 \
+    pytest==7.2.2 \
 ' \
  && apt-get update \
- && apt-get -y install htop apt-utils iputils-ping graphviz libgraphviz-dev openssh-client pytest \
+ && apt-get -y install htop apt-utils iputils-ping graphviz libgraphviz-dev openssh-client \
  && pip install --no-cache-dir $buildDeps
 
 # install extension manager
-RUN pip install --no-cache-dir jupyter_contrib_nbextensions \
-  jupyter_nbextensions_configurator
+RUN pip install --no-cache-dir jupyter_contrib_nbextensions==0.7.0 \
+  jupyter_nbextensions_configurator==0.6.1
 
 # install git extension
-RUN pip install jupyterlab-git
+RUN pip install jupyterlab-git==0.41.0
 
 # install plotly extension
-RUN pip install plotly
+RUN pip install plotly=5.13.1
 
 # install drawio and graphical extensions
-RUN pip install jupyterlab-drawio
-RUN pip install --no-cache-dir ipyleaflet ipywidgets rise
+RUN pip install jupyterlab-drawio=0.0.10 rise==5.7.1
+RUN pip install --no-cache-dir ipyleaflet==0.17.2 ipywidgets==8.0.4
 
 # install spell checker
-RUN pip install jupyterlab-spellchecker
+RUN pip install jupyterlab-spellchecker==0.7.3
 
 # fix permissions of conda
 RUN fix-permissions /home/$NB_USER

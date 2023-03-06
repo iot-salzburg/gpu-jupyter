@@ -4,3 +4,7 @@ FROM nvidia/cuda:11.6.2-cudnn8-runtime-ubuntu20.04
 LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathematical Michael <consistentbayes@gmail.com>"
 # This is a concatenated Dockerfile, the maintainers of subsequent sections may vary.
 RUN chmod 1777 /tmp && chmod 1777 /var/tmp
+
+# install apt-utils in header to fix warnings in docker-stacks
+RUN apt-get update && \
+    apt-get -y install apt-utils
