@@ -362,5 +362,48 @@ RUN fix-permissions /home/$NB_USER
 
 USER $NB_UID
 
+  ############################################################################
+  ############################ Useful packages ###############################
+  ############################################################################
+  
+LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathematical Michael <consistentbayes@gmail.com>"
+
+USER root
+
+# fix permissions of conda
+RUN fix-permissions $CONDA_DIR
+
+# Install usefull packages and Graphviz
+RUN set -ex \
+ && buildDeps=' \
+    graphviz==0.19.1 \
+' \
+ && apt-get update \
+ && apt-get -y install htop apt-utils iputils-ping graphviz libgraphviz-dev openssh-client pytest \
+ && pip install --no-cache-dir $buildDeps
+
+# install extension manager
+RUN pip install --no-cache-dir jupyter_contrib_nbextensions \
+  jupyter_nbextensions_configurator
+
+# install git extension
+RUN pip install jupyterlab-git
+
+# install plotly extension
+RUN pip install plotly
+
+# install drawio and graphical extensions
+RUN pip install jupyterlab-drawio
+RUN pip install --no-cache-dir ipyleaflet ipywidgets rise
+
+# install spell checker
+RUN pip install jupyterlab-spellchecker
+
+# fix permissions of conda
+RUN fix-permissions /home/$NB_USER
+
+# Switch back to jovyan to avoid accidental container runs as root
+USER $NB_UID
+
 # Copy jupyter_notebook_config.json
 COPY jupyter_notebook_config.json /etc/jupyter/
