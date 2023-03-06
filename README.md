@@ -3,8 +3,10 @@
 
 ![Jupyterlab Overview](https://raw.githubusercontent.com/iot-salzburg/gpu-jupyter/master/extra/jupyterlab-overview.png)
 
-This project composes a GPU-capable environment, based on NVIDIA's CUDA Docker image, the [docker-stacks](https://github.com/jupyter/docker-stacks)
-and a toolstack on top of it to enable GPU calculations in the Jupyter notebooks. 
+Welcome to this project, which provides a **GPU-capable environment** based on NVIDIA's CUDA Docker image and the popular [docker-stacks](https://github.com/jupyter/docker-stacks). 
+Our toolstack enables GPU calculations in Jupyter notebooks, while the use of containers and versioned tags ensures the reproducibility of experiments.
+By utilizing version control for the source code, tagged data spaces, seeds for the random functions, and tagged environments as provided here, our solution **empowers researchers to conduct highly complex big data experiments that are fully reproducible**.
+
 The images of this repository are available on [Dockerhub](https://hub.docker.com/r/cschranz/gpu-jupyter).
 A big thank you to [docker-stacks](https://github.com/jupyter/docker-stacks) 
 for creating and maintaining a robust Python, R, and Julia toolstack for Data Science. 
