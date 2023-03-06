@@ -4,9 +4,7 @@ LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mat
 # https://www.tensorflow.org/install/source#gpu
 # installation via conda leads to errors in version 4.8.2
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir "tensorflow==2.10.1"
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir keras==2.10
+    pip install --no-cache-dir tensorflow==2.10.1 keras==2.10
 
 # Install PyTorch with dependencies
 RUN conda install --quiet --yes \
@@ -18,7 +16,16 @@ RUN conda install --quiet --yes \
 # Check compatibility here:
 # https://pytorch.org/get-started/locally/
 # Installation via conda leads to errors installing cudatoolkit=11.1
-RUN pip install --no-cache-dir torch torchvision torchaudio torchviz --extra-index-url https://download.pytorch.org/whl/cu116
+# RUN pip install --no-cache-dir torch==1.13.1 torchvision==0.14.1 torchaudio==0.13.1  && \
+#     torchviz==0.0.2 --extra-index-url https://download.pytorch.org/whl/cu116
+RUN set -ex \
+ && buildDeps=' \
+    torch==1.13.1 \
+    torchvision==0.14.1 \
+    torchaudio==0.13.1 \
+    torchviz==0.0.2 \
+' \
+ && pip install --no-cache-dir $buildDeps --extra-index-url https://download.pytorch.org/whl/cu116
 
 ENV CUDA_PATH=/opt/conda/
 

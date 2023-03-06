@@ -12,6 +12,10 @@ LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathem
 # This is a concatenated Dockerfile, the maintainers of subsequent sections may vary.
 RUN chmod 1777 /tmp && chmod 1777 /var/tmp
 
+# install apt-utils in header to fix warnings in docker-stacks
+RUN apt-get update && \
+    apt-get -y install apt-utils
+
 ############################################################################
 #################### Dependency: jupyter/base-image ########################
 ############################################################################
@@ -311,6 +315,122 @@ USER ${NB_UID}
 
 WORKDIR "${HOME}"
 
+  ############################################################################
+  ################ Dependency: jupyter/datascience-notebook ##################
+  ############################################################################
+  
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+ARG OWNER=jupyter
+
+LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
+
+# Fix: https://github.com/hadolint/hadolint/wiki/DL4006
+# Fix: https://github.com/koalaman/shellcheck/wiki/SC3014
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+USER root
+
+# Julia installation
+# Default values can be overridden at build time
+# (ARGS are in lower case to distinguish them from ENV)
+# Check https://julialang.org/downloads/
+ARG julia_version="1.7.3"
+
+# R pre-requisites
+RUN apt-get update --yes && \
+    apt-get install --yes --no-install-recommends \
+    fonts-dejavu \
+    gfortran \
+    gcc && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Julia dependencies
+# install Julia packages in /opt/julia instead of ${HOME}
+ENV JULIA_DEPOT_PATH=/opt/julia \
+    JULIA_PKGDIR=/opt/julia \
+    JULIA_VERSION="${julia_version}"
+
+WORKDIR /tmp
+
+# hadolint ignore=SC2046
+RUN set -x && \
+    julia_arch=$(uname -m) && \
+    julia_short_arch="${julia_arch}" && \
+    if [ "${julia_short_arch}" == "x86_64" ]; then \
+      julia_short_arch="x64"; \
+    fi; \
+    julia_installer="julia-${JULIA_VERSION}-linux-${julia_arch}.tar.gz" && \
+    julia_major_minor=$(echo "${JULIA_VERSION}" | cut -d. -f 1,2) && \
+    mkdir "/opt/julia-${JULIA_VERSION}" && \
+    wget -q "https://julialang-s3.julialang.org/bin/linux/${julia_short_arch}/${julia_major_minor}/${julia_installer}" && \
+    tar xzf "${julia_installer}" -C "/opt/julia-${JULIA_VERSION}" --strip-components=1 && \
+    rm "${julia_installer}" && \
+    ln -fs /opt/julia-*/bin/julia /usr/local/bin/julia
+
+# Show Julia where conda libraries are \
+RUN mkdir /etc/julia && \
+    echo "push!(Libdl.DL_LOAD_PATH, \"${CONDA_DIR}/lib\")" >> /etc/julia/juliarc.jl && \
+    # Create JULIA_PKGDIR \
+    mkdir "${JULIA_PKGDIR}" && \
+    chown "${NB_USER}" "${JULIA_PKGDIR}" && \
+    fix-permissions "${JULIA_PKGDIR}"
+
+USER ${NB_UID}
+
+# R packages including IRKernel which gets installed globally.
+# r-e1071: dependency of the caret R package
+RUN mamba install --quiet --yes \
+    'r-base' \
+    'r-caret' \
+    'r-crayon' \
+    'r-devtools' \
+    'r-e1071' \
+    'r-forecast' \
+    'r-hexbin' \
+    'r-htmltools' \
+    'r-htmlwidgets' \
+    'r-irkernel' \
+    'r-nycflights13' \
+    'r-randomforest' \
+    'r-rcurl' \
+    'r-rmarkdown' \
+    'r-rodbc' \
+    'r-rsqlite' \
+    'r-shiny' \
+    'r-tidyverse' \
+    'unixodbc' && \
+    mamba clean --all -f -y && \
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
+
+# `rpy2` and `r-tidymodels` are not easy to install under aarch64
+RUN set -x && \
+    arch=$(uname -m) && \
+    if [ "${arch}" == "x86_64" ]; then \
+        mamba install --quiet --yes \
+            'rpy2' \
+            'r-tidymodels' && \
+            mamba clean --all -f -y && \
+            fix-permissions "${CONDA_DIR}" && \
+            fix-permissions "/home/${NB_USER}"; \
+    fi;
+
+# Add Julia packages.
+# Install IJulia as jovyan and then move the kernelspec out
+# to the system share location. Avoids problems with runtime UID change not
+# taking effect properly on the .local folder in the jovyan home dir.
+RUN julia -e 'import Pkg; Pkg.update()' && \
+    julia -e 'import Pkg; Pkg.add("HDF5")' && \
+    julia -e 'using Pkg; pkg"add IJulia"; pkg"precompile"' && \
+    # move kernelspec out of home \
+    mv "${HOME}/.local/share/jupyter/kernels/julia"* "${CONDA_DIR}/share/jupyter/kernels/" && \
+    chmod -R go+rx "${CONDA_DIR}/share/jupyter" && \
+    rm -rf "${HOME}/.local" && \
+    fix-permissions "${JULIA_PKGDIR}" "${CONDA_DIR}/share/jupyter"
+
+WORKDIR "${HOME}"
+
 ############################################################################
 ########################## Dependency: gpulibs #############################
 ############################################################################
@@ -321,9 +441,7 @@ LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mat
 # https://www.tensorflow.org/install/source#gpu
 # installation via conda leads to errors in version 4.8.2
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir "tensorflow==2.10.1"
-RUN pip install --upgrade pip && \
-    pip install --no-cache-dir keras==2.10
+    pip install --no-cache-dir tensorflow==2.10.1 keras==2.10
 
 # Install PyTorch with dependencies
 RUN conda install --quiet --yes \
@@ -335,7 +453,16 @@ RUN conda install --quiet --yes \
 # Check compatibility here:
 # https://pytorch.org/get-started/locally/
 # Installation via conda leads to errors installing cudatoolkit=11.1
-RUN pip install --no-cache-dir torch torchvision torchaudio torchviz --extra-index-url https://download.pytorch.org/whl/cu116
+# RUN pip install --no-cache-dir torch==1.13.1 torchvision==0.14.1 torchaudio==0.13.1  && \
+#     torchviz==0.0.2 --extra-index-url https://download.pytorch.org/whl/cu116
+RUN set -ex \
+ && buildDeps=' \
+    torch==1.13.1 \
+    torchvision==0.14.1 \
+    torchaudio==0.13.1 \
+    torchviz==0.0.2 \
+' \
+ && pip install --no-cache-dir $buildDeps --extra-index-url https://download.pytorch.org/whl/cu116
 
 ENV CUDA_PATH=/opt/conda/
 
@@ -351,7 +478,7 @@ RUN git clone https://github.com/Syllo/nvtop.git /run/nvtop && \
     (cmake .. -DNVML_RETRIEVE_HEADER_ONLINE=True 2> /dev/null || echo "cmake was not successful") && \
     (make 2> /dev/null || echo "make was not successful") && \
     (make install 2> /dev/null || echo "make install was not successful") && \
-    cd /tmp && rm -rf /tmp/nvtop
+    rm -rf /run/nvtop
 
 # reinstall nvcc with cuda-nvcc to install ptax
 RUN /opt/conda/bin/conda install -c nvidia cuda-nvcc -y
@@ -377,27 +504,28 @@ RUN fix-permissions $CONDA_DIR
 RUN set -ex \
  && buildDeps=' \
     graphviz==0.19.1 \
+    pytest==7.2.2 \
 ' \
  && apt-get update \
- && apt-get -y install htop apt-utils iputils-ping graphviz libgraphviz-dev openssh-client pytest \
+ && apt-get -y install htop apt-utils iputils-ping graphviz libgraphviz-dev openssh-client \
  && pip install --no-cache-dir $buildDeps
 
 # install extension manager
-RUN pip install --no-cache-dir jupyter_contrib_nbextensions \
-  jupyter_nbextensions_configurator
+RUN pip install --no-cache-dir jupyter_contrib_nbextensions==0.7.0 \
+  jupyter_nbextensions_configurator==0.6.1
 
 # install git extension
-RUN pip install jupyterlab-git
+RUN pip install j--no-cache-dir upyterlab-git==0.41.0
 
 # install plotly extension
-RUN pip install plotly
+RUN pip install --no-cache-dir plotly==5.13.1
 
 # install drawio and graphical extensions
-RUN pip install jupyterlab-drawio
-RUN pip install --no-cache-dir ipyleaflet ipywidgets rise
+RUN pip install --no-cache-dir jupyterlab-drawio==0.9.0 rise==5.7.1
+RUN pip install --no-cache-dir ipyleaflet==0.17.2 ipywidgets==8.0.4
 
 # install spell checker
-RUN pip install jupyterlab-spellchecker
+RUN pip install --no-cache-dir jupyterlab-spellchecker==0.7.3
 
 # fix permissions of conda
 RUN fix-permissions /home/$NB_USER
