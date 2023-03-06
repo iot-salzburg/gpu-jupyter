@@ -40,6 +40,7 @@ RUN git clone https://github.com/Syllo/nvtop.git /run/nvtop && \
 RUN /opt/conda/bin/conda install -c nvidia cuda-nvcc -y
 RUN ln -s /opt/conda/bin/ptxas /usr/bin/ptxas
 
+# fix permissions of conda
 RUN fix-permissions /home/$NB_USER
 
 USER $NB_UID

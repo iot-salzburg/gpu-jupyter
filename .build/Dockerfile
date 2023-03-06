@@ -469,6 +469,11 @@ RUN git clone https://github.com/Syllo/nvtop.git /run/nvtop && \
     (make install 2> /dev/null || echo "make install was not successful") && \
     cd /tmp && rm -rf /tmp/nvtop
 
+# reinstall nvcc with cuda-nvcc to install ptax
+RUN /opt/conda/bin/conda install -c nvidia cuda-nvcc -y
+RUN ln -s /opt/conda/bin/ptxas /usr/bin/ptxas
+
+# fix permissions of conda
 RUN fix-permissions /home/$NB_USER
 
 USER $NB_UID
@@ -481,35 +486,36 @@ LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathem
 
 USER root
 
-RUN pip install --no-cache-dir ipyleaflet "plotly>=4.14.3" "ipywidgets>=7.5"
+# fix permissions of conda
+RUN fix-permissions $CONDA_DIR
 
-# Install important packages and Graphviz
+# Install usefull packages and Graphviz
 RUN set -ex \
  && buildDeps=' \
     graphviz==0.19.1 \
 ' \
  && apt-get update \
- && apt-get -y install htop apt-utils iputils-ping graphviz libgraphviz-dev openssh-client \
+ && apt-get -y install htop apt-utils iputils-ping graphviz libgraphviz-dev openssh-client pytest \
  && pip install --no-cache-dir $buildDeps
 
-# Install various extensions
-RUN fix-permissions $CONDA_DIR
-
-# RUN jupyter labextension install @jupyterlab/github
-# RUN pip install jupyterlab-git
-RUN pip install jupyterlab-drawio
-RUN jupyter nbextension enable --py --sys-prefix ipyleaflet
-RUN jupyter labextension install jupyterlab-plotly
-RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager plotlywidget
-# RUN pip install --no-cache-dir jupyter-tabnine  --user && \
-#   jupyter nbextension install --py jupyter_tabnine --user && \
-#   jupyter nbextension enable --py jupyter_tabnine --user && \
-#   jupyter serverextension enable --py jupyter_tabnine --user
+# install extension manager
 RUN pip install --no-cache-dir jupyter_contrib_nbextensions \
-  jupyter_nbextensions_configurator rise
-#  jupyter nbextension enable codefolding/main
-RUN jupyter labextension install @ijmbarr/jupyterlab_spellchecker
+  jupyter_nbextensions_configurator
 
+# install git extension
+RUN pip install jupyterlab-git
+
+# install plotly extension
+RUN pip install plotly
+
+# install drawio and graphical extensions
+RUN pip install jupyterlab-drawio
+RUN pip install --no-cache-dir ipyleaflet ipywidgets rise
+
+# install spell checker
+RUN pip install jupyterlab-spellchecker
+
+# fix permissions of conda
 RUN fix-permissions /home/$NB_USER
 
 # Switch back to jovyan to avoid accidental container runs as root

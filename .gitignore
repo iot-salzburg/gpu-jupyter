@@ -115,8 +115,9 @@ venv.bak/
 # Added config to hide hash of changed password
 src/jupyter_notebook_config.json
 .idea
-/scripts
+
 /Deployment-notes.md
 /build_push_full.sh
 /build_push_python-only.sh
 /build_push_slim.sh
+extra/Getting_Started/tensorboard/runs
