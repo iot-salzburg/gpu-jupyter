@@ -27,7 +27,8 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
 1.  Ensure that you have access to a computer with an NVIDIA GPU. If you don’t have your own setup, you can try [Saturn Cloud](https://saturncloud.io/?utm_source=Medium+&utm_medium=TDS&utm_campaign=ChristophSchranz&utm_term=GPUJupyter) for a free GPU-powered Jupyter solution.
 2.  Install [Docker](https://www.docker.com/community-edition#/download) version **1.10.0+**
  and [Docker Compose](https://docs.docker.com/compose/install/) version **1.28.0+**.
-3.  Get access to your GPU via CUDA drivers within Docker containers. You can confirm that you can access your GPU within Docker if the command below returns a result similar to this one:
+3.  Get access to your GPU via CUDA drivers within Docker containers. For this, follow the installation steps in this 
+[Medium article](https://medium.com/@christoph.schranz/set-up-your-own-gpu-based-jupyterlab-e0d45fcacf43). You can confirm that you can access your GPU within Docker if the command below returns a result similar to this one:
     ```bash
     `docker run --gpus all nvidia/cuda:11.6.2-cudnn8-runtime-ubuntu20.04 nvidia-smi`
     ```
@@ -59,8 +60,6 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
     |    1   N/A  N/A      1918      G                                       6MiB |
     +-----------------------------------------------------------------------------+
     ``` 
-    If you don't get a similar output, follow the installation steps in this 
-[Medium article](https://medium.com/@christoph.schranz/set-up-your-own-gpu-based-jupyterlab-e0d45fcacf43).
     It is important to keep your installed CUDA version in mind when you pull images. 
     **Note that you can't run images based on `nvidia/cuda:11.2` if you have only CUDA version 10.1 installed.**
     
