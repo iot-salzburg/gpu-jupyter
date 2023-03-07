@@ -477,13 +477,6 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends cmake libncurses5-dev libncursesw5-dev git nvtop && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# RUN git clone https://github.com/Syllo/nvtop.git /run/nvtop && \
-#     mkdir -p /run/nvtop/build && cd /run/nvtop/build && \
-#     (cmake .. -DNVML_RETRIEVE_HEADER_ONLINE=True 2> /dev/null || echo "cmake was not successful") && \
-#     (make 2> /dev/null || echo "make was not successful") && \
-#     (make install 2> /dev/null || echo "make install was not successful") && \
-#     rm -rf /run/nvtop
-
 # reinstall nvcc with cuda-nvcc to install ptax
 USER $NB_UID
 RUN conda install -c nvidia cuda-nvcc -y && \
