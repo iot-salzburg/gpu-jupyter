@@ -440,12 +440,18 @@ LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mat
 # Install Tensorflow, check compatibility here:
 # https://www.tensorflow.org/install/source#gpu
 # installation via conda leads to errors in version 4.8.2
+USER ${NB_UID}
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir tensorflow==2.10.1 keras==2.10
+    pip install --no-cache-dir tensorflow==2.10.1 keras==2.10 && \
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
 
 # Install PyTorch with dependencies
 RUN conda install --quiet --yes \
-    pyyaml mkl mkl-include setuptools cmake cffi typing
+    pyyaml mkl mkl-include setuptools cmake cffi typing && \
+    conda clean --all -f -y && \
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
 
 # Check compatibility here:
 # https://pytorch.org/get-started/locally/
@@ -459,32 +465,34 @@ RUN set -ex \
     torchaudio==0.13.1 \
     torchviz==0.0.2 \
 ' \
- && pip install --no-cache-dir $buildDeps --extra-index-url https://download.pytorch.org/whl/cu116
-
-ENV CUDA_PATH=/opt/conda/
+ && pip install --no-cache-dir $buildDeps --extra-index-url https://download.pytorch.org/whl/cu116 \
+ && fix-permissions "${CONDA_DIR}" \
+ && fix-permissions "/home/${NB_USER}"
 
 USER root
+ENV CUDA_PATH=/opt/conda/
 
 # Install nvtop to monitor the gpu tasks
 RUN apt-get update && \
-    apt-get install -y cmake libncurses5-dev libncursesw5-dev git && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y --no-install-recommends cmake libncurses5-dev libncursesw5-dev git nvtop && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN git clone https://github.com/Syllo/nvtop.git /run/nvtop && \
-    mkdir -p /run/nvtop/build && cd /run/nvtop/build && \
-    (cmake .. -DNVML_RETRIEVE_HEADER_ONLINE=True 2> /dev/null || echo "cmake was not successful") && \
-    (make 2> /dev/null || echo "make was not successful") && \
-    (make install 2> /dev/null || echo "make install was not successful") && \
-    rm -rf /run/nvtop
+# RUN git clone https://github.com/Syllo/nvtop.git /run/nvtop && \
+#     mkdir -p /run/nvtop/build && cd /run/nvtop/build && \
+#     (cmake .. -DNVML_RETRIEVE_HEADER_ONLINE=True 2> /dev/null || echo "cmake was not successful") && \
+#     (make 2> /dev/null || echo "make was not successful") && \
+#     (make install 2> /dev/null || echo "make install was not successful") && \
+#     rm -rf /run/nvtop
 
 # reinstall nvcc with cuda-nvcc to install ptax
-RUN /opt/conda/bin/conda install -c nvidia cuda-nvcc -y
-RUN ln -s /opt/conda/bin/ptxas /usr/bin/ptxas
-
-# fix permissions of conda
-RUN conda clean --all -f -y && \
+USER $NB_UID
+RUN conda install -c nvidia cuda-nvcc -y && \
+    conda clean --all -f -y && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
+
+USER root
+RUN ln -s /opt/conda/bin/ptxas /usr/bin/ptxas
 
 USER $NB_UID
 
@@ -496,38 +504,39 @@ LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathem
 
 USER root
 
-# fix permissions of conda
-RUN fix-permissions $CONDA_DIR
+# Install useful packages and Graphviz
+RUN apt-get update \
+ && apt-get -y install --no-install-recommends htop apt-utils iputils-ping graphviz libgraphviz-dev openssh-client \
+ && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install usefull packages and Graphviz
+USER $NB_UID
 RUN set -ex \
  && buildDeps=' \
     graphviz==0.19.1 \
     pytest==7.2.2 \
 ' \
- && apt-get update \
- && apt-get -y install htop apt-utils iputils-ping graphviz libgraphviz-dev openssh-client \
- && pip install --no-cache-dir $buildDeps
+ && pip install --no-cache-dir $buildDeps \
+ && fix-permissions "${CONDA_DIR}" \
+ && fix-permissions "/home/${NB_USER}"
 
-# install extension manager
-RUN pip install --no-cache-dir jupyter_contrib_nbextensions==0.7.0 \
-  jupyter_nbextensions_configurator==0.6.1
-
-# install git extension
-RUN pip install --no-cache-dir jupyterlab-git==0.41.0
-
-# install plotly extension
-RUN pip install --no-cache-dir plotly==5.13.1
-
-# install drawio and graphical extensions
-RUN pip install --no-cache-dir jupyterlab-drawio==0.9.0 rise==5.7.1
-RUN pip install --no-cache-dir ipyleaflet==0.17.2 ipywidgets==8.0.4
-
-# install spell checker
-RUN pip install --no-cache-dir jupyterlab-spellchecker==0.7.3
-
-# fix permissions of conda
-RUN fix-permissions /home/$NB_USER
+RUN pip install --no-cache-dir \
+    # install extension manager
+    jupyter_contrib_nbextensions==0.7.0 \
+    jupyter_nbextensions_configurator==0.6.1 \
+    # install git extension
+    jupyterlab-git==0.41.0 \
+    # install plotly extension
+    plotly==5.13.1 \
+    # install drawio and graphical extensions
+    jupyterlab-drawio==0.9.0 \
+    rise==5.7.1 \
+    ipyleaflet==0.17.2 \
+    ipywidgets==8.0.4 \
+    # install spell checker
+    jupyterlab-spellchecker==0.7.3 && \
+    # fix permissions of conda
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
 
 # Switch back to jovyan to avoid accidental container runs as root
 USER $NB_UID
