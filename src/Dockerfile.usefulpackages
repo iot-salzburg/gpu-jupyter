@@ -17,6 +17,14 @@ RUN set -ex \
  && fix-permissions "${CONDA_DIR}" \
  && fix-permissions "/home/${NB_USER}"
 
+# upgrade jupyter-server for compatibility
+RUN pip install --no-cache-dir --upgrade \
+    distributed==2023.3.0 \
+    jupyter-server==2.4 \
+    # fix permissions of conda
+ && fix-permissions "${CONDA_DIR}" \
+ && fix-permissions "/home/${NB_USER}"
+
 RUN pip install --no-cache-dir \
     # install extension manager
     jupyter_contrib_nbextensions==0.7.0 \

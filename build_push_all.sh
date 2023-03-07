@@ -18,7 +18,7 @@ echo
 echo
 echo "build, run and push full image with tag $TAGNAME."
 bash generate-Dockerfile.sh
-docker build --no-cache -t cschranz/gpu-jupyter:$TAGNAME .build/  # build this from a fresh install
+docker build -t cschranz/gpu-jupyter:$TAGNAME .build/  # build this from a fresh install
 
 export IMG_ID=$(docker image ls | grep $TAGNAME | grep -v _python-only | grep -v _slim | head -1 | awk '{print $3}')
 echo "push image with ID $IMG_ID and Tag $TAGNAME ."
