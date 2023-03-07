@@ -3,12 +3,22 @@ LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mat
 # Install Tensorflow, check compatibility here:
 # https://www.tensorflow.org/install/source#gpu
 # installation via conda leads to errors in version 4.8.2
+USER ${NB_UID}
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir tensorflow==2.10.1 keras==2.10
+    pip install --no-cache-dir tensorflow==2.10.1 keras==2.10 && \
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
+
+
 
 # Install PyTorch with dependencies
 RUN conda install --quiet --yes \
-    pyyaml mkl mkl-include setuptools cmake cffi typing
+    pyyaml mkl mkl-include setuptools cmake cffi typing && \
+    conda clean --all -f -y && \
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
+
+
 
 # Check compatibility here:
 # https://pytorch.org/get-started/locally/
@@ -22,7 +32,10 @@ RUN set -ex \
     torchaudio==0.13.1 \
     torchviz==0.0.2 \
 ' \
- && pip install --no-cache-dir $buildDeps --extra-index-url https://download.pytorch.org/whl/cu116
+ && pip install --no-cache-dir $buildDeps --extra-index-url https://download.pytorch.org/whl/cu116 \
+ && fix-permissions "${CONDA_DIR}" \
+ && fix-permissions "/home/${NB_USER}"
+
 
 ENV CUDA_PATH=/opt/conda/
 
@@ -41,12 +54,13 @@ RUN git clone https://github.com/Syllo/nvtop.git /run/nvtop && \
     rm -rf /run/nvtop
 
 # reinstall nvcc with cuda-nvcc to install ptax
-RUN /opt/conda/bin/conda install -c nvidia cuda-nvcc -y
-RUN ln -s /opt/conda/bin/ptxas /usr/bin/ptxas
-
-# fix permissions of conda
-RUN conda clean --all -f -y && \
+USER $NB_UID
+RUN conda install -c nvidia cuda-nvcc -y && \
+    conda clean --all -f -y && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
+
+USER root
+RUN ln -s /opt/conda/bin/ptxas /usr/bin/ptxas
 
 USER $NB_UID

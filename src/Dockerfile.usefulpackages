@@ -2,38 +2,38 @@ LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathem
 
 USER root
 
-# fix permissions of conda
-RUN fix-permissions $CONDA_DIR
+# Install useful packages and Graphviz
+RUN apt-get update \
+ && apt-get -y install htop apt-utils iputils-ping graphviz libgraphviz-dev openssh-client
 
-# Install usefull packages and Graphviz
+USER $NB_UID
 RUN set -ex \
  && buildDeps=' \
     graphviz==0.19.1 \
     pytest==7.2.2 \
 ' \
- && apt-get update \
- && apt-get -y install htop apt-utils iputils-ping graphviz libgraphviz-dev openssh-client \
- && pip install --no-cache-dir $buildDeps
+ && pip install --no-cache-dir $buildDeps \
+ && fix-permissions "${CONDA_DIR}" \
+ && fix-permissions "/home/${NB_USER}"
 
-# install extension manager
-RUN pip install --no-cache-dir jupyter_contrib_nbextensions==0.7.0 \
-  jupyter_nbextensions_configurator==0.6.1
-
-# install git extension
-RUN pip install --no-cache-dir jupyterlab-git==0.41.0
-
-# install plotly extension
-RUN pip install --no-cache-dir plotly==5.13.1
-
-# install drawio and graphical extensions
-RUN pip install --no-cache-dir jupyterlab-drawio==0.9.0 rise==5.7.1
-RUN pip install --no-cache-dir ipyleaflet==0.17.2 ipywidgets==8.0.4
-
-# install spell checker
-RUN pip install --no-cache-dir jupyterlab-spellchecker==0.7.3
-
-# fix permissions of conda
-RUN fix-permissions /home/$NB_USER
+RUN pip install --no-cache-dir \
+    # install extension manager
+    jupyter_contrib_nbextensions==0.7.0 \
+    jupyter_nbextensions_configurator==0.6.1 \
+    # install git extension
+    jupyterlab-git==0.41.0 \
+    # install plotly extension
+    plotly==5.13.1 \
+    # install drawio and graphical extensions
+    jupyterlab-drawio==0.9.0 \
+    rise==5.7.1 \
+    ipyleaflet==0.17.2 \
+    ipywidgets==8.0.4 \
+    # install spell checker
+    jupyterlab-spellchecker==0.7.3 && \
+    # fix permissions of conda
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
 
 # Switch back to jovyan to avoid accidental container runs as root
 USER $NB_UID
