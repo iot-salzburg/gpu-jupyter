@@ -37,7 +37,7 @@ ENV CUDA_PATH=/opt/conda/
 
 # Install nvtop to monitor the gpu tasks
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends cmake libncurses5-dev libncursesw5-dev git nvtop && \
+    apt-get install -y --no-install-recommends cmake libncurses5-dev libncursesw5-dev git && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # reinstall nvcc with cuda-nvcc to install ptax
