@@ -33,35 +33,28 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
     `docker run --gpus all nvidia/cuda:11.6.2-cudnn8-runtime-ubuntu20.04 nvidia-smi`
     ```
     ```bash
-    Thu Jul 21 10:28:11 2022
-    +-----------------------------------------------------------------------------+
-    | NVIDIA-SMI 510.47.03    Driver Version: 510.47.03    CUDA Version: 11.6     |
-    |-------------------------------+----------------------+----------------------+
-    | GPU  Name        Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
-    | Fan  Temp  Perf  Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
-    |                               |                      |               MIG M. |
-    |===============================+======================+======================|
-    |   0  NVIDIA RTX A6000    Off  | 00000000:41:00.0 Off |                  Off |
-    | 30%   52C    P8    32W / 300W |    911MiB / 49140MiB |      0%      Default |
-    |                               |                      |                  N/A |
-    +-------------------------------+----------------------+----------------------+
-    |   1  NVIDIA RTX A6000    Off  | 00000000:61:00.0 Off |                  Off |
-    | 30%   47C    P8    32W / 300W |   1876MiB / 49140MiB |      0%      Default |
-    |                               |                      |                  N/A |
-    +-------------------------------+----------------------+----------------------+
+    Fri Mar 24 09:17:19 2023
+    +---------------------------------------------------------------------------------------+
+    | NVIDIA-SMI 530.30.02              Driver Version: 530.30.02    CUDA Version: 12.1     |
+    |-----------------------------------------+----------------------+----------------------+
+    | GPU  Name                  Persistence-M| Bus-Id        Disp.A | Volatile Uncorr. ECC |
+    | Fan  Temp  Perf            Pwr:Usage/Cap|         Memory-Usage | GPU-Util  Compute M. |
+    |                                         |                      |               MIG M. |
+    |=========================================+======================+======================|
+    |   0  NVIDIA GeForce RTX 2070 S...    On | 00000000:01:00.0 Off |                  N/A |
+    |  0%   36C    P8                1W / 215W|     65MiB /  8192MiB |      0%      Default |
+    |                                         |                      |                  N/A |
+    +-----------------------------------------+----------------------+----------------------+
 
-    +-----------------------------------------------------------------------------+
-    | Processes:                                                                  |
-    |  GPU   GI   CI        PID   Type   Process name                  GPU Memory |
-    |        ID   ID                                                   Usage      |
-    |=============================================================================|
-    |    0   N/A  N/A      1686      G                                       4MiB |
-    |    1   N/A  N/A      1686      G                                      64MiB |
-    |    1   N/A  N/A      1918      G                                       6MiB |
-    +-----------------------------------------------------------------------------+
+    +---------------------------------------------------------------------------------------+
+    | Processes:                                                                            |
+    |  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+    |        ID   ID                                                             Usage      |
+    |=======================================================================================|
+    +---------------------------------------------------------------------------------------+
     ``` 
-    It is important to keep your installed CUDA version in mind when you pull images. 
-    **Note that you can't run images based on `nvidia/cuda:11.2` if you have only CUDA version 10.1 installed.**
+    **It is important to keep your installed CUDA version in mind when you pull images. 
+    Note that you can't run images based on `nvidia/cuda:11.2` if you have only CUDA version 10.1 installed, use `nvcc --version` to get the correct cuda version. Additionally, a NVIDIA driver version of at least 520 is suggested, as the images are built and tested using this and later versions.**
     
 4. Pull and run the GPU-Jupyter image. This may take some time as the whole environment for data science will be downloaded:
    ```bash
@@ -278,7 +271,7 @@ Then re-generate, re-build and run the updated image.
 Note that a change in the first line of the Dockerfile will re-build the whole image.
 
 ```bash
-/generate-Dockerfile.sh --slim  # generate the Dockerfile with only a python interpreter, --python-only is default
+./generate-Dockerfile.sh --slim  # generate the Dockerfile with only a python interpreter, --python-only is default
 docker build -t gpu-jupyter .build/  # will take a while
 docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes -e NB_UID="$(id -u)" -e NB_GID="$(id -g)" --user root --restart always --name gpu-jupyter_1 gpu-jupyter
 ```
