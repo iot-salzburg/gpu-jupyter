@@ -139,13 +139,13 @@ if [[ "$USE_PASSWORD" == 1 ]]; then
   \"NotebookApp\": {
     \"password\": \"sha1:$SALT:$HASHED\"
   }
-}" > src/jupyter_notebook_config.json
-fi
+}" > .build/jupyter_notebook_config.json
 
-cp src/jupyter_notebook_config.json .build/
-echo >> $DOCKERFILE
-echo "# Copy jupyter_notebook_config.json" >> $DOCKERFILE
-echo "COPY jupyter_notebook_config.json /etc/jupyter/"  >> $DOCKERFILE
+  # copy the config into .build and append the lines into the Dockerfile
+  echo >> $DOCKERFILE
+  echo "# Copy jupyter_notebook_config.json" >> $DOCKERFILE
+  echo "COPY jupyter_notebook_config.json /etc/jupyter/"  >> $DOCKERFILE
+fi
 
 # Set environment variables
 export JUPYTER_UID=$(id -u)

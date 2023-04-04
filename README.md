@@ -70,9 +70,13 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
    docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.5_cuda-11.6_ubuntu-20.04_python-only
    ```
    This starts an instance of *GPU-Jupyter* with the tag `v1.5_cuda-11.6_ubuntu-20.04_python-only` at [http://localhost:8848](http://localhost:8848) (port `8848`).
-   If the image is pulled, you have to specify the jupyter-token that you get from `docker exec -it [container-name/ID] jupyter server list`. 
-   After that you can change the password or save the token for your browser.
-   The default password for a build image is `gpu-jupyter` which should be changed as described [below](#change-the-password).
+   To log into Jupyterlab, you have to specify a token that you get from:
+   ```bash
+   docker exec -it [container-ID/name] jupyter server list
+   # [JupyterServerListApp] Currently running servers:
+   # [JupyterServerListApp] http://791003a731e1:8888/?token=5b96bb15be315ccb24643ea368a52cc0ba13657fbc29e409 :: /home/jovyan
+   ``` 
+   You can optionally set a password in [http://localhost:8848/login](http://localhost:8848/login) or as described [below](#change-the-password).
 Additionally, data within the host's `data` directory is shared with the container.
 
     Note that the following images of GPU-Jupyter are available on [Dockerhub](https://hub.docker.com/r/cschranz/gpu-jupyter):
@@ -121,7 +125,7 @@ cd gpu-jupyter
 git branch  # Check for extisting branches
 git checkout v1.5_cuda-11.6_ubuntu-20.04  # select or create a new version
 # generate the Dockerfile with python and without Julia and R (see options: --help)
-./generate-Dockerfile.sh --python-only    
+./generate-Dockerfile.sh --python-only
 docker build -t gpu-jupyter .build/  # will take a while
 docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes -e NB_UID="$(id -u)" -e NB_GID="$(id -g)" --user root --restart always --name gpu-jupyter_1 gpu-jupyter
 ``` 
@@ -211,31 +215,14 @@ If you notice that an important package is missing in the default stack, please 
 
 There are two ways to set a password for GPU-Jupyter:
 
+1. Go to the login page ([http://192.168.48.48:8848/login](http://localhost:8848/login)) when logged out and setup a Password in the corresponding field.
 
-1. Use the `--password` or `--pw` option in the generate-Dockerfile.sh script to specify your desired password, like so:
+2. Use the `--password` or `--pw` option in the generate-Dockerfile.sh script to specify your desired password, like so:
 
     ```bash
     bash generate-Dockerfile.sh --password [your_password]
     ```
-    This will update the salted hashed token in the `src/jupyter_notebook_config.json` file. Note that the specified password may be visible in your account's bash history.
-
-2. Manually update the token in the `src/jupyter_notebook_config.json` file.
-    Therefore, hash your password in the form (password)(salt) using a sha1 hash generator, e.g., 
-the sha1 generator of [sha1-online.com](http://www.sha1-online.com/). The input with the 
-default password `gpu-jupyter` is concatenated by an arbitrary salt 
-`3b4b6378355` to `gpu-jupyter3b4b6378355` and is hashed to `642693b20f0a33bcad27b94293d0ed7db3408322`.
-
-    **Note: Never give away your own unhashed password!**
-
-    Then update the config file as shown below, generate the Dockerfile, and restart *GPU-Jupyter*.
-
-    ```json
-    {
-      "NotebookApp": {
-        "password": "sha1:3b4b6378355:642693b20f0a33bcad27b94293d0ed7db3408322"
-      }
-    }
-    ```
+    This will update automatically the salted hashed token in the `src/jupyter_notebook_config.json` file. Note that the specified password may be visible in your account's bash history.
 
 
 ### Adaptions for using Tensorboard
