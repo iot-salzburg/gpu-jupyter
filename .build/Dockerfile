@@ -425,6 +425,3 @@ RUN pip install --no-cache-dir \
 
 # Switch back to jovyan to avoid accidental container runs as root
 USER $NB_UID
-
-# Copy jupyter_notebook_config.json
-COPY jupyter_notebook_config.json /etc/jupyter/
