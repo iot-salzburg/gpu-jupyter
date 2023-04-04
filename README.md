@@ -76,7 +76,7 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
    # [JupyterServerListApp] Currently running servers:
    # [JupyterServerListApp] http://791003a731e1:8888/?token=5b96bb15be315ccb24643ea368a52cc0ba13657fbc29e409 :: /home/jovyan
    ``` 
-   You can optionally set a password in [http://localhost:8848/login](http://localhost:8848/login) or as described [below](#change-the-password).
+   You can optionally set a password in [http://localhost:8848/login](http://localhost:8848/login) or as described [below](#change-the-password) (former default password `gpu-jupyter`).
 Additionally, data within the host's `data` directory is shared with the container.
 
     Note that the following images of GPU-Jupyter are available on [Dockerhub](https://hub.docker.com/r/cschranz/gpu-jupyter):
