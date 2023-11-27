@@ -5,7 +5,7 @@ cd $(cd -P -- "$(dirname -- "$0")" && pwd -P)
 export DOCKERFILE=".build/Dockerfile"
 export STACKS_DIR=".build/docker-stacks"
 # please test the build of the commit in https://github.com/jupyter/docker-stacks/commits/main in advance
-export HEAD_COMMIT="efa95c2c5b9b095247cd2f5e55bc3b38c85da335"
+export HEAD_COMMIT="b8d617dc0568d60f6583c42f989da51ec80e9af6"
 
 while [[ "$#" -gt 0 ]]; do case $1 in
   -p|--pw|--password) PASSWORD="$2" && USE_PASSWORD=1; shift;;
@@ -63,18 +63,28 @@ cat src/Dockerfile.header >> $DOCKERFILE
 
 echo "
 ############################################################################
-#################### Dependency: jupyter/base-image ########################
+#################### Dependency: jupyter/docker-stacks-foundation ##########
 ############################################################################
 " >> $DOCKERFILE
-cat $STACKS_DIR/base-notebook/Dockerfile | grep -v 'BASE_CONTAINER' | grep -v 'FROM $ROOT_CONTAINER' >> $DOCKERFILE
+cat $STACKS_DIR/docker-stacks-foundation/Dockerfile | grep -v 'BASE_CONTAINER' | grep -v 'FROM $ROOT_CONTAINER' >> $DOCKERFILE
+
+echo "
+############################################################################
+#################### Dependency: jupyter/base-notebook #####################
+############################################################################
+" >> $DOCKERFILE
+cat $STACKS_DIR/base-notebook/Dockerfile | grep -v 'BASE_CONTAINER' >> $DOCKERFILE
 
 # copy files that are used during the build:
+cp $STACKS_DIR/docker-stacks-foundation/initial-condarc .build/
+cp $STACKS_DIR/docker-stacks-foundation/fix-permissions .build/
+cp $STACKS_DIR/docker-stacks-foundation/start.sh .build/
 cp $STACKS_DIR/base-notebook/jupyter_server_config.py .build/
-cp $STACKS_DIR/base-notebook/initial-condarc .build/
-cp $STACKS_DIR/base-notebook/fix-permissions .build/
-cp $STACKS_DIR/base-notebook/start.sh .build/
 cp $STACKS_DIR/base-notebook/start-notebook.sh .build/
 cp $STACKS_DIR/base-notebook/start-singleuser.sh .build/
+cp $STACKS_DIR/base-notebook/docker_healthcheck.py .build/
+cp -r $STACKS_DIR/minimal-notebook/setup-scripts .build/
+cp $STACKS_DIR/minimal-notebook/Rprofile.site .build/
 chmod 755 .build/*
 
 echo "
