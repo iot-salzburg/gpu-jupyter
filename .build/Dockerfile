@@ -447,7 +447,7 @@ LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mat
 # installation via conda leads to errors in version 4.8.2
 USER ${NB_UID}
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir tensorflow==2.14.0 keras==2.14.0 && \
+    pip install --no-cache-dir tensorflow==2.15.0 keras==2.15.0 && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
