@@ -250,7 +250,7 @@ If the port is exposed, tensorboard can be accessed in the browser on [localhost
 
 The GPU-libraries such as PyTorch and Tensorflow in `src/Docker.gpulibs` must support the CUDA version and NVIDIA drivers on the host machine. Check out the compatibility lists for [PyTorch](https://pytorch.org/get-started/locally/) and [Tensorflow](https://www.tensorflow.org/install/source#gpu) or search online for the explicit versions. In this setup, the NVIDIA Driver has version 530.30.02 and CUDA version 11.6.2 is used, which is compatible with Tensorflow 2.10 and PyTorch 1.12.
 
-The host's CUDA version must be equal to or higher than that of the container itself (in `Dockerfile.header`).
+The host's CUDA version must be equal to or higher than that used by the container (set within `Dockerfile.header`).
 Check the host's version with `nvcc --version` and the version compatibilities
 for CUDA-dependent packages as [Pytorch](https://pytorch.org/get-started/locally/)
  respectively [Tensorflow](https://www.tensorflow.org/install/gpu) previously.
@@ -431,7 +431,7 @@ To remove the service from the swarm, use:
     ```
     **Solution**:
     Check if the GPU is available on the host node via `nvidia-smi` and run with the described `docker`-commands.
-    If the error still occurs, so try there could be an issue that docker can't visualize the GPU.
+    If the error still occurs, so try there could be an issue that docker can't use the GPU. Please try [this](https://cschranz.medium.com/set-up-your-own-gpu-based-jupyterlab-e0d45fcacf43) or similar tutorials on how to install the required drivers.
 
 
 ### Contribution
