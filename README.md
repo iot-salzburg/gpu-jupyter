@@ -33,7 +33,7 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
 
 ## Quickstart
 
-1.  Ensure that you have access to a computer with an NVIDIA GPU. If you don’t have your own setup, you can try [Saturn Cloud](https://saturncloud.io/?utm_source=Medium+&utm_medium=TDS&utm_campaign=ChristophSchranz&utm_term=GPUJupyter) for a free GPU-powered Jupyter solution.
+1.  Ensure that you have access to a computer with an NVIDIA GPU. If you don’t have your own setup, you can try [Saturn Cloud](https://saturncloud.io/?utm_source=Github+&utm_Github=TDS&utm_campaign=ChristophSchranz&utm_term=GPUJupyter) for a free GPU-powered Jupyter solution.
 2.  Install [Docker](https://www.docker.com/community-edition#/download) version **1.10.0+**
  and [Docker Compose](https://docs.docker.com/compose/install/) version **1.28.0+**.
 3.  Get access to your GPU via CUDA drivers within Docker containers. For this, follow the installation steps in this
