@@ -4,7 +4,11 @@
 ![Github Workflow](https://github.com/iot-salzburg/gpu-jupyter/actions/workflows/default.yml/badge.svg)
 [![Docker Pulls](https://badgen.net/docker/pulls/cschranz/gpu-jupyter?icon=docker&label=Pulls)](https://hub.docker.com/r/cschranz/gpu-jupyter)
 [![Docker Stars](https://badgen.net/docker/stars/cschranz/gpu-jupyter?icon=docker&label=Stars)](https://hub.docker.com/r/cschranz/gpu-jupyter)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
+[![GitHub stars](https://badgen.net/github/stars/iot-salzburg/gpu-jupyter/)](https://GitHub.com/iot-salzburg/gpu-jupyter/network/)
+[![GitHub forks](https://badgen.net/github/forks/iot-salzburg/gpu-jupyter/)](https://GitHub.com/iot-salzburg/gpu-jupyter/stargazers/)
+[![GitHub pull-requests closed](https://badgen.net/github/closed-prs/iot-salzburg/gpu-jupyter)](https://github.com/iot-salzburg/gpu-jupyter/pulls?q=is%3Aclosed)
+[![GitHub commits](https://badgen.net/github/commits/iot-salzburg/gpu-jupyter)](https://GitHub.com/iot-salzburg/gpu-jupyter/commit/)
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/iot-salzburg/gpu-jupyter/graphs/commit-activity)
 
 ![Jupyterlab Overview](https://raw.githubusercontent.com/iot-salzburg/gpu-jupyter/master/extra/jupyterlab-overview.png)
 
