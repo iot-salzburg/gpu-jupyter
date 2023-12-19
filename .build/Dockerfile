@@ -380,6 +380,13 @@ LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mat
 # Install Tensorflow, check compatibility here:
 # https://www.tensorflow.org/install/source#gpu
 # installation via conda leads to errors in version 4.8.2
+# Install CUDA-specific nvidia libraries and update libcudnn8 before that
+USER root
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends  --allow-change-held-packages libcudnn8 && \
+    apt-get install -y --no-install-recommends libnvinfer-dev libnvinfer-plugin-dev  && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN cd /usr/lib/x86_64-linux-gnu && ln -s libnvinfer_plugin.so.8 libnvinfer_plugin.so.7 && ln -s libnvinfer.so.8 libnvinfer.so.7
 USER ${NB_UID}
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir tensorflow==2.15.0 keras==2.15.0 && \
