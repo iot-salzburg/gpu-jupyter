@@ -5,7 +5,7 @@ cd $(cd -P -- "$(dirname -- "$0")" && pwd -P)
 export DOCKERFILE=".build/Dockerfile"
 export STACKS_DIR=".build/docker-stacks"
 # please test the build of the commit in https://github.com/jupyter/docker-stacks/commits/main in advance
-export HEAD_COMMIT="1494233e27cdc70e3766ea2518e7153ee425fc4f"
+export HEAD_COMMIT="b8d617dc0568d60f6583c42f989da51ec80e9af6"
 
 while [[ "$#" -gt 0 ]]; do case $1 in
   -p|--pw|--password) PASSWORD="$2" && USE_PASSWORD=1; shift;;
@@ -66,44 +66,25 @@ echo "
 #################### Dependency: jupyter/docker-stacks-foundation ##########
 ############################################################################
 " >> $DOCKERFILE
-if [ -f "$STACKS_DIR/images/docker-stacks-foundation/Dockerfile" ]; then
-    cat $STACKS_DIR/images/docker-stacks-foundation/Dockerfile | grep -v 'BASE_CONTAINER' | grep -v 'FROM $ROOT_CONTAINER' >> $DOCKERFILE
-    # copy files that are used during the build
-    cp $STACKS_DIR/images/docker-stacks-foundation/initial-condarc .build/
-    cp $STACKS_DIR/images/docker-stacks-foundation/fix-permissions .build/
-    cp $STACKS_DIR/images/docker-stacks-foundation/start.sh .build/
-    cp $STACKS_DIR/images/docker-stacks-foundation/run-hooks.sh .build/
-    cp $STACKS_DIR/images/docker-stacks-foundation/10activate-conda-env.sh .build/
-else
-    cat $STACKS_DIR/docker-stacks-foundation/Dockerfile | grep -v 'BASE_CONTAINER' | grep -v 'FROM $ROOT_CONTAINER' >> $DOCKERFILE
-    # copy files that are used during the build
-    cp $STACKS_DIR/docker-stacks-foundation/initial-condarc .build/
-    cp $STACKS_DIR/docker-stacks-foundation/fix-permissions .build/
-    cp $STACKS_DIR/docker-stacks-foundation/start.sh .build/
-fi
+cat $STACKS_DIR/docker-stacks-foundation/Dockerfile | grep -v 'BASE_CONTAINER' | grep -v 'FROM $ROOT_CONTAINER' >> $DOCKERFILE
 
 echo "
 ############################################################################
 #################### Dependency: jupyter/base-notebook #####################
 ############################################################################
 " >> $DOCKERFILE
-if [ -f "$STACKS_DIR/images/base-notebook/Dockerfile" ]; then
-    cat $STACKS_DIR/images/base-notebook/Dockerfile | grep -v 'BASE_CONTAINER' >> $DOCKERFILE
-    # copy files that are used during the build
-    cp $STACKS_DIR/images/base-notebook/jupyter_server_config.py .build/
-    cp $STACKS_DIR/images/base-notebook/start-notebook.sh .build/
-    cp $STACKS_DIR/images/base-notebook/start-notebook.py .build/
-    cp $STACKS_DIR/images/base-notebook/start-singleuser.sh .build/
-    cp $STACKS_DIR/images/base-notebook/start-singleuser.py .build/
-    cp $STACKS_DIR/images/base-notebook/docker_healthcheck.py .build/
-else
-    cat $STACKS_DIR/base-notebook/Dockerfile | grep -v 'BASE_CONTAINER' >> $DOCKERFILE
-    # copy files that are used during the build
-    cp $STACKS_DIR/base-notebook/jupyter_server_config.py .build/
-    cp $STACKS_DIR/base-notebook/start-notebook.sh .build/
-    cp $STACKS_DIR/base-notebook/start-singleuser.sh .build/
-    cp $STACKS_DIR/base-notebook/docker_healthcheck.py .build/
-fi
+cat $STACKS_DIR/base-notebook/Dockerfile | grep -v 'BASE_CONTAINER' >> $DOCKERFILE
+
+# copy files that are used during the build:
+cp $STACKS_DIR/docker-stacks-foundation/initial-condarc .build/
+cp $STACKS_DIR/docker-stacks-foundation/fix-permissions .build/
+cp $STACKS_DIR/docker-stacks-foundation/start.sh .build/
+cp $STACKS_DIR/base-notebook/jupyter_server_config.py .build/
+cp $STACKS_DIR/base-notebook/start-notebook.sh .build/
+cp $STACKS_DIR/base-notebook/start-singleuser.sh .build/
+cp $STACKS_DIR/base-notebook/docker_healthcheck.py .build/
+cp -r $STACKS_DIR/minimal-notebook/setup-scripts .build/
+cp $STACKS_DIR/minimal-notebook/Rprofile.site .build/
 chmod 755 .build/*
 
 echo "
@@ -111,28 +92,14 @@ echo "
 ################# Dependency: jupyter/minimal-notebook #####################
 ############################################################################
 " >> $DOCKERFILE
-if [ -f "$STACKS_DIR/images/minimal-notebook/Dockerfile" ]; then
-    cat $STACKS_DIR/images/minimal-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
-    # copy files that are used during the build
-    cp -r $STACKS_DIR/images/minimal-notebook/setup-scripts .build/
-    cp $STACKS_DIR/images/minimal-notebook/Rprofile.site .build/
-else
-    cat $STACKS_DIR/minimal-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
-    # copy files that are used during the build
-    cp -r $STACKS_DIR/minimal-notebook/setup-scripts .build/
-    cp $STACKS_DIR/minimal-notebook/Rprofile.site .build/
-fi
+cat $STACKS_DIR/minimal-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
 
 echo "
 ############################################################################
 ################# Dependency: jupyter/scipy-notebook #######################
 ############################################################################
 " >> $DOCKERFILE
-if [ -f "$STACKS_DIR/images/scipy-notebook/Dockerfile" ]; then
-    cat $STACKS_DIR/images/scipy-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
-else
-    cat $STACKS_DIR/scipy-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
-fi
+cat $STACKS_DIR/scipy-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
 
 # install Julia and R if not excluded or spare mode is used
 if [[ "$no_datascience_notebook" != 1 ]]; then
@@ -141,11 +108,7 @@ if [[ "$no_datascience_notebook" != 1 ]]; then
   ################ Dependency: jupyter/datascience-notebook ##################
   ############################################################################
   " >> $DOCKERFILE
-    if [ -f "$STACKS_DIR/images/datascience-notebook/Dockerfile" ]; then
-        cat $STACKS_DIR/images/datascience-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
-    else
-        cat $STACKS_DIR/images/datascience-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
-    fi
+  cat $STACKS_DIR/datascience-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
 else
   echo "Set 'no-datascience-notebook' = 'python-only', not installing the datascience-notebook with Julia and R."
 fi
