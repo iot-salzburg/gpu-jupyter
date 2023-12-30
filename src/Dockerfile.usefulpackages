@@ -44,5 +44,13 @@ RUN pip install --no-cache-dir \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
+RUN pip install --no-cache-dir \
+    accelerate \
+    transformers \
+    datasets \
+    einops \
+    pynvml \
+    diffusers["torch"]
+
 # Switch back to jovyan to avoid accidental container runs as root
 USER $NB_UID
