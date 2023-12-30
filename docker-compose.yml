@@ -10,16 +10,16 @@ services:
             - capabilities:
               - gpu
     # # Set hardware limits: one GPU, max. 48GB RAM, max. 31 GPUs
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           capabilities: [gpu]
-    #           device_ids: ["0"]  # select one GPU
-    #     limits:
-    #       cpus: "31.0"
-    #       memory: 48g
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]
+              count: all
+        limits:
+          cpus: "31.0"
+          memory: 48g
     ports:
       - 8848:8888
     volumes:
