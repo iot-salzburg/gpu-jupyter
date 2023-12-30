@@ -17,9 +17,6 @@ services:
             - driver: nvidia
               capabilities: [gpu]
               count: all
-        limits:
-          cpus: "31.0"
-          memory: 48g
     ports:
       - 8848:8888
     volumes:
