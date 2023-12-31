@@ -69,9 +69,9 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
    ```bash
    cd your-working-directory
    ll data  # this path will be mounted by default
-   docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.5_cuda-12.0_ubuntu-22.04_python-only
+   docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.6_cuda-12.0_ubuntu-22.04
    ```
-   This starts an instance of *GPU-Jupyter* with the tag `v1.5_cuda-12.0_ubuntu-22.04_python-only` at [http://localhost:8848](http://localhost:8848) (port `8848`).
+   This starts an instance of *GPU-Jupyter* with the tag `v1.6_cuda-12.0_ubuntu-22.04` at [http://localhost:8848](http://localhost:8848) (port `8848`).
    To log into Jupyterlab, you have to specify a token that you get from:
    ```bash
    docker exec -it [container-ID/name] jupyter server list
@@ -82,6 +82,15 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
 Additionally, data within the host's `data` directory is shared with the container.
 
     Note that the following images of GPU-Jupyter are available on [Dockerhub](https://hub.docker.com/r/cschranz/gpu-jupyter):
+     - `v1.6_cuda-12.0_ubuntu-22.04` (full image)
+     - `v1.6_cuda-12.0_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
+     - `v1.6_cuda-12.0_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
+     - `v1.6_cuda-11.8_ubuntu-22.04` (full image)
+     - `v1.6_cuda-11.8_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
+     - `v1.6_cuda-11.8_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
+     - `v1.6_cuda-11.6_ubuntu-20.04` (full image)
+     - `v1.6_cuda-11.6_ubuntu-20.04_python-only` (only with a python interpreter and without Julia and R)
+     - `v1.6_cuda-11.6_ubuntu-20.04_slim` (only with a python interpreter and without additional packages)
      - `v1.5_cuda-12.0_ubuntu-22.04` (full image)
      - `v1.5_cuda-12.0_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
      - `v1.5_cuda-12.0_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
@@ -107,7 +116,7 @@ Additionally, data within the host's `data` directory is shared with the contain
      - `v1.4_cuda-10.1_ubuntu-18.04_python-only` (only with a python interpreter and without Julia and R)
      - `v1.4_cuda-10.1_ubuntu-18.04_slim` (only with a python interpreter and without additional packages)
 
-   The version, e.g. `v1.5`, declares the version of the generator setup.
+   The version, e.g. `v1.6`, declares the version of the generator setup.
    The Cuda version, e.g. `cuda-12.0`, must match the CUDA driver version and be supported by the GPU libraries.
    These and older versions of GPU-Jupyter are listed on [Dockerhub](https://hub.docker.com/r/cschranz/gpu-jupyter/tags?page=1&ordering=last_updated).
    In case you are using another version or the GPU libraries don't work on your hardware, please try to build the image on your own as described below.
@@ -122,7 +131,7 @@ we recommend checking out this [tutorial](https://www.youtube.com/watch?v=7wfPqA
 
 ## Build Your Image
 
-Building a custom Docker image is the recommended option if you have a different GPU architecture or if you want to customize the pre-installed packages. The Dockerfiles in `src/`  can be modified to achieve this. To use a custom base image, modify `src/Dockerfile.header`. To install specific GPU-related libraries, modify `src/Dockerfile.gpulibs`, and to add specific libraries, append them to `src/Dockerfile.usefulpackages`.
+Building a custom Docker image is the recommended option if you have a different GPU architecture or if you want to customize the pre-installed packages. The Dockerfiles in `custom/`  can be modified to achieve this. To use a custom base image, modify `custom/header.Dockerfile`. To install specific GPU-related libraries, modify `custom/gpulibs.Dockerfile`, and to add specific libraries, append them to `custom/usefulpackages.Dockerfile`.
 
 After making the necessary modifications, regenerate the `Dockerfile` in `/.build`. Once you have confirmed that your GPU is accessible within Docker containers by running `docker run --gpus all nvidia/cuda:12.0.1-cudnn8-runtime-ubuntu22.04 nvidia-smi` and seeing the GPU statistics, you can generate, build, and run the Docker image.
 The following commands will start *GPU-Jupyter* on [localhost:8848](http://localhost:8848) with the default password `gpu-jupyter`.
@@ -131,7 +140,7 @@ The following commands will start *GPU-Jupyter* on [localhost:8848](http://local
 git clone https://github.com/iot-salzburg/gpu-jupyter.git
 cd gpu-jupyter
 git branch  # Check for extisting branches
-git checkout v1.5_cuda-12.0_ubuntu-22.04  # select or create a new version
+git checkout v1.6_cuda-12.0_ubuntu-22.04  # select or create a new version
 # generate the Dockerfile with python and without Julia and R (see options: --help)
 ./generate-Dockerfile.sh --python-only
 docker build -t gpu-jupyter .build/  # will take a while
@@ -188,7 +197,7 @@ The script has the following parameters:
 * `-h|--help`: Show a help message.
 
 * `-p|--pw|--password`: Set the password for *GPU-Jupyter* by updating
- the salted hashed token in `src/jupyter_notebook_config.json`.
+ the salted hashed token in `custom/jupyter_notebook_config.json`.
 
 * `-c|--commit`: specify a commit or `"latest"` for the `docker-stacks`,
 the default commit is a working one.
@@ -198,22 +207,22 @@ As some installations are not needed by everyone, there is the possibility to sk
 installations to reduce the size of the image.
 Here the `docker-stack` `scipy-notebook` is used instead of `datascience-notebook`
 that comes with Julia and R.
-Moreover, none of the packages within `src/Dockerfile.usefulpackages` is installed.
+Moreover, none of the packages within `custom/usefulpackages.Dockerfile` is installed.
 
 * `--python-only|--no-datascience-notebook`: As the name suggests, the `docker-stack` `datascience-notebook`
 is not installed
-on top of the `scipy-notebook`, but the packages within `src/Dockerfile.usefulpackages` are.
+on top of the `scipy-notebook`, but the packages within `custom/usefulpackages.Dockerfile` are.
 
 * `--no-useful-packages`: On top of the `docker-stack` `datascience-notebook` (Julia and R),
-the essential `gpulibs` are installed, but not the packages within `src/Dockerfile.usefulpackages`.
+the essential `gpulibs` are installed, but not the packages within `custom/usefulpackages.Dockerfile`.
 
 Note that only one of the parameters `--slim`, `--python-only`, and `--no-useful-packages` can be used at the same time:
 
 
 ### Custom Installations
 
-If you need to install custom packages within the container, you can modify the `src/Dockerfile.usefulpackages` file or do it directly within the container.
-**Keep in mind that every time a Dockerfile is generated, the file `.build/Dockerfile` is overwritten, so it's best to append custom installations in `src/Dockerfile.usefulpackages` or `generate-Dockerfile.sh`.**
+If you need to install custom packages within the container, you can modify the `custom/usefulpackages.Dockerfile` file or do it directly within the container.
+**Keep in mind that every time a Dockerfile is generated, the file `.build/Dockerfile` is overwritten, so it's best to append custom installations in `custom/usefulpackages.Dockerfile` or `generate-Dockerfile.sh`.**
 
 Some useful packages are suggested in the [Extension docs](https://jupyterlab.readthedocs.io/en/stable/user/extensions.html) and in this blog article from [neptune.ai](https://neptune.ai/blog/jupyterlab-extensions-for-machine-learning).
 If you notice that an important package is missing in the default stack, please let us know so we can update it.
@@ -230,7 +239,7 @@ There are two ways to set a password for GPU-Jupyter:
     ```bash
     bash generate-Dockerfile.sh --password [your_password]
     ```
-    This will update automatically the salted hashed token in the `src/jupyter_notebook_config.json` file. Note that the specified password may be visible in your account's bash history.
+    This will update automatically the salted hashed token in the `custom/jupyter_notebook_config.json` file. Note that the specified password may be visible in your account's bash history.
 
 
 ### Adaptions for using Tensorboard
@@ -257,14 +266,14 @@ If the port is exposed, tensorboard can be accessed in the browser on [localhost
 
 #### Update CUDA to another version
 
-The GPU-libraries such as PyTorch and Tensorflow in `src/Docker.gpulibs` must support the CUDA version and NVIDIA drivers on the host machine. Check out the compatibility lists for [PyTorch](https://pytorch.org/get-started/locally/) and [Tensorflow](https://www.tensorflow.org/install/source#gpu) or search online for the explicit versions. In this setup, the NVIDIA Driver has version 530.30.02 and CUDA version 11.6.2 is used, which is compatible with Tensorflow 2.10 and PyTorch 1.12.
+The GPU-libraries such as PyTorch and Tensorflow in `custom/Docker.gpulibs` must support the CUDA version and NVIDIA drivers on the host machine. Check out the compatibility lists for [PyTorch](https://pytorch.org/get-started/locally/) and [Tensorflow](https://www.tensorflow.org/install/source#gpu) or search online for the explicit versions. In this setup, the NVIDIA Driver has version 530.30.02 and CUDA version 11.6.2 is used, which is compatible with Tensorflow 2.10 and PyTorch 1.12.
 
-The host's CUDA version must be equal to or higher than that used by the container (set within `Dockerfile.header`).
+The host's CUDA version must be equal to or higher than that used by the container (set within `custom/header.Dockerfile`).
 Check the host's version with `nvcc --version` and the version compatibilities
 for CUDA-dependent packages as [Pytorch](https://pytorch.org/get-started/locally/)
  respectively [Tensorflow](https://www.tensorflow.org/install/gpu) previously.
 Then modify, if supported, the CUDA-version (find all tags [here](https://hub.docker.com/r/nvidia/cuda/tags))
-in `src/Dockerfile.header` to, e.g.:
+in `custom/header.Dockerfile` to, e.g.:
 the line:
 
     FROM nvidia/cuda:X.Y-base-ubuntu20.04
