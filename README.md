@@ -69,9 +69,9 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
    ```bash
    cd your-working-directory
    ll data  # this path will be mounted by default
-   docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.6_cuda-11.8_ubuntu-22.04_python-only
+   docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.6_cuda-12.0_ubuntu-22.04
    ```
-   This starts an instance of *GPU-Jupyter* with the tag `v1.6_cuda-11.8_ubuntu-22.04_python-only` at [http://localhost:8848](http://localhost:8848) (port `8848`).
+   This starts an instance of *GPU-Jupyter* with the tag `v1.6_cuda-12.0_ubuntu-22.04` at [http://localhost:8848](http://localhost:8848) (port `8848`).
    To log into Jupyterlab, you have to specify a token that you get from:
    ```bash
    docker exec -it [container-ID/name] jupyter server list
@@ -82,6 +82,9 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
 Additionally, data within the host's `data` directory is shared with the container.
 
     Note that the following images of GPU-Jupyter are available on [Dockerhub](https://hub.docker.com/r/cschranz/gpu-jupyter):
+     - `v1.6_cuda-12.0_ubuntu-22.04` (full image)
+     - `v1.6_cuda-12.0_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
+     - `v1.6_cuda-12.0_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
      - `v1.6_cuda-11.8_ubuntu-22.04` (full image)
      - `v1.6_cuda-11.8_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
      - `v1.6_cuda-11.8_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
@@ -137,7 +140,7 @@ The following commands will start *GPU-Jupyter* on [localhost:8848](http://local
 git clone https://github.com/iot-salzburg/gpu-jupyter.git
 cd gpu-jupyter
 git branch  # Check for extisting branches
-git checkout v1.6_cuda-11.8_ubuntu-22.04  # select or create a new version
+git checkout v1.6_cuda-12.0_ubuntu-22.04  # select or create a new version
 # generate the Dockerfile with python and without Julia and R (see options: --help)
 ./generate-Dockerfile.sh --python-only
 docker build -t gpu-jupyter .build/  # will take a while
