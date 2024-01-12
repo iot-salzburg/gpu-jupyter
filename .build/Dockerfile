@@ -120,23 +120,23 @@ WORKDIR /tmp
 RUN set -x && \
     arch=$(uname -m) && \
     if [ "${arch}" = "x86_64" ]; then \
-        # Should be simpler, see <https://github.com/mamba-org/mamba/issues/1437>
-        arch="64"; \
+    # Should be simpler, see <https://github.com/mamba-org/mamba/issues/1437>
+    arch="64"; \
     fi && \
     wget --progress=dot:giga -O /tmp/micromamba.tar.bz2 \
-        "https://micromamba.snakepit.net/api/micromamba/linux-${arch}/latest" && \
+    "https://micromamba.snakepit.net/api/micromamba/linux-${arch}/latest" && \
     tar -xvjf /tmp/micromamba.tar.bz2 --strip-components=1 bin/micromamba && \
     rm /tmp/micromamba.tar.bz2 && \
     PYTHON_SPECIFIER="python=${PYTHON_VERSION}" && \
     if [[ "${PYTHON_VERSION}" == "default" ]]; then PYTHON_SPECIFIER="python"; fi && \
     # Install the packages
     ./micromamba install \
-        --root-prefix="${CONDA_DIR}" \
-        --prefix="${CONDA_DIR}" \
-        --yes \
-        "${PYTHON_SPECIFIER}" \
-        'mamba' \
-        'jupyter_core' && \
+    --root-prefix="${CONDA_DIR}" \
+    --prefix="${CONDA_DIR}" \
+    --yes \
+    "${PYTHON_SPECIFIER}" \
+    'mamba' \
+    'jupyter_core' && \
     rm micromamba && \
     # Pin major.minor version of python
     mamba list python | grep '^python ' | tr -s ' ' | cut -d ' ' -f 1,2 >> "${CONDA_DIR}/conda-meta/pinned" && \
@@ -406,14 +406,14 @@ RUN mamba install --quiet --yes \
 # RUN pip install --no-cache-dir torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0  && \
 #     torchviz==0.0.2 --extra-index-url https://download.pytorch.org/whl/cu118
 RUN set -ex \
- && buildDeps=' \
+    && buildDeps=' \
     torch==2.1.2 \
     torchvision==0.16.2 \
     torchaudio==2.1.2 \
-' \
- && pip install --no-cache-dir $buildDeps \
- && fix-permissions "${CONDA_DIR}" \
- && fix-permissions "/home/${NB_USER}"
+    ' \
+    && pip install --no-cache-dir $buildDeps \
+    && fix-permissions "${CONDA_DIR}" \
+    && fix-permissions "/home/${NB_USER}"
 
 USER root
 ENV CUDA_PATH=/opt/conda/
@@ -435,36 +435,36 @@ RUN ln -s $CONDA_DIR/bin/ptxas /usr/bin/ptxas
 
 USER $NB_UID
 
-  ############################################################################
-  ############################ Useful packages ###############################
-  ############################################################################
-  
+############################################################################
+############################ Useful packages ###############################
+############################################################################
+
 LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathematical Michael <consistentbayes@gmail.com>"
 
 USER root
 
 # Install useful packages and Graphviz
 RUN apt-get update \
- && apt-get -y install --no-install-recommends htop apt-utils iputils-ping graphviz libgraphviz-dev openssh-client \
- && apt-get clean && rm -rf /var/lib/apt/lists/*
+    && apt-get -y install --no-install-recommends htop apt-utils iputils-ping graphviz libgraphviz-dev openssh-client \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 USER $NB_UID
 RUN set -ex \
- && buildDeps=' \
+    && buildDeps=' \
     graphviz==0.19.1 \
     pytest==7.2.2 \
-' \
- && pip install --no-cache-dir $buildDeps \
- && fix-permissions "${CONDA_DIR}" \
- && fix-permissions "/home/${NB_USER}"
+    ' \
+    && pip install --no-cache-dir $buildDeps \
+    && fix-permissions "${CONDA_DIR}" \
+    && fix-permissions "/home/${NB_USER}"
 
 # upgrade jupyter-server for compatibility
 RUN pip install --no-cache-dir --upgrade \
     distributed==2023.3.0 \
     jupyter-server==2.4 \
     # fix permissions of conda
- && fix-permissions "${CONDA_DIR}" \
- && fix-permissions "/home/${NB_USER}"
+    && fix-permissions "${CONDA_DIR}" \
+    && fix-permissions "/home/${NB_USER}"
 
 RUN pip install --no-cache-dir \
     # install extension manager

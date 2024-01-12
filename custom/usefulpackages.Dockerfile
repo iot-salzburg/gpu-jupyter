@@ -4,31 +4,31 @@ USER root
 
 # Install useful packages and Graphviz
 RUN apt-get update \
- && apt-get -y install --no-install-recommends htop apt-utils iputils-ping graphviz libgraphviz-dev openssh-client \
- && apt-get clean && rm -rf /var/lib/apt/lists/*
+    && apt-get -y install --no-install-recommends htop apt-utils iputils-ping graphviz libgraphviz-dev openssh-client \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 USER $NB_UID
 RUN set -ex \
- && buildDeps=' \
+    && buildDeps=' \
     graphviz==0.19.1 \
     pytest==7.2.2 \
-' \
- && pip install --no-cache-dir $buildDeps \
- && fix-permissions "${CONDA_DIR}" \
- && fix-permissions "/home/${NB_USER}"
+    ' \
+    && pip install --no-cache-dir $buildDeps \
+    && fix-permissions "${CONDA_DIR}" \
+    && fix-permissions "/home/${NB_USER}"
 
 # upgrade jupyter-server for compatibility
 RUN pip install --no-cache-dir --upgrade \
     distributed==2023.3.0 \
     jupyter-server==2.4 \
     # fix permissions of conda
- && fix-permissions "${CONDA_DIR}" \
- && fix-permissions "/home/${NB_USER}"
+    && fix-permissions "${CONDA_DIR}" \
+    && fix-permissions "/home/${NB_USER}"
 
 RUN pip install --no-cache-dir \
     # install extension manager
     jupyter_contrib_nbextensions==0.7.0 \
-    jupyter_nbextensions_configurator==0.6.1 \
+    jupyter_nbextensions_configurator==0.6.3 \
     # install git extension
     jupyterlab-git==0.41.0 \
     # install plotly extension
