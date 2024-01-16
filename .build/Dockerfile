@@ -425,7 +425,14 @@ RUN apt-get update && \
 
 # reinstall nvcc with cuda-nvcc to install ptax
 USER $NB_UID
-RUN mamba install -c nvidia cuda-nvcc -y && \
+# These need to be two separate pip install commands, otherwise it will throw an error
+# attempting to resolve the nvidia-cuda-nvcc package at the same time as nvidia-pyindex
+RUN pip install --no-cache-dir nvidia-pyindex && \
+    pip install --no-cache-dir nvidia-cuda-nvcc && \
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
+
+RUN mamba install -c nvidia cuda-nvcc=11.8.89 -y && \
     mamba clean --all -f -y && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
