@@ -29,6 +29,7 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
 4. [Configuration](#configuration)
 5. [Deployment](#deployment-in-the-docker-swarm)
 6. [Issues and Contributing](#issues-and-contributing)
+7. [Support](#support)
 
 
 ## Quickstart
@@ -451,27 +452,6 @@ To remove the service from the swarm, use:
     Check if the GPU is available on the host node via `nvidia-smi` and run with the described `docker`-commands.
     If the error still occurs, so try there could be an issue that docker can't use the GPU. Please try [this](https://cschranz.medium.com/set-up-your-own-gpu-based-jupyterlab-e0d45fcacf43) or similar tutorials on how to install the required drivers.
 
-
-## Support
-
-For commercial support, please contact [b-data](https://www.b-data.io) by email: <support@b-data.ch>.
-
-
-b-data GmbH tailors the [JupyterLab images](https://github.com/b-data/jupyterlab-python-docker-stack) to your needs, e.g.
-
-* Integration of self-signed CA certificates to enable communication with web services on the intranet
-
-* Setting up the necessary environment variables so that everything works behind a corporate proxy server
-
-Additionally, the JupyterHub setup can be customised to allow
-
-* Authentication with AD/LDAP
-
-* Mounting CIFS/SMB file shares
-
-and much more.
-
-
 ### Contribution
 
 This project has the intention to create a robust image for CUDA-based GPU applications,
@@ -480,3 +460,28 @@ Please help us to improve this project, by:
 
 * [filing a new issue](https://github.com/iot-salzburg/gpu-jupyter/issues/new)
 * [open a pull request](https://help.github.com/articles/using-pull-requests/)
+
+## Support
+
+For commercial support, please contact [b-data](https://github.com/b-data) by
+email: <support@b-data.ch>.
+
+b-data maintains its own CUDA-enabled
+[JupyterLab](https://github.com/b-data/jupyterlab-r-docker-stack)
+[docker](https://github.com/b-data/jupyterlab-python-docker-stack)
+[stacks](https://github.com/b-data/jupyterlab-julia-docker-stack) and tailors
+them to your needs, e.g.
+
+- Integration of self-signed CA certificates to enable communication with web
+  services on the intranet.
+- Setting up the necessary environment variables so that everything works
+  behind a corporate proxy server.
+
+Additionally, the
+[JupyterHub](https://github.com/b-data/docker-deployment-jupyter) setup can be
+customised to allow
+
+- authentication with AD/LDAP
+- mounting CIFS/SMB file shares
+
+and much more.
