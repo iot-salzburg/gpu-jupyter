@@ -452,6 +452,26 @@ To remove the service from the swarm, use:
     If the error still occurs, so try there could be an issue that docker can't use the GPU. Please try [this](https://cschranz.medium.com/set-up-your-own-gpu-based-jupyterlab-e0d45fcacf43) or similar tutorials on how to install the required drivers.
 
 
+## Support
+
+For commercial support, please contact [b-data](https://www.b-data.io) by email: <support@b-data.ch>.
+
+
+b-data GmbH tailors the JupyterLab images to your needs, e.g.
+
+* Integration of self-signed CA certificates to enable communication with web services on the intranet
+
+* Setting up the necessary environment variables so that everything works behind a corporate proxy server
+
+Additionally, the JupyterHub setup can be customised to allow
+
+* Authentication with AD/LDAP
+
+* Mounting CIFS/SMB file shares
+
+and much more.
+
+
 ### Contribution
 
 This project has the intention to create a robust image for CUDA-based GPU applications,
