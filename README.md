@@ -457,7 +457,7 @@ To remove the service from the swarm, use:
 For commercial support, please contact [b-data](https://www.b-data.io) by email: <support@b-data.ch>.
 
 
-b-data GmbH tailors the JupyterLab images to your needs, e.g.
+b-data GmbH tailors the [JupyterLab images](https://github.com/b-data/jupyterlab-python-docker-stack) to your needs, e.g.
 
 * Integration of self-signed CA certificates to enable communication with web services on the intranet
 
