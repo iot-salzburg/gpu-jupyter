@@ -423,9 +423,17 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends cmake libncurses5-dev libncursesw5-dev git && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
+USER $NB_UID
+# These need to be two separate pip install commands, otherwise it will throw an error
+# attempting to resolve the nvidia-cuda-nvcc package at the same time as nvidia-pyindex
+RUN pip install --no-cache-dir nvidia-pyindex && \
+    pip install --no-cache-dir nvidia-cuda-nvcc && \
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
+
 # reinstall nvcc with cuda-nvcc to install ptax
 USER $NB_UID
-RUN mamba install -c nvidia cuda-nvcc -y && \
+RUN mamba install -c nvidia cuda-nvcc=12.0.140 -y && \
     mamba clean --all -f -y && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
