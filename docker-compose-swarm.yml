@@ -12,6 +12,7 @@ services:
       JUPYTER_ENABLE_LAB: "yes"
       NB_UID: ${JUPYTER_UID:-1000}
       NB_GID: ${JUPYTER_GID:-1000}
+      JUPYTER_TOKEN: ${JUPYTER_TOKEN}
     # enable sudo permissions
     user:
       "root"

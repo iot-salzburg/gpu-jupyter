@@ -232,7 +232,37 @@ Some useful packages are suggested in the [Extension docs](https://jupyterlab.re
 If you notice that an important package is missing in the default stack, please let us know so we can update it.
 
 
-### Change the Password
+### Authentification
+
+### Set a Static Token
+
+Jupyter by default regenerates a new token on each new start.
+GPU-Jupyter provides the environment variable `JUPYTER_TOKEN` to set a customized static token.
+This option is practicable if the host machine is periodically restartet.
+It is suggested to use a long token such as a UUID:
+
+```bash
+export JUPYTER_TOKEN=$(uuidgen)
+```
+
+ - For Docker add the parameter `-e JUPYTER_TOKEN=${JUPYTER_TOKEN}`, e.g.:
+
+    ```bash
+    docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes -e NB_UID="$(id -u)" -e NB_GID="$(id -g)" -e JUPYTER_TOKEN=${JUPYTER_TOKEN} --user root --restart always --name gpu-jupyter_1 gpu-jupyter
+    ```
+
+- In `docker-compose.yml`, the environment variable can be set under
+ `ENVIRONMENT`:
+
+    `NB_GID: ${JUPYTER_GID:-1000}`
+
+The static token can be requested using `docker exec`:
+```bash
+docker exec -it gpu-jupyter_1 jupyter server list
+```
+
+
+#### Set a custom Password
 
 There are two ways to set a password for GPU-Jupyter:
 
@@ -243,7 +273,7 @@ There are two ways to set a password for GPU-Jupyter:
     ```bash
     bash generate-Dockerfile.sh --password [your_password]
     ```
-    This will update automatically the salted hashed token in the `custom/jupyter_notebook_config.json` file. Note that the specified password may be visible in your account's bash history.
+    This will update automatically the salted hashed token in the `.build/jupyter_notebook_config.json` file. Note that the specified password may be visible in your account's bash history.
 
 
 ### Adaptions for using Tensorboard
