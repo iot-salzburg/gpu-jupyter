@@ -387,6 +387,7 @@ LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mat
 # https://www.tensorflow.org/install/source#gpu
 # installation via conda leads to errors in version 4.8.2
 # Install CUDA-specific nvidia libraries and update libcudnn8 before that
+# using device_lib.list_local_devices() the cudNN version is shown, adapt version to tested compat
 USER ${NB_UID}
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir tensorflow==2.15.0 keras==2.15.0 && \
@@ -495,3 +496,9 @@ RUN pip install --no-cache-dir \
 
 # Switch back to jovyan to avoid accidental container runs as root
 USER $NB_UID
+
+# Set env-var JUPYTER_TOKEN as static token
+ARG JUPYTER_TOKEN
+ENV JUPYTER_TOKEN=$JUPYTER_TOKEN
+COPY jupyter_server_config_token_addendum.py /etc/jupyter/
+RUN cat /etc/jupyter/jupyter_server_config_token_addendum.py >> /etc/jupyter/jupyter_server_config.py
