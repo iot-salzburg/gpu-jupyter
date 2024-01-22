@@ -4,6 +4,7 @@ LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mat
 # https://www.tensorflow.org/install/source#gpu
 # installation via conda leads to errors in version 4.8.2
 # Install CUDA-specific nvidia libraries and update libcudnn8 before that
+# using device_lib.list_local_devices() the cudNN version is shown, adapt version to tested compat
 USER ${NB_UID}
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir tensorflow==2.15.0 keras==2.15.0 && \
