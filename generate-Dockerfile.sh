@@ -175,7 +175,7 @@ fi
 cp -r extra/Getting_Started data
 chmod -R 755 data/
 
-# set static token
+# set static token (optional if set)
 # copy jupyter server config token addendum to .build
 cp custom/jupyter_server_config_token_addendum.py .build/
 # append token config into the jupyter server config
