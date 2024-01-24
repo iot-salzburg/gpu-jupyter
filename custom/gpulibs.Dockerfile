@@ -58,7 +58,7 @@ RUN pip install --no-cache-dir nvidia-pyindex && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
-RUN mamba install -c nvidia cuda-nvcc=11.8.89 -y && \
+RUN mamba install -c nvidia cuda-nvcc=12.0.140 -y && \
     mamba clean --all -f -y && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER

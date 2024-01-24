@@ -73,9 +73,9 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
    ```bash
    cd your-working-directory
    ll data  # this path will be mounted by default
-   docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.6_cuda-11.8_ubuntu-22.04_python-only
+   docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.6_cuda-12.0_ubuntu-22.04
    ```
-   This starts an instance of *GPU-Jupyter* with the tag `v1.6_cuda-11.8_ubuntu-22.04_python-only` at [http://localhost:8848](http://localhost:8848) (port `8848`).
+   This starts an instance of *GPU-Jupyter* with the tag `v1.6_cuda-12.0_ubuntu-22.04` at [http://localhost:8848](http://localhost:8848) (port `8848`).
    To log into Jupyterlab, you have to specify a token that you get from:
    ```bash
    docker exec -it [container-ID/name] jupyter server list
@@ -92,9 +92,6 @@ Additionally, data within the host's `data` directory is shared with the contain
      - `v1.6_cuda-11.8_ubuntu-22.04` (full image)
      - `v1.6_cuda-11.8_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
      - `v1.6_cuda-11.8_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
-     - `v1.6_cuda-11.6_ubuntu-20.04` (full image)
-     - `v1.6_cuda-11.6_ubuntu-20.04_python-only` (only with a python interpreter and without Julia and R)
-     - `v1.6_cuda-11.6_ubuntu-20.04_slim` (only with a python interpreter and without additional packages)
 
     <details>
     <summary>Older images</summary>
