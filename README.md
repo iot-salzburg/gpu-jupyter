@@ -85,7 +85,7 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
    You can optionally set a password in [http://localhost:8848/login](http://localhost:8848/login) or as described [below](#change-the-password) (former default password `gpu-jupyter`).
 Additionally, data within the host's `data` directory is shared with the container.
 
-    Note that the following images of GPU-Jupyter are available on [Dockerhub](https://hub.docker.com/r/cschranz/gpu-jupyter):
+    The following images of GPU-Jupyter are available on [Dockerhub](https://hub.docker.com/r/cschranz/gpu-jupyter):
      - `v1.6_cuda-12.0_ubuntu-22.04` (full image)
      - `v1.6_cuda-12.0_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
      - `v1.6_cuda-12.0_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
@@ -95,30 +95,35 @@ Additionally, data within the host's `data` directory is shared with the contain
      - `v1.6_cuda-11.6_ubuntu-20.04` (full image)
      - `v1.6_cuda-11.6_ubuntu-20.04_python-only` (only with a python interpreter and without Julia and R)
      - `v1.6_cuda-11.6_ubuntu-20.04_slim` (only with a python interpreter and without additional packages)
-     - `v1.5_cuda-12.0_ubuntu-22.04` (full image)
-     - `v1.5_cuda-12.0_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
-     - `v1.5_cuda-12.0_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
-     - `v1.5_cuda-11.8_ubuntu-22.04` (full image)
-     - `v1.5_cuda-11.8_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
-     - `v1.5_cuda-11.8_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
-     - `v1.5_cuda-11.6_ubuntu-20.04` (full image)
-     - `v1.5_cuda-11.6_ubuntu-20.04_python-only` (only with a python interpreter and without Julia and R)
-     - `v1.5_cuda-11.6_ubuntu-20.04_slim` (only with a python interpreter and without additional packages)
-     - `v1.4_cuda-11.6_ubuntu-20.04` (full image)
-     - `v1.4_cuda-11.6_ubuntu-20.04_python-only` (only with a python interpreter and without Julia and R)
-     - `v1.4_cuda-11.6_ubuntu-20.04_slim` (only with a python interpreter and without additional packages)
-     - `v1.4_cuda-11.2_ubuntu-20.04` (full image)
-     - `v1.4_cuda-11.2_ubuntu-20.04_python-only` (only with a python interpreter and without Julia and R)
-     - `v1.4_cuda-11.2_ubuntu-20.04_slim` (only with a python interpreter and without additional packages)
-     - `v1.4_cuda-11.0_ubuntu-20.04` (full image)
-     - `v1.4_cuda-11.0_ubuntu-20.04_python-only` (only with a python interpreter and without Julia and R)
-     - `v1.4_cuda-11.0_ubuntu-20.04_slim` (only with a python interpreter and without additional packages)
-     - `v1.4_cuda-11.0_ubuntu-18.04` (full image)
-     - `v1.4_cuda-11.0_ubuntu-18.04_python-only` (only with a python interpreter and without Julia and R)
-     - `v1.4_cuda-11.0_ubuntu-18.04_slim` (only with a python interpreter and without additional packages)
-     - `v1.4_cuda-10.1_ubuntu-18.04` (full image)
-     - `v1.4_cuda-10.1_ubuntu-18.04_python-only` (only with a python interpreter and without Julia and R)
-     - `v1.4_cuda-10.1_ubuntu-18.04_slim` (only with a python interpreter and without additional packages)
+
+    <details>
+    <summary>Older images</summary>
+
+    - `v1.5_cuda-12.0_ubuntu-22.04` (full image)
+    - `v1.5_cuda-12.0_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
+    - `v1.5_cuda-12.0_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
+    - `v1.5_cuda-11.8_ubuntu-22.04` (full image)
+    - `v1.5_cuda-11.8_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
+    - `v1.5_cuda-11.8_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
+    - `v1.5_cuda-11.6_ubuntu-20.04` (full image)
+    - `v1.5_cuda-11.6_ubuntu-20.04_python-only` (only with a python interpreter and without Julia and R)
+    - `v1.5_cuda-11.6_ubuntu-20.04_slim` (only with a python interpreter and without additional packages)
+    - `v1.4_cuda-11.6_ubuntu-20.04` (full image)
+    - `v1.4_cuda-11.6_ubuntu-20.04_python-only` (only with a python interpreter and without Julia and R)
+    - `v1.4_cuda-11.6_ubuntu-20.04_slim` (only with a python interpreter and without additional packages)
+    - `v1.4_cuda-11.2_ubuntu-20.04` (full image)
+    - `v1.4_cuda-11.2_ubuntu-20.04_python-only` (only with a python interpreter and without Julia and R)
+    - `v1.4_cuda-11.2_ubuntu-20.04_slim` (only with a python interpreter and without additional packages)
+    - `v1.4_cuda-11.0_ubuntu-20.04` (full image)
+    - `v1.4_cuda-11.0_ubuntu-20.04_python-only` (only with a python interpreter and without Julia and R)
+    - `v1.4_cuda-11.0_ubuntu-20.04_slim` (only with a python interpreter and without additional packages)
+    - `v1.4_cuda-11.0_ubuntu-18.04` (full image)
+    - `v1.4_cuda-11.0_ubuntu-18.04_python-only` (only with a python interpreter and without Julia and R)
+    - `v1.4_cuda-11.0_ubuntu-18.04_slim` (only with a python interpreter and without additional packages)
+    - `v1.4_cuda-10.1_ubuntu-18.04` (full image)
+    - `v1.4_cuda-10.1_ubuntu-18.04_python-only` (only with a python interpreter and without Julia and R)
+    - `v1.4_cuda-10.1_ubuntu-18.04_slim` (only with a python interpreter and without additional packages)
+    </details>
 
    The version, e.g. `v1.6`, declares the version of the generator setup.
    The Cuda version, e.g. `cuda-12.0`, must match the CUDA driver version and be supported by the GPU libraries.
@@ -232,9 +237,9 @@ Some useful packages are suggested in the [Extension docs](https://jupyterlab.re
 If you notice that an important package is missing in the default stack, please let us know so we can update it.
 
 
-### Authentification
+### Authorization
 
-### Set a Static Token
+#### Set a Static Token
 
 Jupyter by default regenerates a new token on each new start.
 GPU-Jupyter provides the environment variable `JUPYTER_TOKEN` to set a customized static token.
@@ -243,6 +248,7 @@ It is suggested to use a long token such as a UUID:
 
 ```bash
 export JUPYTER_TOKEN=$(uuidgen)
+echo $JUPYTER_TOKEN
 ```
 
  - For Docker add the parameter `-e JUPYTER_TOKEN=${JUPYTER_TOKEN}`, e.g.:
@@ -254,7 +260,9 @@ export JUPYTER_TOKEN=$(uuidgen)
 - In `docker-compose.yml`, the environment variable can be set under
  `ENVIRONMENT`:
 
-    `NB_GID: ${JUPYTER_GID:-1000}`
+    `JUPYTER_TOKEN: ${JUPYTER_TOKEN}`
+
+    Please note that environment variables might not be accessable for all docker-compose versions. Consider to use a `env_file` in docker-compose or a hard-coded token.
 
 The static token can be requested using `docker exec`:
 ```bash
