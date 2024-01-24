@@ -22,7 +22,7 @@ if [[ "$HELP" == 1 ]]; then
     echo "Help for ./generate-Dockerfile.sh:"
     echo "Usage: $0 [parameters]"
     echo "    -h|--help: Show this help."
-    echo "    -p|--pw|--password: Set the password (and update in custom/jupyter_notebook_config.json)"
+    echo "    -p|--pw|--password: Set the password (creates .build/jupyter_notebook_config.json and overrides the token)"
     echo "    -c|--commit: Set the head commit of the jupyter/docker-stacks submodule (https://github.com/jupyter/docker-stacks/commits/main). default: $HEAD_COMMIT."
     echo "    --python-only|--no-datascience-notebook: Use not the datascience-notebook from jupyter/docker-stacks, don't install Julia and R."
     echo "    --no-useful-packages: Don't install the useful packages, specified in custom/usefulpackages.Dockerfile"
@@ -174,6 +174,18 @@ fi
 # Copy the demo notebooks and change permissions
 cp -r extra/Getting_Started data
 chmod -R 755 data/
+
+# set static token (optional if set)
+# copy jupyter server config token addendum to .build
+cp custom/jupyter_server_config_token_addendum.py .build/
+# append token config into the jupyter server config
+echo >> $DOCKERFILE
+echo "# Set env-var JUPYTER_TOKEN as static token" >> $DOCKERFILE
+echo "ARG JUPYTER_TOKEN"  >> $DOCKERFILE
+echo "ENV JUPYTER_TOKEN=\$JUPYTER_TOKEN"  >> $DOCKERFILE
+echo "COPY jupyter_server_config_token_addendum.py /etc/jupyter/" >> $DOCKERFILE
+echo "RUN cat /etc/jupyter/jupyter_server_config_token_addendum.py >> /etc/jupyter/jupyter_server_config.py" >> $DOCKERFILE
+
 
 # set password
 if [[ "$USE_PASSWORD" == 1 ]]; then

@@ -377,6 +377,72 @@ USER ${NB_UID}
 
 WORKDIR "${HOME}"
 
+  ############################################################################
+  ################ Dependency: jupyter/datascience-notebook ##################
+  ############################################################################
+  
+# Copyright (c) Jupyter Development Team.
+# Distributed under the terms of the Modified BSD License.
+ARG REGISTRY=quay.io
+ARG OWNER=jupyter
+
+LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
+
+# Fix: https://github.com/hadolint/hadolint/wiki/DL4006
+# Fix: https://github.com/koalaman/shellcheck/wiki/SC3014
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+USER root
+
+# R pre-requisites
+RUN apt-get update --yes && \
+    apt-get install --yes --no-install-recommends \
+    fonts-dejavu \
+    gfortran \
+    gcc && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Julia dependencies
+# install Julia packages in /opt/julia instead of ${HOME}
+ENV JULIA_DEPOT_PATH=/opt/julia \
+    JULIA_PKGDIR=/opt/julia
+
+# Setup Julia
+RUN /opt/setup-scripts/setup_julia.py
+
+USER ${NB_UID}
+
+# Setup IJulia kernel & other packages
+RUN /opt/setup-scripts/setup-julia-packages.bash
+
+# R packages including IRKernel which gets installed globally.
+# r-e1071: dependency of the caret R package
+RUN mamba install --yes \
+    'r-base' \
+    'r-caret' \
+    'r-crayon' \
+    'r-devtools' \
+    'r-e1071' \
+    'r-forecast' \
+    'r-hexbin' \
+    'r-htmltools' \
+    'r-htmlwidgets' \
+    'r-irkernel' \
+    'r-nycflights13' \
+    'r-randomforest' \
+    'r-rcurl' \
+    'r-rmarkdown' \
+    'r-rodbc' \
+    'r-rsqlite' \
+    'r-shiny' \
+    'r-tidymodels' \
+    'r-tidyverse' \
+    'rpy2' \
+    'unixodbc' && \
+    mamba clean --all -f -y && \
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
+
 ############################################################################
 ########################## Dependency: gpulibs #############################
 ############################################################################
@@ -387,6 +453,7 @@ LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mat
 # https://www.tensorflow.org/install/source#gpu
 # installation via conda leads to errors in version 4.8.2
 # Install CUDA-specific nvidia libraries and update libcudnn8 before that
+# using device_lib.list_local_devices() the cudNN version is shown, adapt version to tested compat
 USER ${NB_UID}
 RUN pip install --upgrade pip && \
     pip install --no-cache-dir tensorflow==2.15.0 keras==2.15.0 && \
@@ -422,6 +489,14 @@ ENV CUDA_PATH=/opt/conda/
 RUN apt-get update && \
     apt-get install -y --no-install-recommends cmake libncurses5-dev libncursesw5-dev git && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
+
+USER $NB_UID
+# These need to be two separate pip install commands, otherwise it will throw an error
+# attempting to resolve the nvidia-cuda-nvcc package at the same time as nvidia-pyindex
+RUN pip install --no-cache-dir nvidia-pyindex && \
+    pip install --no-cache-dir nvidia-cuda-nvcc && \
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
 
 # reinstall nvcc with cuda-nvcc to install ptax
 USER $NB_UID
@@ -494,3 +569,9 @@ RUN pip install --no-cache-dir \
 
 # Switch back to jovyan to avoid accidental container runs as root
 USER $NB_UID
+
+# Set env-var JUPYTER_TOKEN as static token
+ARG JUPYTER_TOKEN
+ENV JUPYTER_TOKEN=$JUPYTER_TOKEN
+COPY jupyter_server_config_token_addendum.py /etc/jupyter/
+RUN cat /etc/jupyter/jupyter_server_config_token_addendum.py >> /etc/jupyter/jupyter_server_config.py

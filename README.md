@@ -1,5 +1,8 @@
-# GPU-Jupyter
-#### Leverage Jupyter Notebooks with the power of your NVIDIA GPU and perform GPU calculations using Tensorflow and Pytorch in collaborative notebooks.
+<img src="https://raw.githubusercontent.com/iot-salzburg/gpu-jupyter/master/extra/logo_gupyter.png"
+     alt="GPU-Jupyter"
+     width=661/>
+
+#### GPU-Jupyter: Leverage Jupyter Notebooks with the power of your NVIDIA GPU and perform GPU calculations using Tensorflow and Pytorch in collaborative notebooks.
 
 ![Github Workflow](https://github.com/iot-salzburg/gpu-jupyter/actions/workflows/default.yml/badge.svg)
 [![Docker Pulls](https://badgen.net/docker/pulls/cschranz/gpu-jupyter?icon=docker&label=Pulls)](https://hub.docker.com/r/cschranz/gpu-jupyter)
@@ -29,6 +32,7 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
 4. [Configuration](#configuration)
 5. [Deployment](#deployment-in-the-docker-swarm)
 6. [Issues and Contributing](#issues-and-contributing)
+7. [Support](#support)
 
 
 ## Quickstart
@@ -69,9 +73,9 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
    ```bash
    cd your-working-directory
    ll data  # this path will be mounted by default
-   docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.6_cuda-11.8_ubuntu-22.04_python-only
+   docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.6_cuda-12.0_ubuntu-22.04
    ```
-   This starts an instance of *GPU-Jupyter* with the tag `v1.6_cuda-11.8_ubuntu-22.04_python-only` at [http://localhost:8848](http://localhost:8848) (port `8848`).
+   This starts an instance of *GPU-Jupyter* with the tag `v1.6_cuda-12.0_ubuntu-22.04` at [http://localhost:8848](http://localhost:8848) (port `8848`).
    To log into Jupyterlab, you have to specify a token that you get from:
    ```bash
    docker exec -it [container-ID/name] jupyter server list
@@ -81,37 +85,45 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
    You can optionally set a password in [http://localhost:8848/login](http://localhost:8848/login) or as described [below](#change-the-password) (former default password `gpu-jupyter`).
 Additionally, data within the host's `data` directory is shared with the container.
 
-    Note that the following images of GPU-Jupyter are available on [Dockerhub](https://hub.docker.com/r/cschranz/gpu-jupyter):
+    The following images of GPU-Jupyter are available on [Dockerhub](https://hub.docker.com/r/cschranz/gpu-jupyter):
+     - `v1.6_cuda-12.0_ubuntu-22.04` (full image)
+     - `v1.6_cuda-12.0_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
+     - `v1.6_cuda-12.0_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
      - `v1.6_cuda-11.8_ubuntu-22.04` (full image)
      - `v1.6_cuda-11.8_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
      - `v1.6_cuda-11.8_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
      - `v1.6_cuda-11.6_ubuntu-20.04` (full image)
      - `v1.6_cuda-11.6_ubuntu-20.04_python-only` (only with a python interpreter and without Julia and R)
      - `v1.6_cuda-11.6_ubuntu-20.04_slim` (only with a python interpreter and without additional packages)
-     - `v1.5_cuda-12.0_ubuntu-22.04` (full image)
-     - `v1.5_cuda-12.0_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
-     - `v1.5_cuda-12.0_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
-     - `v1.5_cuda-11.8_ubuntu-22.04` (full image)
-     - `v1.5_cuda-11.8_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
-     - `v1.5_cuda-11.8_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
-     - `v1.5_cuda-11.6_ubuntu-20.04` (full image)
-     - `v1.5_cuda-11.6_ubuntu-20.04_python-only` (only with a python interpreter and without Julia and R)
-     - `v1.5_cuda-11.6_ubuntu-20.04_slim` (only with a python interpreter and without additional packages)
-     - `v1.4_cuda-11.6_ubuntu-20.04` (full image)
-     - `v1.4_cuda-11.6_ubuntu-20.04_python-only` (only with a python interpreter and without Julia and R)
-     - `v1.4_cuda-11.6_ubuntu-20.04_slim` (only with a python interpreter and without additional packages)
-     - `v1.4_cuda-11.2_ubuntu-20.04` (full image)
-     - `v1.4_cuda-11.2_ubuntu-20.04_python-only` (only with a python interpreter and without Julia and R)
-     - `v1.4_cuda-11.2_ubuntu-20.04_slim` (only with a python interpreter and without additional packages)
-     - `v1.4_cuda-11.0_ubuntu-20.04` (full image)
-     - `v1.4_cuda-11.0_ubuntu-20.04_python-only` (only with a python interpreter and without Julia and R)
-     - `v1.4_cuda-11.0_ubuntu-20.04_slim` (only with a python interpreter and without additional packages)
-     - `v1.4_cuda-11.0_ubuntu-18.04` (full image)
-     - `v1.4_cuda-11.0_ubuntu-18.04_python-only` (only with a python interpreter and without Julia and R)
-     - `v1.4_cuda-11.0_ubuntu-18.04_slim` (only with a python interpreter and without additional packages)
-     - `v1.4_cuda-10.1_ubuntu-18.04` (full image)
-     - `v1.4_cuda-10.1_ubuntu-18.04_python-only` (only with a python interpreter and without Julia and R)
-     - `v1.4_cuda-10.1_ubuntu-18.04_slim` (only with a python interpreter and without additional packages)
+
+    <details>
+    <summary>Older images</summary>
+
+    - `v1.5_cuda-12.0_ubuntu-22.04` (full image)
+    - `v1.5_cuda-12.0_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
+    - `v1.5_cuda-12.0_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
+    - `v1.5_cuda-11.8_ubuntu-22.04` (full image)
+    - `v1.5_cuda-11.8_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
+    - `v1.5_cuda-11.8_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
+    - `v1.5_cuda-11.6_ubuntu-20.04` (full image)
+    - `v1.5_cuda-11.6_ubuntu-20.04_python-only` (only with a python interpreter and without Julia and R)
+    - `v1.5_cuda-11.6_ubuntu-20.04_slim` (only with a python interpreter and without additional packages)
+    - `v1.4_cuda-11.6_ubuntu-20.04` (full image)
+    - `v1.4_cuda-11.6_ubuntu-20.04_python-only` (only with a python interpreter and without Julia and R)
+    - `v1.4_cuda-11.6_ubuntu-20.04_slim` (only with a python interpreter and without additional packages)
+    - `v1.4_cuda-11.2_ubuntu-20.04` (full image)
+    - `v1.4_cuda-11.2_ubuntu-20.04_python-only` (only with a python interpreter and without Julia and R)
+    - `v1.4_cuda-11.2_ubuntu-20.04_slim` (only with a python interpreter and without additional packages)
+    - `v1.4_cuda-11.0_ubuntu-20.04` (full image)
+    - `v1.4_cuda-11.0_ubuntu-20.04_python-only` (only with a python interpreter and without Julia and R)
+    - `v1.4_cuda-11.0_ubuntu-20.04_slim` (only with a python interpreter and without additional packages)
+    - `v1.4_cuda-11.0_ubuntu-18.04` (full image)
+    - `v1.4_cuda-11.0_ubuntu-18.04_python-only` (only with a python interpreter and without Julia and R)
+    - `v1.4_cuda-11.0_ubuntu-18.04_slim` (only with a python interpreter and without additional packages)
+    - `v1.4_cuda-10.1_ubuntu-18.04` (full image)
+    - `v1.4_cuda-10.1_ubuntu-18.04_python-only` (only with a python interpreter and without Julia and R)
+    - `v1.4_cuda-10.1_ubuntu-18.04_slim` (only with a python interpreter and without additional packages)
+    </details>
 
    The version, e.g. `v1.6`, declares the version of the generator setup.
    The Cuda version, e.g. `cuda-12.0`, must match the CUDA driver version and be supported by the GPU libraries.
@@ -137,7 +149,7 @@ The following commands will start *GPU-Jupyter* on [localhost:8848](http://local
 git clone https://github.com/iot-salzburg/gpu-jupyter.git
 cd gpu-jupyter
 git branch  # Check for extisting branches
-git checkout v1.6_cuda-11.8_ubuntu-22.04  # select or create a new version
+git checkout v1.6_cuda-12.0_ubuntu-22.04  # select or create a new version
 # generate the Dockerfile with python and without Julia and R (see options: --help)
 ./generate-Dockerfile.sh --python-only
 docker build -t gpu-jupyter .build/  # will take a while
@@ -225,7 +237,40 @@ Some useful packages are suggested in the [Extension docs](https://jupyterlab.re
 If you notice that an important package is missing in the default stack, please let us know so we can update it.
 
 
-### Change the Password
+### Authorization
+
+#### Set a Static Token
+
+Jupyter by default regenerates a new token on each new start.
+GPU-Jupyter provides the environment variable `JUPYTER_TOKEN` to set a customized static token.
+This option is practicable if the host machine is periodically restartet.
+It is suggested to use a long token such as a UUID:
+
+```bash
+export JUPYTER_TOKEN=$(uuidgen)
+echo $JUPYTER_TOKEN
+```
+
+ - For Docker add the parameter `-e JUPYTER_TOKEN=${JUPYTER_TOKEN}`, e.g.:
+
+    ```bash
+    docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes -e NB_UID="$(id -u)" -e NB_GID="$(id -g)" -e JUPYTER_TOKEN=${JUPYTER_TOKEN} --user root --restart always --name gpu-jupyter_1 gpu-jupyter
+    ```
+
+- In `docker-compose.yml`, the environment variable can be set under
+ `ENVIRONMENT`:
+
+    `JUPYTER_TOKEN: ${JUPYTER_TOKEN}`
+
+    Please note that environment variables might not be accessable for all docker-compose versions. Consider to use a `env_file` in docker-compose or a hard-coded token.
+
+The static token can be requested using `docker exec`:
+```bash
+docker exec -it gpu-jupyter_1 jupyter server list
+```
+
+
+#### Set a custom Password
 
 There are two ways to set a password for GPU-Jupyter:
 
@@ -236,7 +281,7 @@ There are two ways to set a password for GPU-Jupyter:
     ```bash
     bash generate-Dockerfile.sh --password [your_password]
     ```
-    This will update automatically the salted hashed token in the `custom/jupyter_notebook_config.json` file. Note that the specified password may be visible in your account's bash history.
+    This will update automatically the salted hashed token in the `.build/jupyter_notebook_config.json` file. Note that the specified password may be visible in your account's bash history.
 
 
 ### Adaptions for using Tensorboard
@@ -448,7 +493,6 @@ To remove the service from the swarm, use:
     Check if the GPU is available on the host node via `nvidia-smi` and run with the described `docker`-commands.
     If the error still occurs, so try there could be an issue that docker can't use the GPU. Please try [this](https://cschranz.medium.com/set-up-your-own-gpu-based-jupyterlab-e0d45fcacf43) or similar tutorials on how to install the required drivers.
 
-
 ### Contribution
 
 This project has the intention to create a robust image for CUDA-based GPU applications,
@@ -457,3 +501,28 @@ Please help us to improve this project, by:
 
 * [filing a new issue](https://github.com/iot-salzburg/gpu-jupyter/issues/new)
 * [open a pull request](https://help.github.com/articles/using-pull-requests/)
+
+## Support
+
+For commercial support, please contact [b-data](https://github.com/b-data) by
+email: <support@b-data.ch>.
+
+b-data maintains its own CUDA-enabled
+[JupyterLab](https://github.com/b-data/jupyterlab-r-docker-stack)
+[docker](https://github.com/b-data/jupyterlab-python-docker-stack)
+[stacks](https://github.com/b-data/jupyterlab-julia-docker-stack) and tailors
+them to your needs, e.g.
+
+- Integration of self-signed CA certificates to enable communication with web
+  services on the intranet.
+- Setting up the necessary environment variables so that everything works
+  behind a corporate proxy server.
+
+Additionally, the
+[JupyterHub](https://github.com/b-data/docker-deployment-jupyter) setup can be
+customised to allow
+
+- authentication with AD/LDAP
+- mounting CIFS/SMB file shares
+
+and much more.
