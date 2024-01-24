@@ -94,7 +94,7 @@ Additionally, data within the host's `data` directory is shared with the contain
      - `v1.6_cuda-11.8_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
 
     <details>
-    <summary>Older images</summary>
+    <summary><font color=blue> Older images</font></summary>
 
     - `v1.5_cuda-12.0_ubuntu-22.04` (full image)
     - `v1.5_cuda-12.0_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
