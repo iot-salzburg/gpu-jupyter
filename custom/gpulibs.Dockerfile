@@ -21,17 +21,17 @@ RUN mamba install --quiet --yes \
 # Check compatibility here:
 # https://pytorch.org/get-started/locally/
 # Installation via conda leads to errors installing cudatoolkit=11.1
-# RUN pip install --no-cache-dir torch==2.1.0 torchvision==0.16.0 torchaudio==2.1.0  && \
-#     torchviz==0.0.2 --extra-index-url https://download.pytorch.org/whl/cu118
-RUN set -ex \
- && buildDeps=' \
-    torch==2.1.2 \
-    torchvision==0.16.2 \
-    torchaudio==2.1.2 \
-' \
- && pip install --no-cache-dir $buildDeps \
- && fix-permissions "${CONDA_DIR}" \
- && fix-permissions "/home/${NB_USER}"
+RUN pip install --no-cache-dir torch==2.1.2 torchvision==0.16.2 torchaudio==2.1.2  && \
+    torchviz==0.0.2 --extra-index-url https://download.pytorch.org/whl/cu118
+# RUN set -ex \
+#  && buildDeps=' \
+#     torch==2.1.2 \
+#     torchvision==0.16.2 \
+#     torchaudio==2.1.2 \
+# ' \
+#  && pip install --no-cache-dir $buildDeps \
+#  && fix-permissions "${CONDA_DIR}" \
+#  && fix-permissions "/home/${NB_USER}"
 
 USER root
 ENV CUDA_PATH=/opt/conda/
