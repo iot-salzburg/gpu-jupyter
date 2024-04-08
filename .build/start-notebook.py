@@ -14,23 +14,25 @@ if "JUPYTERHUB_API_TOKEN" in os.environ:
     os.execvp(command[0], command)
 
 
-# Wrap everything in start.sh, no matter what
-command = ["/usr/local/bin/start.sh"]
+# Entrypoint is start.sh
+command = []
 
-# If we want to survive restarts, tell that to start.sh
+# If we want to survive restarts, launch the command using `run-one-constantly`
 if os.environ.get("RESTARTABLE") == "yes":
     command.append("run-one-constantly")
 
 # We always launch a jupyter subcommand from this script
 command.append("jupyter")
 
-# Launch the configured subcommand. Note that this should be a single string, so we don't split it
-# We default to lab
+# Launch the configured subcommand.
+# Note that this should be a single string, so we don't split it.
+# We default to `lab`.
 jupyter_command = os.environ.get("DOCKER_STACKS_JUPYTER_CMD", "lab")
 command.append(jupyter_command)
 
-# Append any optional NOTEBOOK_ARGS we were passed in. This is supposed to be multiple args passed
-# on to the notebook command, so we split it correctly with shlex
+# Append any optional NOTEBOOK_ARGS we were passed in.
+# This is supposed to be multiple args passed on to the notebook command,
+# so we split it correctly with shlex
 if "NOTEBOOK_ARGS" in os.environ:
     command += shlex.split(os.environ["NOTEBOOK_ARGS"])
 
@@ -38,4 +40,5 @@ if "NOTEBOOK_ARGS" in os.environ:
 command += sys.argv[1:]
 
 # Execute the command!
+print("Executing: " + " ".join(command))
 os.execvp(command[0], command)
