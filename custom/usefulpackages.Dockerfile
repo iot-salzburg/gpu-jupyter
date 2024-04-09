@@ -36,12 +36,12 @@ RUN set -ex \
     jupyterlab-git==0.50.0 \
     # install plotly extension
     plotly==5.20.0 \
-    # install drawio and graphical extensions
-    ipydrawio==1.3.0 \
+    # install drawio and graphical extensions, not compatible with Jupyterlab 4.X yet
+    # ipydrawio==1.3.0 \
     ipyleaflet==0.18.2 \
     ipywidgets==8.1.2 \
     # install spell checker
-    jupyterlab-spellchecker==0.7.3 \
+    jupyterlab-spellchecker==0.8.4 \
     ' \
     && pip install --no-cache-dir $buildDeps \
     && fix-permissions "${CONDA_DIR}" \
