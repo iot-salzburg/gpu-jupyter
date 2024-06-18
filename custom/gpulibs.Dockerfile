@@ -14,7 +14,7 @@ RUN mamba install --quiet --yes \
 # using device_lib.list_local_devices() the cudNN version is shown, adapt version to tested compat
 USER ${NB_UID}
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir tensorflow==2.16.1 keras==3.1.1 && \
+    pip install --no-cache-dir tensorflow==2.15.1 keras==2.15.0 && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
