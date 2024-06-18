@@ -50,7 +50,7 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
     ```bash
     Tue Jun 18 12:39:31 2024
     +---------------------------------------------------------------------------------------+
-    | NVIDIA-SMI 545.23.05              Driver Version: 545.84       CUDA Version: 12.3     |
+    | NVIDIA-SMI 545.23.05              Driver Version: 545.84       CUDA Version: 12.2     |
     |-----------------------------------------+----------------------+----------------------+
     | GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
     | Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
