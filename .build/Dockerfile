@@ -7,7 +7,7 @@
 
 # Use NVIDIA CUDA as base image and run the same installation as in the other packages.
 # The version of cuda must match those of the packages installed in src/Dockerfile.gpulibs
-FROM nvidia/cuda:12.3.2-cudnn9-runtime-ubuntu22.04
+FROM nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04
 LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathematical Michael <consistentbayes@gmail.com>"
 # This is a concatenated Dockerfile, the maintainers of subsequent sections may vary.
 RUN chmod 1777 /tmp && chmod 1777 /var/tmp
@@ -426,14 +426,6 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends cmake libncurses5-dev libncursesw5-dev git && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-USER $NB_UID
-# These need to be two separate pip install commands, otherwise it will throw an error
-# attempting to resolve the nvidia-cuda-nvcc package at the same time as nvidia-pyindex
-RUN pip install --no-cache-dir nvidia-pyindex && \
-    pip install --no-cache-dir nvidia-cuda-nvcc && \
-    fix-permissions "${CONDA_DIR}" && \
-    fix-permissions "/home/${NB_USER}"
-
 # reinstall nvcc with cuda-nvcc to install ptax
 USER $NB_UID
 # These need to be two separate pip install commands, otherwise it will throw an error
@@ -444,7 +436,7 @@ RUN pip install --no-cache-dir nvidia-pyindex && \
     fix-permissions "/home/${NB_USER}"
 
 # Install cuda-nvcc with sepecific version, see here: https://anaconda.org/nvidia/cuda-nvcc/labels
-RUN mamba install -c nvidia cuda-nvcc=12.3.107 -y && \
+RUN mamba install -c nvidia cuda-nvcc=12.2.140 -y && \
     mamba clean --all -f -y && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
