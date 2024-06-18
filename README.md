@@ -45,10 +45,10 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
 3.  Get access to your GPU via CUDA drivers within Docker containers. For this, follow the installation steps in this
 [Medium article](https://medium.com/@christoph.schranz/set-up-your-own-gpu-based-jupyterlab-e0d45fcacf43). You can confirm that you can access your GPU within Docker if the command below returns a result similar to this one:
     ```bash
-    docker run --gpus all nvidia/cuda:12.3.2-cudnn9-runtime-ubuntu22.04 nvidia-smi
+    docker run --gpus all nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04 nvidia-smi
     ```
     ```bash
-    Mon Apr  8 16:19:10 2024
+    Tue Jun 18 12:39:31 2024
     +---------------------------------------------------------------------------------------+
     | NVIDIA-SMI 545.23.05              Driver Version: 545.84       CUDA Version: 12.3     |
     |-----------------------------------------+----------------------+----------------------+
@@ -57,7 +57,7 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
     |                                         |                      |               MIG M. |
     |=========================================+======================+======================|
     |   0  NVIDIA GeForce RTX 3060 ...    On  | 00000000:01:00.0 Off |                  N/A |
-    | N/A   46C    P8              10W /  60W |    105MiB /  6144MiB |      0%      Default |
+    | N/A   46C    P8              10W /  60W |    202MiB /  6144MiB |      0%      Default |
     |                                         |                      |                  N/A |
     +-----------------------------------------+----------------------+----------------------+
 
@@ -76,9 +76,9 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
    ```bash
    cd your-working-directory
    ll data  # this path will be mounted by default
-   docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.7_cuda-12.3_ubuntu-22.04
+   docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.7_cuda-12.2_ubuntu-22.04
    ```
-   This starts an instance of *GPU-Jupyter* with the tag `v1.7_cuda-12.3_ubuntu-22.04` at [http://localhost:8848](http://localhost:8848) (port `8848`).
+   This starts an instance of *GPU-Jupyter* with the tag `v1.7_cuda-12.2_ubuntu-22.04` at [http://localhost:8848](http://localhost:8848) (port `8848`).
    To log into Jupyterlab, you have to specify a token that you get from:
    ```bash
    docker exec -it [container-ID/name] jupyter server list
@@ -89,6 +89,9 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
 Additionally, data within the host's `data` directory is shared with the container.
 
     The following images of GPU-Jupyter are available on [Dockerhub](https://hub.docker.com/r/cschranz/gpu-jupyter):
+     - `v1.7_cuda-12.2_ubuntu-22.04` (full image)
+     - `v1.7_cuda-12.2_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
+     - `v1.7_cuda-12.2_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
      - `v1.7_cuda-12.3_ubuntu-22.04` (full image)
      - `v1.7_cuda-12.3_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
      - `v1.7_cuda-12.3_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
@@ -129,7 +132,7 @@ Additionally, data within the host's `data` directory is shared with the contain
     </details>
 
    The version, e.g. `v1.7`, declares the version of the generator setup.
-   The Cuda version, e.g. `cuda-12.3`, must match the CUDA driver version and be supported by the GPU libraries.
+   The Cuda version, e.g. `cuda-12.2`, must match the CUDA driver version and be supported by the GPU libraries.
    These and older versions of GPU-Jupyter are listed on [Dockerhub](https://hub.docker.com/r/cschranz/gpu-jupyter/tags?page=1&ordering=last_updated).
    In case you are using another version or the GPU libraries don't work on your hardware, please try to build the image on your own as described below.
    Note that the images built for Ubuntu 20.04 LTS work also on Ubuntu 22.04 LTS is currently not supported.
@@ -145,14 +148,14 @@ we recommend checking out this [tutorial](https://www.youtube.com/watch?v=7wfPqA
 
 Building a custom Docker image is the recommended option if you have a different GPU architecture or if you want to customize the pre-installed packages. The Dockerfiles in `custom/`  can be modified to achieve this. To use a custom base image, modify `custom/header.Dockerfile`. To install specific GPU-related libraries, modify `custom/gpulibs.Dockerfile`, and to add specific libraries, append them to `custom/usefulpackages.Dockerfile`.
 
-After making the necessary modifications, regenerate the `Dockerfile` in `/.build`. Once you have confirmed that your GPU is accessible within Docker containers by running `docker run --gpus all nvidia/cuda:12.3.2-cudnn9-runtime-ubuntu22.04 nvidia-smi` and seeing the GPU statistics, you can generate, build, and run the Docker image.
+After making the necessary modifications, regenerate the `Dockerfile` in `/.build`. Once you have confirmed that your GPU is accessible within Docker containers by running `docker run --gpus all nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04 nvidia-smi` and seeing the GPU statistics, you can generate, build, and run the Docker image.
 The following commands will start *GPU-Jupyter* on [localhost:8848](http://localhost:8848) with the default password `gpu-jupyter`.
 
 ```bash
 git clone https://github.com/iot-salzburg/gpu-jupyter.git
 cd gpu-jupyter
 git branch  # Check for extisting branches
-git checkout v1.7_cuda-12.3_ubuntu-22.04  # select or create a new version
+git checkout v1.7_cuda-12.2_ubuntu-22.04  # select or create a new version
 # generate the Dockerfile with python and without Julia and R (see options: --help)
 ./generate-Dockerfile.sh --python-only
 docker build -t gpu-jupyter .build/  # will take a while
