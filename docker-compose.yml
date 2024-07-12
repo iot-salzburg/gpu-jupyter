@@ -23,7 +23,7 @@ services:
     ports:
       - 8848:8888
     volumes:
-      - ./data:/home/jovyan/work
+      - /home/paperspace/data:/home/jovyan/work
     environment:
       GRANT_SUDO: "yes"
       JUPYTER_ENABLE_LAB: "yes"
