@@ -35,7 +35,7 @@ USER $NB_UID
 # These need to be two separate pip install commands, otherwise it will throw an error
 # attempting to resolve the nvidia-cuda-nvcc package at the same time as nvidia-pyindex
 RUN pip install --no-cache-dir nvidia-pyindex && \
-    pip install --no-cache-dir nvidia-cuda-nvcc && \
+    pip install --no-cache-dir nvidia-cuda-nvcc nvidia-cudnn-cu12==9.2.1.18 && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 

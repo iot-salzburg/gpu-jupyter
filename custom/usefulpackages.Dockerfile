@@ -46,6 +46,7 @@ RUN set -ex \
     jupyterlab-spellchecker==0.8.4 \
     ' \
     && pip install --no-cache-dir $buildDeps \
+    && jupyter labextension enable widgetsnbextension \
     && fix-permissions "${CONDA_DIR}" \
     && fix-permissions "/home/${NB_USER}"
 
