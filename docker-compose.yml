@@ -22,6 +22,7 @@ services:
     #       memory: 48g
     ports:
       - 8848:8888
+      - 9090-9099:9090-9099
     volumes:
       - /home/paperspace/data:/home/jovyan/work
     environment:
