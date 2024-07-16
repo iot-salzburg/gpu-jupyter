@@ -22,7 +22,8 @@ services:
     #       memory: 48g
     ports:
       - 8848:8888
-      - 9090-9099:9090-9099
+      - 9090-9099:9090-9099 # audio sockets
+      - 6006:6006 # tensorboard
     volumes:
       - /home/paperspace/data:/home/jovyan/work
     environment:

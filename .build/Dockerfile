@@ -442,6 +442,22 @@ RUN cd ~/whisper && \
     wget --directory-prefix=assets https://raw.githubusercontent.com/openai/whisper/main/whisper/assets/mel_filters.npz && \
     wget --directory-prefix=assets https://raw.githubusercontent.com/yuekaizhang/Triton-ASR-Client/main/datasets/mini_en/wav/1221-135766-0002.wav
 
+RUN pip install --no-cache-dir \
+        ffmpeg-python \
+        jiwer \
+        onnxruntime \
+        tokenizers==0.19.1 \
+        websockets \
+        websocket-client && \
+    fix-permissions "${CONDA_DIR}" && \
+    fix-permissions "/home/${NB_USER}"
+
+RUN mamba install -y \
+        pyaudio && \
+    mamba clean --all -f -y && \
+    fix-permissions $CONDA_DIR && \
+    fix-permissions /home/$NB_USER
+
 # Switch back to jovyan to avoid accidental container runs as root
 USER $NB_UID
 
