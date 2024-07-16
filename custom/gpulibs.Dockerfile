@@ -39,7 +39,7 @@ RUN apt-get update && \
         openmpi-bin && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install dependencies for e.g. PyTorch
+# mpi4py is troublesome in pip for python 3.10 so installing from mamba
 RUN mamba install --quiet --yes \
         mpi4py && \
     mamba clean --all -f -y && \
