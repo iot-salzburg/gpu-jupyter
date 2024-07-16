@@ -5,7 +5,7 @@ cd $(cd -P -- "$(dirname -- "$0")" && pwd -P)
 export DOCKERFILE=".build/Dockerfile"
 export STACKS_DIR=".build/docker-stacks"
 # please test the build of the commit in https://github.com/jupyter/docker-stacks/commits/main in advance
-export HEAD_COMMIT="e838ff397a2d9c2ad0faae051ef0ec4f20732320"
+export HEAD_COMMIT="4d70cf8da953"
 
 while [[ "$#" -gt 0 ]]; do case $1 in
   -p|--pw|--password) PASSWORD="$2" && USE_PASSWORD=1; shift;;
@@ -129,9 +129,9 @@ echo "
 ############################################################################
 " >> $DOCKERFILE
 if [ -f "$STACKS_DIR/images/scipy-notebook/Dockerfile" ]; then
-    cat $STACKS_DIR/images/scipy-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
+    cat $STACKS_DIR/images/scipy-notebook/Dockerfile | grep -v BASE_CONTAINER -v 'facets/facets-dist/' >> $DOCKERFILE
 else
-    cat $STACKS_DIR/scipy-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
+    cat $STACKS_DIR/scipy-notebook/Dockerfile | grep -v BASE_CONTAINER -v 'facets/facets-dist/' >> $DOCKERFILE
 fi
 
 # install Julia and R if not excluded or spare mode is used
