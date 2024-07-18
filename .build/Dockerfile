@@ -7,7 +7,7 @@
 
 # Use NVIDIA CUDA as base image and run the same installation as in the other packages.
 # The version of cuda must match those of the packages installed in src/Dockerfile.gpulibs
-FROM nvidia/cuda:12.4.1-cudnn-runtime-ubuntu22.04
+FROM nvidia/cuda:12.2.2-cudnn8-runtime-ubuntu22.04
 LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathematical Michael <consistentbayes@gmail.com>"
 # This is a concatenated Dockerfile, the maintainers of subsequent sections may vary.
 RUN chmod 1777 /tmp && chmod 1777 /var/tmp
@@ -305,10 +305,25 @@ COPY --chown=${NB_UID}:${NB_GID} Rprofile.site /opt/conda/lib/R/etc/
 
 LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathematical Michael <consistentbayes@gmail.com>"
 
+USER root
+# Install nvtop to monitor the gpu tasks
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        cmake \
+        ffmpeg \
+        git \
+        libncurses5-dev \
+        libncursesw5-dev \
+        libopenmpi-dev \
+        openmpi-bin && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+USER $NB_UID
 # Install dependencies for e.g. PyTorch
 RUN mamba install --quiet --yes \
         cffi \
         cmake \
+        mpi4py \
         pyyaml \
         setuptools \
         typing && \
@@ -322,51 +337,32 @@ RUN mamba install --quiet --yes \
 # RUN pip install --no-cache-dir torch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 \
 #  && torchviz==0.0.2 --extra-index-url https://download.pytorch.org/whl/cu121
 RUN set -ex &&  \
-    pip install --no-cache-dir --extra-index-url https://download.pytorch.org/whl/nightly/cu124 \
-        torch==2.3.1 \
-        torchaudio==2.3.1 \
-        torchvision==0.18.1 && \
+    pip install --no-cache-dir --extra-index-url https://download.pytorch.org/whl/cu121 \
+        torch==2.2.2 \
+        torchaudio==2.2.2 \
+        torchvision==0.17.2 && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
 USER root
 ENV CUDA_PATH=/opt/conda/
 
-# Install nvtop to monitor the gpu tasks
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-        cmake \
-        ffmpeg \
-        git \
-        libncurses5-dev \
-        libncursesw5-dev \
-        libopenmpi-dev \
-        openmpi-bin && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# mpi4py is troublesome in pip for python 3.10 so installing from mamba
-RUN mamba install --quiet --yes \
-        mpi4py && \
-    mamba clean --all -f -y && \
-    fix-permissions "${CONDA_DIR}" && \
-    fix-permissions "/home/${NB_USER}"
-
 # reinstall nvcc with cuda-nvcc to install ptax
 USER $NB_UID
 # These need to be two separate pip install commands, otherwise it will throw an error
 # attempting to resolve the nvidia-cuda-nvcc package at the same time as nvidia-pyindex
 RUN pip install --no-cache-dir nvidia-pyindex && \
-    pip install --no-cache-dir \
-        nvidia-cuda-nvcc \
-        nvidia-cudnn-cu12==9.2.1.18 && \
     pip install --no-cache-dir --pre --extra-index-url https://pypi.nvidia.com \
+        lmdeploy \
+        nvidia-cuda-nvcc \
+        nvidia-cudnn-cu12 \
         tensorrt_llm && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
 # Install cuda-nvcc with sepecific version, see here: https://anaconda.org/nvidia/cuda-nvcc/labels
 RUN mamba install -c nvidia \
-        cuda-nvcc=12.4.131 -y && \
+        cuda-nvcc=12.2.140 -y && \
     mamba clean --all -f -y && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
@@ -389,6 +385,7 @@ RUN apt-get update &&  \
     apt-get -y install --no-install-recommends \
         apt-utils \
         curl \
+        gcc \
         graphviz \
         htop \
         iputils-ping \
@@ -396,8 +393,6 @@ RUN apt-get update &&  \
         openssh-client \
         portaudio19-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
-
-RUN curl -fsSL https://ollama.com/install.sh | sh
 
 USER $NB_UID
 RUN set -ex && \
@@ -428,21 +423,6 @@ RUN set -ex && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
-RUN git clone --depth 1 https://github.com/NVIDIA/TensorRT-LLM.git && \
-    mv TensorRT-LLM/examples/whisper ~/ && \
-    rm -rf TensorRT-LLM
-
-# check https://github.com/collabora/WhisperLive/blob/cb392cbb934447ce8021c0eba06ecbd186bdf13d/scripts/build_whisper_tensorrt.sh
-# for other whisper models
-RUN cd ~/whisper && \
-    pip install -r requirements.txt && \
-    fix-permissions "${CONDA_DIR}" && \
-    fix-permissions "/home/${NB_USER}" && \
-    wget --directory-prefix=assets https://raw.githubusercontent.com/openai/whisper/main/whisper/assets/gpt2.tiktoken && \
-    wget --directory-prefix=assets https://raw.githubusercontent.com/openai/whisper/main/whisper/assets/multilingual.tiktoken && \
-    wget --directory-prefix=assets https://raw.githubusercontent.com/openai/whisper/main/whisper/assets/mel_filters.npz && \
-    wget --directory-prefix=assets https://raw.githubusercontent.com/yuekaizhang/Triton-ASR-Client/main/datasets/mini_en/wav/1221-135766-0002.wav
-
 RUN pip install --no-cache-dir \
         ffmpeg-python \
         jiwer \
@@ -450,6 +430,7 @@ RUN pip install --no-cache-dir \
         tokenizers==0.19.1 \
         websockets \
         websocket-client && \
+    pip install flash-attn --no-build-isolation && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 

@@ -7,6 +7,7 @@ RUN apt-get update &&  \
     apt-get -y install --no-install-recommends \
         apt-utils \
         curl \
+        gcc \
         graphviz \
         htop \
         iputils-ping \
@@ -14,8 +15,6 @@ RUN apt-get update &&  \
         openssh-client \
         portaudio19-dev && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
-
-RUN curl -fsSL https://ollama.com/install.sh | sh
 
 USER $NB_UID
 RUN set -ex && \
@@ -46,21 +45,6 @@ RUN set -ex && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
-RUN git clone --depth 1 https://github.com/NVIDIA/TensorRT-LLM.git && \
-    mv TensorRT-LLM/examples/whisper ~/ && \
-    rm -rf TensorRT-LLM
-
-# check https://github.com/collabora/WhisperLive/blob/cb392cbb934447ce8021c0eba06ecbd186bdf13d/scripts/build_whisper_tensorrt.sh
-# for other whisper models
-RUN cd ~/whisper && \
-    pip install -r requirements.txt && \
-    fix-permissions "${CONDA_DIR}" && \
-    fix-permissions "/home/${NB_USER}" && \
-    wget --directory-prefix=assets https://raw.githubusercontent.com/openai/whisper/main/whisper/assets/gpt2.tiktoken && \
-    wget --directory-prefix=assets https://raw.githubusercontent.com/openai/whisper/main/whisper/assets/multilingual.tiktoken && \
-    wget --directory-prefix=assets https://raw.githubusercontent.com/openai/whisper/main/whisper/assets/mel_filters.npz && \
-    wget --directory-prefix=assets https://raw.githubusercontent.com/yuekaizhang/Triton-ASR-Client/main/datasets/mini_en/wav/1221-135766-0002.wav
-
 RUN pip install --no-cache-dir \
         ffmpeg-python \
         jiwer \
@@ -68,6 +52,7 @@ RUN pip install --no-cache-dir \
         tokenizers==0.19.1 \
         websockets \
         websocket-client && \
+    pip install flash-attn --no-build-isolation && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
