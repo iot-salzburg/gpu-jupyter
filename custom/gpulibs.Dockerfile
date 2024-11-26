@@ -14,7 +14,7 @@ RUN mamba install --quiet --yes \
 # using device_lib.list_local_devices() the cudNN version is shown, adapt version to tested compat
 USER ${NB_UID}
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir tensorflow==2.16.1 keras==3.1.1 && \
+    pip install --no-cache-dir tensorflow[and-cuda]==2.17.0 keras==3.6.0 && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
@@ -25,11 +25,11 @@ RUN pip install --upgrade pip && \
 #  && torchviz==0.0.2 --extra-index-url https://download.pytorch.org/whl/cu121
 RUN set -ex \
  && buildDeps=' \
-    torch==2.2.2 \
-    torchvision==0.17.2 \
-    torchaudio==2.2.2 \
+    torch==2.5.1 \
+    torchvision==0.20.1 \
+    torchaudio==2.5.1 \
 ' \
- && pip install --no-cache-dir $buildDeps  --extra-index-url https://download.pytorch.org/whl/cu121 \
+ && pip install --no-cache-dir $buildDeps  --extra-index-url https://download.pytorch.org/whl/cu124 \
  && fix-permissions "${CONDA_DIR}" \
  && fix-permissions "/home/${NB_USER}"
 
@@ -50,7 +50,8 @@ RUN pip install --no-cache-dir nvidia-pyindex && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
-# Install cuda-nvcc with sepecific version, see here: https://anaconda.org/nvidia/cuda-nvcc/labels
+# Install cuda-nvcc with sepecific version, see here:
+# https://anaconda.org/nvidia/cuda-nvcc/labels
 RUN mamba install -c nvidia cuda-nvcc=12.3.107 -y && \
     mamba clean --all -f -y && \
     fix-permissions $CONDA_DIR && \

@@ -41,7 +41,7 @@ USER root
 
 # Install all OS dependencies for the Server that starts
 # but lacks all features (e.g., download as all possible file formats)
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update --yes && \
     # - `apt-get upgrade` is run to patch known vulnerabilities in system packages
     #   as the Ubuntu base image is rebuilt too seldom sometimes (less than once a month)
@@ -51,6 +51,10 @@ RUN apt-get update --yes && \
     bzip2 \
     ca-certificates \
     locales \
+    # - `netbase` provides /etc/{protocols,rpc,services}, part of POSIX
+    #   and required by various C functions like getservbyname and getprotobyname
+    #   https://github.com/jupyter/docker-stacks/pull/2129
+    netbase \
     sudo \
     # - `tini` is installed as a helpful container entrypoint,
     #   that reaps zombie processes and such of the actual executable we want to start
@@ -85,7 +89,7 @@ RUN sed -i 's/^#force_color_prompt=yes/force_color_prompt=yes/' /etc/skel/.bashr
     # and docs: https://docs.conda.io/projects/conda/en/latest/dev-guide/deep-dives/activation.html
     echo 'eval "$(conda shell.bash hook)"' >> /etc/skel/.bashrc
 
-# Create NB_USER with name jovyan user with UID=1000 and in the 'users' group
+# Create "${NB_USER}" user (`jovyan` by default) with UID="${NB_UID}" (`1000` by default) and in the 'users' group
 # and make sure these dirs are writable by the `users` group.
 RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
     sed -i.bak -e 's/^%admin/#%admin/' /etc/sudoers && \
@@ -134,9 +138,9 @@ RUN set -x && \
         --root-prefix="${CONDA_DIR}" \
         --prefix="${CONDA_DIR}" \
         --yes \
-        "${PYTHON_SPECIFIER}" \
+        'jupyter_core' \
         'mamba' \
-        'jupyter_core' && \
+        "${PYTHON_SPECIFIER}" && \
     rm -rf /tmp/bin/ && \
     # Pin major.minor version of python
     # https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#preventing-packages-from-updating-pinning
@@ -199,7 +203,7 @@ RUN apt-get update --yes && \
 
 USER ${NB_UID}
 
-# Install JupyterLab, Jupyter Notebook, JupyterHub and NBClassic
+# Install JupyterHub, JupyterLab, NBClassic and Jupyter Notebook
 # Generate a Jupyter Server config
 # Cleanup temporary files
 # Correct permissions
@@ -207,10 +211,10 @@ USER ${NB_UID}
 # files across image layers when the permissions change
 WORKDIR /tmp
 RUN mamba install --yes \
-    'jupyterlab' \
-    'notebook' \
     'jupyterhub' \
-    'nbclassic' && \
+    'jupyterlab' \
+    'nbclassic' \
+    'notebook' && \
     jupyter server --generate-config && \
     mamba clean --all -f -y && \
     npm cache clean --force && \
@@ -339,7 +343,7 @@ RUN mamba install --yes \
     'dask' \
     'dill' \
     'h5py' \
-    'ipympl'\
+    'ipympl' \
     'ipywidgets' \
     'jupyterlab-git' \
     'matplotlib-base' \
@@ -357,7 +361,7 @@ RUN mamba install --yes \
     'sqlalchemy' \
     'statsmodels' \
     'sympy' \
-    'widgetsnbextension'\
+    'widgetsnbextension' \
     'xlrd' && \
     mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}" && \
@@ -399,7 +403,7 @@ RUN mamba install --quiet --yes \
 # using device_lib.list_local_devices() the cudNN version is shown, adapt version to tested compat
 USER ${NB_UID}
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir tensorflow==2.16.1 keras==3.1.1 && \
+    pip install --no-cache-dir tensorflow[and-cuda]==2.17.0 keras==3.6.0 && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
@@ -410,11 +414,11 @@ RUN pip install --upgrade pip && \
 #  && torchviz==0.0.2 --extra-index-url https://download.pytorch.org/whl/cu121
 RUN set -ex \
  && buildDeps=' \
-    torch==2.2.2 \
-    torchvision==0.17.2 \
-    torchaudio==2.2.2 \
+    torch==2.5.1 \
+    torchvision==0.20.1 \
+    torchaudio==2.5.1 \
 ' \
- && pip install --no-cache-dir $buildDeps  --extra-index-url https://download.pytorch.org/whl/cu121 \
+ && pip install --no-cache-dir $buildDeps  --extra-index-url https://download.pytorch.org/whl/cu124 \
  && fix-permissions "${CONDA_DIR}" \
  && fix-permissions "/home/${NB_USER}"
 
@@ -426,14 +430,6 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends cmake libncurses5-dev libncursesw5-dev git && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-USER $NB_UID
-# These need to be two separate pip install commands, otherwise it will throw an error
-# attempting to resolve the nvidia-cuda-nvcc package at the same time as nvidia-pyindex
-RUN pip install --no-cache-dir nvidia-pyindex && \
-    pip install --no-cache-dir nvidia-cuda-nvcc && \
-    fix-permissions "${CONDA_DIR}" && \
-    fix-permissions "/home/${NB_USER}"
-
 # reinstall nvcc with cuda-nvcc to install ptax
 USER $NB_UID
 # These need to be two separate pip install commands, otherwise it will throw an error
@@ -443,7 +439,8 @@ RUN pip install --no-cache-dir nvidia-pyindex && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
-# Install cuda-nvcc with sepecific version, see here: https://anaconda.org/nvidia/cuda-nvcc/labels
+# Install cuda-nvcc with sepecific version, see here:
+# https://anaconda.org/nvidia/cuda-nvcc/labels
 RUN mamba install -c nvidia cuda-nvcc=12.3.107 -y && \
     mamba clean --all -f -y && \
     fix-permissions $CONDA_DIR && \
