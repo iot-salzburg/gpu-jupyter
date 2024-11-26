@@ -32,7 +32,6 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
 2. [Build Your image](#build-your-image)
 3. [Tracing](#tracing)
 4. [Configuration](#configuration)
-5. [Deployment](#deployment-in-the-docker-swarm)
 6. [Issues and Contributing](#issues-and-contributing)
 7. [Support](#support)
 
@@ -45,29 +44,29 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
 3.  Get access to your GPU via CUDA drivers within Docker containers. For this, follow the installation steps in this
 [Medium article](https://medium.com/@christoph.schranz/set-up-your-own-gpu-based-jupyterlab-e0d45fcacf43). You can confirm that you can access your GPU within Docker if the command below returns a result similar to this one:
     ```bash
-    docker run --gpus all nvidia/cuda:12.3.2-cudnn9-runtime-ubuntu22.04 nvidia-smi
+    docker run --gpus all nvidia/cuda:12.5.1-cudnn-runtime-ubuntu22.04 nvidia-smi
     ```
     ```bash
-    Mon Apr  8 16:19:10 2024
-    +---------------------------------------------------------------------------------------+
-    | NVIDIA-SMI 545.23.05              Driver Version: 545.84       CUDA Version: 12.3     |
-    |-----------------------------------------+----------------------+----------------------+
-    | GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
-    | Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
-    |                                         |                      |               MIG M. |
-    |=========================================+======================+======================|
-    |   0  NVIDIA GeForce RTX 3060 ...    On  | 00000000:01:00.0 Off |                  N/A |
-    | N/A   46C    P8              10W /  60W |    105MiB /  6144MiB |      0%      Default |
-    |                                         |                      |                  N/A |
-    +-----------------------------------------+----------------------+----------------------+
+    Tue Nov 26 15:13:37 2024
+    +-----------------------------------------------------------------------------------------+
+    | NVIDIA-SMI 555.42.03              Driver Version: 555.85         CUDA Version: 12.5     |
+    |-----------------------------------------+------------------------+----------------------+
+    | GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+    | Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+    |                                         |                        |               MIG M. |
+    |=========================================+========================+======================|
+    |   0  NVIDIA GeForce RTX 3060 ...    On  |   00000000:01:00.0 Off |                  N/A |
+    | N/A   43C    P8             12W /   60W |    4569MiB /   6144MiB |      0%      Default |
+    |                                         |                        |                  N/A |
+    +-----------------------------------------+------------------------+----------------------+
 
-    +---------------------------------------------------------------------------------------+
-    | Processes:                                                                            |
-    |  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
-    |        ID   ID                                                             Usage      |
-    |=======================================================================================|
-    |  No running processes found                                                           |
-    +---------------------------------------------------------------------------------------+
+    +-----------------------------------------------------------------------------------------+
+    | Processes:                                                                              |
+    |  GPU   GI   CI        PID   Type   Process name                              GPU Memory |
+    |        ID   ID                                                               Usage      |
+    |=========================================================================================|
+    |    0   N/A  N/A       231      C   /python3.11                                 N/A      |
+    +-----------------------------------------------------------------------------------------+
     ```
     **It is important to keep your installed CUDA version in mind when you pull images.
     Note that you can't run images based on `nvidia/cuda:11.2` if you have only CUDA version 10.1 installed, use `nvcc --version` to get the correct cuda version. Additionally, a NVIDIA driver version of at least 520 is suggested, as the images are built and tested using this and later versions.**
@@ -76,9 +75,9 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
    ```bash
    cd your-working-directory
    ll data  # this path will be mounted by default
-   docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.7_cuda-12.3_ubuntu-22.04
+   docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.8_cuda-12.5_ubuntu-22.04
    ```
-   This starts an instance of *GPU-Jupyter* with the tag `v1.7_cuda-12.3_ubuntu-22.04` at [http://localhost:8848](http://localhost:8848) (port `8848`).
+   This starts an instance of *GPU-Jupyter* with the tag `v1.8_cuda-12.5_ubuntu-22.04` at [http://localhost:8848](http://localhost:8848) (port `8848`).
    To log into Jupyterlab, you have to specify a token that you get from:
    ```bash
    docker exec -it [container-ID/name] jupyter server list
@@ -89,6 +88,9 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
 Additionally, data within the host's `data` directory is shared with the container.
 
     The following images of GPU-Jupyter are available on [Dockerhub](https://hub.docker.com/r/cschranz/gpu-jupyter):
+     - `v1.8_cuda-12.5_ubuntu-22.04` (full image)
+     - `v1.8_cuda-12.5_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
+     - `v1.8_cuda-12.5_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
      - `v1.7_cuda-12.3_ubuntu-22.04` (full image)
      - `v1.7_cuda-12.3_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
      - `v1.7_cuda-12.3_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
@@ -128,11 +130,11 @@ Additionally, data within the host's `data` directory is shared with the contain
     - `v1.4_cuda-10.1_ubuntu-18.04_slim` (only with a python interpreter and without additional packages)
     </details>
 
-   The version, e.g. `v1.7`, declares the version of the generator setup.
-   The Cuda version, e.g. `cuda-12.3`, must match the CUDA driver version and be supported by the GPU libraries.
+   The version, e.g. `v1.8`, declares the version of the generator setup.
+   The Cuda version, e.g. `cuda-12.5`, must match the CUDA driver version and be supported by the GPU libraries.
    These and older versions of GPU-Jupyter are listed on [Dockerhub](https://hub.docker.com/r/cschranz/gpu-jupyter/tags?page=1&ordering=last_updated).
    In case you are using another version or the GPU libraries don't work on your hardware, please try to build the image on your own as described below.
-   Note that the images built for Ubuntu 20.04 LTS work also on Ubuntu 22.04 LTS is currently not supported.
+   Note that the images built for Ubuntu 20.04 LTS work also on Ubuntu 22.04 LTS.
 
 Within the Jupyterlab UI, ensure you can access your GPU by opening a new Terminal window and running `nvidia-smi`.
 Here, you can also install additional packages on top of the built image.
@@ -143,16 +145,16 @@ we recommend checking out this [tutorial](https://www.youtube.com/watch?v=7wfPqA
 
 ## Build Your Image
 
-Building a custom Docker image is the recommended option if you have a different GPU architecture or if you want to customize the pre-installed packages. The Dockerfiles in `custom/`  can be modified to achieve this. To use a custom base image, modify `custom/header.Dockerfile`. To install specific GPU-related libraries, modify `custom/gpulibs.Dockerfile`, and to add specific libraries, append them to `custom/usefulpackages.Dockerfile`.
+Building a custom Docker image is the recommended option if you have a different GPU architecture or if you want to customize the pre-installed packages. The Dockerfiles in `custom/`  can be modified to achieve this. To use a custom base image, modify `custom/header.Dockerfile`. To install specific GPU-related libraries, modify `custom/gpulibs.Dockerfile`, and to add specific libraries, append them to `custom/usefulpackages.Dockerfile`. Moreover, this offers the option for a **static token** or password which does not change with a container's restart.
 
-After making the necessary modifications, regenerate the `Dockerfile` in `/.build`. Once you have confirmed that your GPU is accessible within Docker containers by running `docker run --gpus all nvidia/cuda:12.3.2-cudnn9-runtime-ubuntu22.04 nvidia-smi` and seeing the GPU statistics, you can generate, build, and run the Docker image.
+After making the necessary modifications, regenerate the `Dockerfile` in `/.build`. Once you have confirmed that your GPU is accessible within Docker containers by running `docker run --gpus all nvidia/cuda:12.5.1-cudnn-runtime-ubuntu22.04 nvidia-sm` and seeing the GPU statistics, you can generate, build, and run the Docker image.
 The following commands will start *GPU-Jupyter* on [localhost:8848](http://localhost:8848) with the default password `gpu-jupyter`.
 
 ```bash
 git clone https://github.com/iot-salzburg/gpu-jupyter.git
 cd gpu-jupyter
 git branch  # Check for extisting branches
-git checkout v1.7_cuda-12.3_ubuntu-22.04  # select or create a new version
+git checkout v1.8_cuda-12.5_ubuntu-22.04  # select or create a new version
 # generate the Dockerfile with python and without Julia and R (see options: --help)
 ./generate-Dockerfile.sh --python-only
 docker build -t gpu-jupyter .build/  # will take a while
@@ -380,29 +382,7 @@ a version conflict, as some files have to be adapted. Here are some examples of 
 
 
 
-## Deployment in the Docker Swarm
-
-A Jupyter instance often requires data from other services.
-If that data source is containerized in Docker and sharing a port for communication shouldn't be allowed, e.g., for security reasons,
-then connecting the data source with *GPU-Jupyter* within a Docker Swarm is a great option!
-
-### Set up Docker Swarm and Registry
-
-This step requires a running [Docker Swarm](https://www.youtube.com/watch?v=x843GyFRIIY) on a cluster or at least on this node.
-In order to register custom images in a local Docker Swarm cluster,
-a registry instance must be deployed in advance.
-Note that we are using port 5001, as many services use the default port 5000.
-
-```bash
-sudo docker service create --name registry --publish published=5001,target=5000 registry:2
-curl 127.0.0.1:5001/v2/
-```
-This should output `{}`. \
-
-Afterward, check if the registry service is available using `docker service ls`.
-
-
-### Configure the shared Docker network
+### Configure a shared Docker network
 
 Additionally, *GPU-Jupyter* is connected to the data source via the same *docker-network*. Therefore, This network must be set to **attachable** in the source's `docker-compose.yml`:
 
@@ -419,49 +399,7 @@ networks:
     driver: overlay
     attachable: true
 ```
- In this example,
- * The docker stack was deployed in Docker swarm with the name **elk** (`docker stack deploy ... elk`),
- * The docker network has the name **datastack** within the `docker-compose.yml` file,
- * This network is configured to be attachable in the `docker-compose.yml` file
- * and the docker network has the name **elk_datastack**, see the following output:
-    ```bash
-    sudo docker network ls
-    # ...
-    # [UID]        elk_datastack                   overlay             swarm
-    # ...
-    ```
-  The docker network name **elk_datastack** is used in the next step as a parameter.
-
-### Start GPU-Jupyter in Docker Swarm
-
-Finally, *GPU-Jupyter* can be deployed in the Docker Swarm with the shared network, using:
-
-```bash
-./generate-Dockerfile.sh
-./add-to-swarm.sh -p [port] -n [docker-network] -r [registry-port]
-# e.g. ./add-to-swarm.sh -p 8848 -n elk_datastack -r 5001
-```
-where:
-* **-p:** port specifies the port on which the service will be available.
-* **-n:** docker-network is the name of the attachable network from the previous step,
-e.g., here it is **elk_datastack**.
-* **-r:** registry port is the port that is published by the registry service, the default is `5000`.
-
-Now, *GPU-jupyter* will be accessible here on [localhost:8848](http://localhost:8848)
-with the default password `gpu-jupyter` and shares the network with the other data source, i.e.,
-all ports of the data source will be accessible within *GPU-Jupyter*,
-even if they aren't routed it the source's `docker-compose` file.
-
-Check if everything works well using:
-```bash
-sudo docker service ps gpu_gpu-jupyter
-docker service ps gpu_gpu-jupyter
-```
-
-To remove the service from the swarm, use:
-```bash
-./remove-from-swarm.sh
-```
+ In this example, the docker network has the name **datastack** as defined within the `docker-compose.yml` file and is configured to be attachable.
 
 
 ## Issues and Contributing
