@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   gpu-jupyter:
-    container_name: gpu-jupyter
+    container_name: gpu-jupyter:v1.8_cuda-12.5_ubuntu-22.0
     build: .build
     deploy:
       resources:
