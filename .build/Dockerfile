@@ -7,8 +7,8 @@
 
 # Use NVIDIA CUDA as base image and run the same installation as in the other packages.
 # The version of cuda must match those of the packages installed in src/Dockerfile.gpulibs
-FROM nvidia/cuda:12.3.2-cudnn9-runtime-ubuntu22.04
-LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathematical Michael <consistentbayes@gmail.com>"
+FROM nvidia/cuda:12.5.1-cudnn-runtime-ubuntu22.04
+LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>"
 # This is a concatenated Dockerfile, the maintainers of subsequent sections may vary.
 RUN chmod 1777 /tmp && chmod 1777 /var/tmp
 
@@ -387,7 +387,7 @@ WORKDIR "${HOME}"
 ########################## Dependency: gpulibs #############################
 ############################################################################
 
-LABEL maintainer="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathematical Michael <consistentbayes@gmail.com>"
+LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>"
 
 # Install dependencies for e.g. PyTorch
 RUN mamba install --quiet --yes \
@@ -403,7 +403,7 @@ RUN mamba install --quiet --yes \
 # using device_lib.list_local_devices() the cudNN version is shown, adapt version to tested compat
 USER ${NB_UID}
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir tensorflow[and-cuda]==2.17.0 keras==3.6.0 && \
+    pip install --no-cache-dir tensorflow==2.18.0 keras==3.6.0 && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
@@ -441,7 +441,7 @@ RUN pip install --no-cache-dir nvidia-pyindex && \
 
 # Install cuda-nvcc with sepecific version, see here:
 # https://anaconda.org/nvidia/cuda-nvcc/labels
-RUN mamba install -c nvidia cuda-nvcc=12.3.107 -y && \
+RUN mamba install -c nvidia cuda-nvcc=12.5.82 -y && \
     mamba clean --all -f -y && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
@@ -455,7 +455,7 @@ USER $NB_UID
   ############################ Useful packages ###############################
   ############################################################################
   
-LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>, Mathematical Michael <consistentbayes@gmail.com>"
+LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>"
 
 USER root
 
@@ -468,7 +468,7 @@ USER $NB_UID
 RUN set -ex \
  && buildDeps=' \
     graphviz==0.20.3 \
-    pytest==8.1.1 \
+    pytest==8.3.3 \
  ' \
  && pip install --no-cache-dir $buildDeps \
  && fix-permissions "${CONDA_DIR}" \
@@ -477,8 +477,8 @@ RUN set -ex \
 # upgrade jupyter-server for compatibility
 RUN set -ex \
  && buildDeps=' \
-    distributed==2024.4.1 \
-    jupyter-server==2.13 \
+    distributed==2024.11.2 \
+    jupyter-server==2.14.2 \
  ' \
  && pip install --no-cache-dir $buildDeps \
  && fix-permissions "${CONDA_DIR}" \
@@ -488,15 +488,15 @@ RUN set -ex \
  && buildDeps=' \
     # install extension manager
     jupyter_contrib_nbextensions==0.7.0 \
-    jupyter_nbextensions_configurator==0.6.3 \
+    jupyter_nbextensions_configurator==0.6.4 \
     # install git extension
-    jupyterlab-git==0.50.0 \
+    jupyterlab-git==0.50.2 \
     # install plotly extension
-    plotly==5.20.0 \
+    plotly==5.24.1 \
     # install drawio and graphical extensions, not compatible with Jupyterlab 4.X yet
     # ipydrawio==1.3.0 \
-    ipyleaflet==0.18.2 \
-    ipywidgets==8.1.2 \
+    ipyleaflet==0.19.2 \
+    ipywidgets==8.1.5 \
     # install spell checker
     jupyterlab-spellchecker==0.8.4 \
     ' \
