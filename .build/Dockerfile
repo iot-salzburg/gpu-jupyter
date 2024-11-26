@@ -9,6 +9,7 @@
 # The version of cuda must match those of the packages installed in src/Dockerfile.gpulibs
 FROM nvidia/cuda:12.5.1-cudnn-runtime-ubuntu22.04
 LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>"
+
 # This is a concatenated Dockerfile, the maintainers of subsequent sections may vary.
 RUN chmod 1777 /tmp && chmod 1777 /var/tmp
 
