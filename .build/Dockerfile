@@ -7,7 +7,7 @@
 
 # Use NVIDIA CUDA as base image and run the same installation as in the other packages.
 # The version of cuda must match those of the packages installed in src/Dockerfile.gpulibs
-FROM nvidia/cuda:12.5.1-cudnn-runtime-ubuntu22.04
+FROM nvidia/cuda:12.6.3-cudnn-runtime-ubuntu24.04
 LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>"
 
 # This is a concatenated Dockerfile, the maintainers of subsequent sections may vary.
@@ -24,9 +24,9 @@ RUN apt-get update && \
 # Copyright (c) Jupyter Development Team.
 # Distributed under the terms of the Modified BSD License.
 
-# Ubuntu 22.04 (jammy)
-# https://hub.docker.com/_/ubuntu/tags?page=1&name=jammy
-ARG ROOT_CONTAINER=ubuntu:22.04
+# Ubuntu 24.04 (noble)
+# https://hub.docker.com/_/ubuntu/tags?page=1&name=noble
+ARG ROOT_IMAGE=ubuntu:24.04
 
 
 LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
@@ -90,6 +90,12 @@ RUN sed -i 's/^#force_color_prompt=yes/force_color_prompt=yes/' /etc/skel/.bashr
     # and docs: https://docs.conda.io/projects/conda/en/latest/dev-guide/deep-dives/activation.html
     echo 'eval "$(conda shell.bash hook)"' >> /etc/skel/.bashrc
 
+# Delete existing user with UID="${NB_UID}" if it exists
+# hadolint ignore=SC2046
+RUN if grep -q "${NB_UID}" /etc/passwd; then \
+        userdel --remove $(id -un "${NB_UID}"); \
+    fi
+
 # Create "${NB_USER}" user (`jovyan` by default) with UID="${NB_UID}" (`1000` by default) and in the 'users' group
 # and make sure these dirs are writable by the `users` group.
 RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
@@ -105,7 +111,7 @@ RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
 USER ${NB_UID}
 
 # Pin the Python version here, or set it to "default"
-ARG PYTHON_VERSION=3.11
+ARG PYTHON_VERSION=3.12
 
 # Setup work directory for backward-compatibility
 RUN mkdir "/home/${NB_USER}/work" && \
@@ -140,12 +146,13 @@ RUN set -x && \
         --prefix="${CONDA_DIR}" \
         --yes \
         'jupyter_core' \
+        'conda' \
         'mamba' \
         "${PYTHON_SPECIFIER}" && \
     rm -rf /tmp/bin/ && \
     # Pin major.minor version of python
     # https://conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html#preventing-packages-from-updating-pinning
-    mamba list --full-name 'python' | tail -1 | tr -s ' ' | cut -d ' ' -f 1,2 | sed 's/\.[^.]*$/.*/' >> "${CONDA_DIR}/conda-meta/pinned" && \
+    mamba list --full-name 'python' | awk 'END{sub("[^.]*$", "*", $2); print $1 " " $2}' >> "${CONDA_DIR}/conda-meta/pinned" && \
     mamba clean --all -f -y && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
@@ -212,13 +219,16 @@ USER ${NB_UID}
 # files across image layers when the permissions change
 WORKDIR /tmp
 RUN mamba install --yes \
-    'jupyterhub' \
+    'jupyterhub-singleuser' \
     'jupyterlab' \
     'nbclassic' \
-    'notebook' && \
+    # Sometimes, when the new version of `jupyterlab` is released, latest `notebook` might not support it for some time
+    # Old versions of `notebook` (<v7) didn't have a restriction on the `jupyterlab` version, and old `notebook` is getting installed
+    # That's why we have to pin the minimum notebook version
+    # More info: https://github.com/jupyter/docker-stacks/pull/2167
+    'notebook>=7.2.2' && \
     jupyter server --generate-config && \
     mamba clean --all -f -y && \
-    npm cache clean --force && \
     jupyter lab clean && \
     rm -rf "/home/${NB_USER}/.cache/yarn" && \
     fix-permissions "${CONDA_DIR}" && \
