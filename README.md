@@ -44,7 +44,7 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
 3.  Get access to your GPU via CUDA drivers within Docker containers. For this, follow the installation steps in this
 [Medium article](https://medium.com/@christoph.schranz/set-up-your-own-gpu-based-jupyterlab-e0d45fcacf43). You can confirm that you can access your GPU within Docker if the command below returns a result similar to this one:
     ```bash
-    docker run --gpus all nvidia/cuda:12.5.1-cudnn-runtime-ubuntu22.04 nvidia-smi
+    docker run --rm --gpus all nvidia/cuda:12.5.1-cudnn-runtime-ubuntu22.04 nvidia-smi
     ```
     ```bash
     Tue Nov 26 15:13:37 2024
