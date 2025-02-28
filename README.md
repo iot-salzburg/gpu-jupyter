@@ -35,7 +35,7 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
 3. [Tracing](#tracing)
 4. [Configuration](#configuration)
 6. [Issues and Contributing](#issues-and-contributing)
-7. [Support](#support)
+
 
 
 ## Quickstart
