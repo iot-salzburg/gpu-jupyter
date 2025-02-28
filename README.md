@@ -44,7 +44,7 @@ for creating and maintaining a robust Python, R, and Julia toolstack for Data Sc
 3.  Get access to your GPU via CUDA drivers within Docker containers. For this, follow the installation steps in this
 [Medium article](https://medium.com/@christoph.schranz/set-up-your-own-gpu-based-jupyterlab-e0d45fcacf43). You can confirm that you can access your GPU within Docker if the command below returns a result similar to this one:
     ```bash
-    docker run --gpus all nvidia/cuda:12.6.3-cudnn-runtime-ubuntu24.04 nvidia-smi
+    docker run --rm ---gpus all nvidia/cuda:12.6.3-cudnn-runtime-ubuntu24.04 nvidia-smi
     ```
     ```bash
     Tue Nov 26 15:13:37 2024
@@ -147,7 +147,8 @@ we recommend checking out this [tutorial](https://www.youtube.com/watch?v=7wfPqA
 
 Building a custom Docker image is the recommended option if you have a different GPU architecture or if you want to customize the pre-installed packages. The Dockerfiles in `custom/`  can be modified to achieve this. To use a custom base image, modify `custom/header.Dockerfile`. To install specific GPU-related libraries, modify `custom/gpulibs.Dockerfile`, and to add specific libraries, append them to `custom/usefulpackages.Dockerfile`. Moreover, this offers the option for a **static token** or password which does not change with a container's restart.
 
-After making the necessary modifications, regenerate the `Dockerfile` in `/.build`. Once you have confirmed that your GPU is accessible within Docker containers by running `docker run --gpus all nvidia/cuda:12.6.3-cudnn-runtime-ubuntu24.04 nvidia-sm` and seeing the GPU statistics, you can generate, build, and run the Docker image.
+After making the necessary modifications, regenerate the `Dockerfile` in `/.build`. Once you have confirmed that your GPU is accessible within Docker containers by running `docker run --rm --gpus all nvidia/cuda:12.6.3-cudnn-runtime-ubuntu24.04 nvidia-sm` and seeing the GPU statistics, you can generate, build, and run the Docker image.
+
 The following commands will start *GPU-Jupyter* on [localhost:8848](http://localhost:8848) with the default password `gpu-jupyter`.
 
 ```bash
