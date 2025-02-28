@@ -147,7 +147,7 @@ we recommend checking out this [tutorial](https://www.youtube.com/watch?v=7wfPqA
 
 Building a custom Docker image is the recommended option if you have a different GPU architecture or if you want to customize the pre-installed packages. The Dockerfiles in `custom/`  can be modified to achieve this. To use a custom base image, modify `custom/header.Dockerfile`. To install specific GPU-related libraries, modify `custom/gpulibs.Dockerfile`, and to add specific libraries, append them to `custom/usefulpackages.Dockerfile`. Moreover, this offers the option for a **static token** or password which does not change with a container's restart.
 
-After making the necessary modifications, regenerate the `Dockerfile` in `/.build`. Once you have confirmed that your GPU is accessible within Docker containers by running `docker run --gpus all nvidia/cuda:12.5.1-cudnn-runtime-ubuntu22.04 nvidia-sm` and seeing the GPU statistics, you can generate, build, and run the Docker image.
+After making the necessary modifications, regenerate the `Dockerfile` in `/.build`. Once you have confirmed that your GPU is accessible within Docker containers by running `docker run --rm --gpus all nvidia/cuda:12.5.1-cudnn-runtime-ubuntu22.04 nvidia-smi` and seeing the GPU statistics, you can generate, build, and run the Docker image.
 The following commands will start *GPU-Jupyter* on [localhost:8848](http://localhost:8848) with the default password `gpu-jupyter`.
 
 ```bash
