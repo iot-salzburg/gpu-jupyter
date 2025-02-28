@@ -4,7 +4,7 @@
      alt="GPU-Jupyter"
      width=661/>
 
-#### GPU-Jupyter: Leverage Jupyter Notebooks with the power of your NVIDIA GPU and perform GPU calculations using Tensorflow and Pytorch in collaborative notebooks.
+#### GPU-Jupyter: Your GPU-accelerated JupyterLab with a rich data science toolstack, TensorFlow, and PyTorch for your reproducible deep learning experiments.
 
 ![Github Workflow](https://github.com/iot-salzburg/gpu-jupyter/actions/workflows/default.yml/badge.svg)
 [![Docker Pulls](https://badgen.net/docker/pulls/cschranz/gpu-jupyter?icon=docker&label=Pulls)](https://hub.docker.com/r/cschranz/gpu-jupyter)
@@ -302,13 +302,13 @@ This packages is already installed in the GPU-packages and can be used with thes
 1. Forward the port in the docker command using `-p 6006:6006` (only for usage outside of Juypterlab).
 2. Starting tensorboad with port binding within a container or Jupyterlab UI. Make sure the parameter `--bind_all` is set.
 
-```bash
-docker exec -it [container-name/ID] bash
-root@749eb1a06d60:~# tensorboard --logdir mylogdir --bind_all
-```
-```jupyter
-%tensorboard --logdir logs/[logdir] --bind_all
-```
+    ```bash
+    docker exec -it [container-name/ID] bash
+    root@749eb1a06d60:~# tensorboard --logdir mylogdir --bind_all
+    ```
+    ```jupyter
+    %tensorboard --logdir logs/[logdir] --bind_all
+    ```
 
 4. Writing the states and results in the tensorboard log-dir, as described in the tutorials for [TensorFlow](https://www.tensorflow.org/tensorboard/get_started) and [PyTorch](https://pytorch.org/tutorials/recipes/recipes/tensorboard_with_pytorch.html) or in the Getting Started section `data/Getting_Started`.
 If the port is exposed, tensorboard can be accessed in the browser on [localhost:6006](http://localhost:6006).
@@ -318,7 +318,7 @@ If the port is exposed, tensorboard can be accessed in the browser on [localhost
 
 #### Update CUDA to another version
 
-The GPU-libraries such as PyTorch and Tensorflow in `custom/Docker.gpulibs` must support the CUDA version and NVIDIA drivers on the host machine. Check out the compatibility lists for [PyTorch](https://pytorch.org/get-started/locally/) and [Tensorflow](https://www.tensorflow.org/install/source#gpu) or search online for the explicit versions. In this setup, the NVIDIA Driver has version 530.30.02 and CUDA version 11.6.2 is used, which is compatible with Tensorflow 2.10 and PyTorch 1.12.
+The GPU-libraries such as PyTorch and Tensorflow in `custom/Docker.gpulibs` must support the CUDA version and NVIDIA drivers on the host machine. Check out the compatibility lists for [PyTorch](https://pytorch.org/get-started/locally/) and [Tensorflow](https://www.tensorflow.org/install/source#gpu) or search online for the explicit versions. In this setup, the NVIDIA Driver has version 560.35.04 and CUDA version 12.6.3 is used, which is compatible with Tensorflow 2.18 and PyTorch 2.6.
 
 The host's CUDA version must be equal to or higher than that used by the container (set within `custom/header.Dockerfile`).
 Check the host's version with `nvcc --version` and the version compatibilities
@@ -328,7 +328,7 @@ Then modify, if supported, the CUDA-version (find all tags [here](https://hub.do
 in `custom/header.Dockerfile` to, e.g.:
 the line:
 
-    FROM nvidia/cuda:X.Y-base-ubuntu20.04
+    FROM nvidia/cuda:X.Y-base-ubuntu24.04
 
 Then re-generate, re-build and run the updated image.
 Note that a change in the first line of the Dockerfile will re-build the whole image.
