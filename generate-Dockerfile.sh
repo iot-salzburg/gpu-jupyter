@@ -5,7 +5,7 @@ cd $(cd -P -- "$(dirname -- "$0")" && pwd -P)
 export DOCKERFILE=".build/Dockerfile"
 export STACKS_DIR=".build/docker-stacks"
 # please test the build of the commit in https://github.com/jupyter/docker-stacks/commits/main in advance
-export HEAD_COMMIT="00987883e58d139b5ed01f803f95e639c59bf340"
+export HEAD_COMMIT="6cdaf23d17b8641a7cc18ec6d920bd425acf35e6"
 
 while [[ "$#" -gt 0 ]]; do case $1 in
   -p|--pw|--password) PASSWORD="$2" && USE_PASSWORD=1; shift;;
@@ -67,7 +67,7 @@ echo "
 ############################################################################
 " >> $DOCKERFILE
 if [ -f "$STACKS_DIR/images/docker-stacks-foundation/Dockerfile" ]; then
-    cat $STACKS_DIR/images/docker-stacks-foundation/Dockerfile | grep -v 'BASE_CONTAINER' | grep -v 'FROM $ROOT_CONTAINER' >> $DOCKERFILE
+    cat $STACKS_DIR/images/docker-stacks-foundation/Dockerfile | grep -v 'BASE_IMAGE' | grep -v 'FROM $ROOT_IMAGE' >> $DOCKERFILE
     # copy files that are used during the build
     cp $STACKS_DIR/images/docker-stacks-foundation/initial-condarc .build/
     cp $STACKS_DIR/images/docker-stacks-foundation/fix-permissions .build/
@@ -75,7 +75,7 @@ if [ -f "$STACKS_DIR/images/docker-stacks-foundation/Dockerfile" ]; then
     cp $STACKS_DIR/images/docker-stacks-foundation/run-hooks.sh .build/
     cp $STACKS_DIR/images/docker-stacks-foundation/10activate-conda-env.sh .build/
 else
-    cat $STACKS_DIR/docker-stacks-foundation/Dockerfile | grep -v 'BASE_CONTAINER' | grep -v 'FROM $ROOT_CONTAINER' >> $DOCKERFILE
+    cat $STACKS_DIR/docker-stacks-foundation/Dockerfile | grep -v 'BASE_IMAGE' | grep -v 'FROM $ROOT_IMAGE' >> $DOCKERFILE
     # copy files that are used during the build
     cp $STACKS_DIR/docker-stacks-foundation/initial-condarc .build/
     cp $STACKS_DIR/docker-stacks-foundation/fix-permissions .build/
@@ -88,7 +88,7 @@ echo "
 ############################################################################
 " >> $DOCKERFILE
 if [ -f "$STACKS_DIR/images/base-notebook/Dockerfile" ]; then
-    cat $STACKS_DIR/images/base-notebook/Dockerfile | grep -v 'BASE_CONTAINER' >> $DOCKERFILE
+    cat $STACKS_DIR/images/base-notebook/Dockerfile | grep -v 'BASE_IMAGE' >> $DOCKERFILE
     # copy files that are used during the build
     cp $STACKS_DIR/images/base-notebook/jupyter_server_config.py .build/
     cp $STACKS_DIR/images/base-notebook/start-notebook.sh .build/
@@ -97,7 +97,7 @@ if [ -f "$STACKS_DIR/images/base-notebook/Dockerfile" ]; then
     cp $STACKS_DIR/images/base-notebook/start-singleuser.py .build/
     cp $STACKS_DIR/images/base-notebook/docker_healthcheck.py .build/
 else
-    cat $STACKS_DIR/base-notebook/Dockerfile | grep -v 'BASE_CONTAINER' >> $DOCKERFILE
+    cat $STACKS_DIR/base-notebook/Dockerfile | grep -v 'BASE_IMAGE' >> $DOCKERFILE
     # copy files that are used during the build
     cp $STACKS_DIR/base-notebook/jupyter_server_config.py .build/
     cp $STACKS_DIR/base-notebook/start-notebook.sh .build/
@@ -112,12 +112,12 @@ echo "
 ############################################################################
 " >> $DOCKERFILE
 if [ -f "$STACKS_DIR/images/minimal-notebook/Dockerfile" ]; then
-    cat $STACKS_DIR/images/minimal-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
+    cat $STACKS_DIR/images/minimal-notebook/Dockerfile | grep -v BASE_IMAGE >> $DOCKERFILE
     # copy files that are used during the build
     cp -r $STACKS_DIR/images/minimal-notebook/setup-scripts .build/
     cp $STACKS_DIR/images/minimal-notebook/Rprofile.site .build/
 else
-    cat $STACKS_DIR/minimal-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
+    cat $STACKS_DIR/minimal-notebook/Dockerfile | grep -v BASE_IMAGE >> $DOCKERFILE
     # copy files that are used during the build
     cp -r $STACKS_DIR/minimal-notebook/setup-scripts .build/
     cp $STACKS_DIR/minimal-notebook/Rprofile.site .build/
@@ -129,9 +129,9 @@ echo "
 ############################################################################
 " >> $DOCKERFILE
 if [ -f "$STACKS_DIR/images/scipy-notebook/Dockerfile" ]; then
-    cat $STACKS_DIR/images/scipy-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
+    cat $STACKS_DIR/images/scipy-notebook/Dockerfile | grep -v BASE_IMAGE >> $DOCKERFILE
 else
-    cat $STACKS_DIR/scipy-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
+    cat $STACKS_DIR/scipy-notebook/Dockerfile | grep -v BASE_IMAGE >> $DOCKERFILE
 fi
 
 # install Julia and R if not excluded or spare mode is used
@@ -142,9 +142,9 @@ if [[ "$no_datascience_notebook" != 1 ]]; then
   ############################################################################
   " >> $DOCKERFILE
     if [ -f "$STACKS_DIR/images/datascience-notebook/Dockerfile" ]; then
-        cat $STACKS_DIR/images/datascience-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
+        cat $STACKS_DIR/images/datascience-notebook/Dockerfile | grep -v BASE_IMAGE >> $DOCKERFILE
     else
-        cat $STACKS_DIR/images/datascience-notebook/Dockerfile | grep -v BASE_CONTAINER >> $DOCKERFILE
+        cat $STACKS_DIR/images/datascience-notebook/Dockerfile | grep -v BASE_IMAGE >> $DOCKERFILE
     fi
 else
   echo "Set 'no-datascience-notebook' = 'python-only', not installing the datascience-notebook with Julia and R."

@@ -122,3 +122,4 @@ src/jupyter_notebook_config.json
 /build_push_slim.sh
 extra/Getting_Started/tensorboard/runs
 *copy.sh
+test_generate-Dockerfile.sh
