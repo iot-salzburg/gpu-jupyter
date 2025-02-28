@@ -414,7 +414,7 @@ RUN mamba install --quiet --yes \
 # using device_lib.list_local_devices() the cudNN version is shown, adapt version to tested compat
 USER ${NB_UID}
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir tensorflow==2.18.0 keras==3.6.0 && \
+    pip install --no-cache-dir tensorflow==2.18.0 keras==3.8.0 && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
@@ -425,11 +425,11 @@ RUN pip install --upgrade pip && \
 #  && torchviz==0.0.2 --extra-index-url https://download.pytorch.org/whl/cu121
 RUN set -ex \
  && buildDeps=' \
-    torch==2.5.1 \
-    torchvision==0.20.1 \
-    torchaudio==2.5.1 \
+    torch==2.6.0 \
+    torchvision==0.21.0 \
+    torchaudio==2.6.0 \
 ' \
- && pip install --no-cache-dir $buildDeps  --extra-index-url https://download.pytorch.org/whl/cu124 \
+ && pip install --no-cache-dir $buildDeps  --index-url https://download.pytorch.org/whl/cu126\
  && fix-permissions "${CONDA_DIR}" \
  && fix-permissions "/home/${NB_USER}"
 
@@ -452,7 +452,7 @@ RUN pip install --no-cache-dir nvidia-pyindex && \
 
 # Install cuda-nvcc with sepecific version, see here:
 # https://anaconda.org/nvidia/cuda-nvcc/labels
-RUN mamba install -c nvidia cuda-nvcc=12.5.82 -y && \
+RUN mamba install -c nvidia cuda-nvcc=12.6.85 -y && \
     mamba clean --all -f -y && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
@@ -479,7 +479,7 @@ USER $NB_UID
 RUN set -ex \
  && buildDeps=' \
     graphviz==0.20.3 \
-    pytest==8.3.3 \
+    pytest==8.3.4 \
  ' \
  && pip install --no-cache-dir $buildDeps \
  && fix-permissions "${CONDA_DIR}" \
@@ -488,8 +488,8 @@ RUN set -ex \
 # upgrade jupyter-server for compatibility
 RUN set -ex \
  && buildDeps=' \
-    distributed==2024.11.2 \
-    jupyter-server==2.14.2 \
+    distributed==2025.2.0 \
+    jupyter-server==2.15.0 \
  ' \
  && pip install --no-cache-dir $buildDeps \
  && fix-permissions "${CONDA_DIR}" \
@@ -501,7 +501,7 @@ RUN set -ex \
     jupyter_contrib_nbextensions==0.7.0 \
     jupyter_nbextensions_configurator==0.6.4 \
     # install git extension
-    jupyterlab-git==0.50.2 \
+    jupyterlab-git==0.51.0 \
     # install plotly extension
     plotly==5.24.1 \
     # install drawio and graphical extensions, not compatible with Jupyterlab 4.X yet
