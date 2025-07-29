@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use or refer to the GPU-Jupyter framework, please cite as follows."
+title: "GPU-Jupyter: A Framework for Reproducible Deep Learning Research"
+authors:
+  - family-names: Schranz
+    given-names: Christoph
+    orcid: https://orcid.org/0000-0002-5786-7807
+    affiliation: Salzburg Research
+  - family-names: Pilosov
+    given-names: Michael
+    orcid: https://orcid.org/0000-0002-9119-4140
+    affiliation: Mind the Math, LLC
+  - family-names: Beeking
+    given-names: Moritz
+    orcid: https://orcid.org/0000-0002-7870-8127
+    affiliation: Salzburg Research
+date-released: 2025-05-28
+version: "1.0"
+license: "Apache-2.0"
+doi: 10.13140/RG.2.2.15549.99040
+repository-code: https://github.com/iot-salzburg/reproducible-research-with-gpu-jupyter
+keywords:
+  - GPU-Jupyter
+  - FAIR4RS
+  - Reproducibility
+  - Jupyter
+  - Deep Learning
+  - Docker
+  - Containerization
+  
