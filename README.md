@@ -197,7 +197,7 @@ All pre-built images are available on [Dockerhub](https://hub.docker.com/r/cschr
 </details>
 
 The version number, e.g. `v1.10`, declares the version of the generator setup and is directly linked to a commit hash of the [Jupyter Docker Stacks](https://github.com/jupyter/docker-stacks).
-See the installed package versions, including (Python, Julia, R, PyTorch, and TensorFlow) under [README-Versions](#extra/README-versions.md). 
+See the installed package versions, including (Python, Julia, R, PyTorch, and TensorFlow) under [README-versions](https://github.com/iot-salzburg/gpu-jupyter/blob/master/extra/README-versions.md). 
 The Cuda version, e.g. `cuda-12.9`, must be supported by the installed NVIDIA driver version on the host. Note that the images built for Ubuntu 20.04 LTS or Ubuntu 22.04 LTS also work on Ubuntu 24.04 LTS. 
 In case you are using another version or the GPU libraries don't work on your hardware, please try to build the image on your own as described in [Build Your Image](#build-your-image).
 
