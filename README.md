@@ -6,14 +6,14 @@
 
 #### GPU-Jupyter: Your GPU-accelerated JupyterLab with PyTorch, TensorFlow, and a rich data science toolstack for your reproducible deep learning experiments.
  
-![Github Workflow](https://github.com/iot-salzburg/gpu-jupyter/actions/workflows/default.yml/badge.svg)
+<!--![Github Workflow](https://github.com/iot-salzburg/gpu-jupyter/actions/workflows/default.yml/badge.svg) Remove as the workflow can't be finished to to No space left on device error-->
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/iot-salzburg/gpu-jupyter/graphs/commit-activity)
+[![GitHub pull-requests closed](https://badgen.net/github/closed-prs/iot-salzburg/gpu-jupyter)](https://github.com/iot-salzburg/gpu-jupyter/pulls?q=is%3Aclosed)
+[![GitHub commits](https://badgen.net/github/commits/iot-salzburg/gpu-jupyter)](https://GitHub.com/iot-salzburg/gpu-jupyter/commit/)
+[![GitHub forks](https://badgen.net/github/forks/iot-salzburg/gpu-jupyter/)](https://GitHub.com/iot-salzburg/gpu-jupyter/stargazers/)
 [![Docker Pulls](https://badgen.net/docker/pulls/cschranz/gpu-jupyter?icon=docker&label=Pulls)](https://hub.docker.com/r/cschranz/gpu-jupyter)
 [![Docker Stars](https://badgen.net/docker/stars/cschranz/gpu-jupyter?icon=docker&label=Stars)](https://hub.docker.com/r/cschranz/gpu-jupyter)
 [![GitHub stars](https://badgen.net/github/stars/iot-salzburg/gpu-jupyter/)](https://GitHub.com/iot-salzburg/gpu-jupyter/network/)
-[![GitHub forks](https://badgen.net/github/forks/iot-salzburg/gpu-jupyter/)](https://GitHub.com/iot-salzburg/gpu-jupyter/stargazers/)
-[![GitHub pull-requests closed](https://badgen.net/github/closed-prs/iot-salzburg/gpu-jupyter)](https://github.com/iot-salzburg/gpu-jupyter/pulls?q=is%3Aclosed)
-[![GitHub commits](https://badgen.net/github/commits/iot-salzburg/gpu-jupyter)](https://GitHub.com/iot-salzburg/gpu-jupyter/commit/)
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/iot-salzburg/gpu-jupyter/graphs/commit-activity)
 
 
 Welcome to this project, which provides a **GPU-capable environment** based on NVIDIA's official CUDA Docker image and the popular [Jupyter's Docker Stacks](https://github.com/jupyter/docker-stacks).
@@ -88,7 +88,7 @@ Please find an example of how to **use GPU-Jupyter to make your deep learning re
    ```bash
    cd your-working-directory
    ll data  # this path will be mounted by default
-   docker run --gpus all -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.10_cuda-12.9_ubuntu-24.04
+   docker run --gpus all -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.10_cuda-12.9_ubuntu-24.04
    ```
    ---
    This starts a Docker container of **GPU-Jupyter** with the version `v1.10_cuda-12.9_ubuntu-24.04` locally at [http://localhost:8848](http://localhost:8848) on port `8848`.
@@ -290,7 +290,7 @@ For the best reproducibility, it is recommended to build on top of the Dockerfil
     
 ### Build own Dockerfile
 
-Build additional layers on top of GPU-Jupyter by creating a new Dockerfile for your setup:
+Build additional layers on top of GPU-Jupyter by creating a new `Dockerfile` for your setup:
 
 
 ```Dockerfile
