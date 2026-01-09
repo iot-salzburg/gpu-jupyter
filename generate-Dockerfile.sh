@@ -5,7 +5,7 @@ cd $(cd -P -- "$(dirname -- "$0")" && pwd -P)
 export DOCKERFILE=".build/Dockerfile"
 export STACKS_DIR=".build/docker-stacks"
 # please test the build of the commit in https://github.com/jupyter/docker-stacks/commits/main in advance
-export HEAD_COMMIT="6cdaf23d17b8641a7cc18ec6d920bd425acf35e6"
+export HEAD_COMMIT="3f40fd03030369beb419c5a3ccc7e73b2d058631"
 
 while [[ "$#" -gt 0 ]]; do case $1 in
   -p|--pw|--password) PASSWORD="$2" && USE_PASSWORD=1; shift;;
@@ -213,6 +213,6 @@ export JUPYTER_GID=$(id -g)
 #cp $(find $(dirname $DOCKERFILE) -type f | grep -v $STACKS_DIR | grep -v .gitkeep) .
 echo
 echo "The GPU Dockerfile was generated successfully in file ${DOCKERFILE}."
-echo "To start the GPU-based Juyterlab instance, run:"
-echo "  docker build -t gpu-jupyter .build/  # will take a while"
-echo "  docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes -e NB_UID=$(id -u) -e NB_GID=$(id -g) --user root --restart always --name gpu-jupyter_1 gpu-jupyter"
+echo "To build an image and run a container of GPU-Juyter, run:"
+echo "  docker build -t gpu-jupyter .build/ --progress=plain  # will take a while"
+echo "  docker run --gpus all --rm -it -p 8848:8888 -v \$(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes -e NB_UID=\$(id -u) -e NB_GID=\$(id -g) --user root --name gpu-jupyter_1 gpu-jupyter"
