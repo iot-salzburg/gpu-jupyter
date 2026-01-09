@@ -12,14 +12,14 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  docker-slim:
+  docker-default:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
 
     - name: Generate Dockerfile
-      run: ./generate-Dockerfile.sh
+      run: ./generate-Dockerfile.sh --slim
 
     - name: Build Image
       run: docker build -t gpu-jupyter .build/ --progress=plain  # will take a while
