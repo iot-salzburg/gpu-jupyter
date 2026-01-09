@@ -7,7 +7,7 @@
 
 # Use NVIDIA CUDA as base image and run the same installation as in the other packages.
 # The version of cuda must match those of the packages installed in src/Dockerfile.gpulibs
-FROM nvidia/cuda:12.6.3-cudnn-runtime-ubuntu24.04
+FROM nvidia/cuda:12.9.1-cudnn-runtime-ubuntu24.04
 LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>"
 
 # This is a concatenated Dockerfile, the maintainers of subsequent sections may vary.
@@ -108,10 +108,16 @@ RUN echo "auth requisite pam_deny.so" >> /etc/pam.d/su && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
+# macOS Rosetta virtualization creates junk directory which gets owned by root further up.
+# It'll get re-created, but as USER runner after the next directive so hopefully should not cause permission issues.
+#
+# More info: https://github.com/jupyter/docker-stacks/issues/2296
+RUN rm -rf "/home/${NB_USER}/.cache/"
+
 USER ${NB_UID}
 
 # Pin the Python version here, or set it to "default"
-ARG PYTHON_VERSION=3.12
+ARG PYTHON_VERSION=3.13
 
 # Setup work directory for backward-compatibility
 RUN mkdir "/home/${NB_USER}/work" && \
@@ -171,6 +177,12 @@ RUN mkdir /usr/local/bin/start-notebook.d && \
 
 COPY 10activate-conda-env.sh /usr/local/bin/before-notebook.d/
 
+# macOS Rosetta virtualization creates junk directory which gets owned by root further up.
+# It'll get re-created, but as USER runner after the next directive so hopefully should not cause permission issues.
+#
+# More info: https://github.com/jupyter/docker-stacks/issues/2296
+RUN rm -rf "/home/${NB_USER}/.cache/"
+
 # Switch back to jovyan to avoid accidental container runs as root
 USER ${NB_UID}
 
@@ -208,6 +220,12 @@ RUN apt-get update --yes && \
     #   we use `run-one-constantly` to support the `RESTARTABLE` option
     run-one && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# macOS Rosetta virtualization creates junk directory which gets owned by root further up.
+# It'll get re-created, but as USER runner after the next directive so hopefully should not cause permission issues.
+#
+# More info: https://github.com/jupyter/docker-stacks/issues/2296
+RUN rm -rf "/home/${NB_USER}/.cache/"
 
 USER ${NB_UID}
 
@@ -253,6 +271,12 @@ RUN fix-permissions /etc/jupyter/
 # https://github.com/jupyter/docker-stacks/issues/915#issuecomment-1068528799
 HEALTHCHECK --interval=3s --timeout=1s --start-period=3s --retries=3 \
     CMD /etc/jupyter/docker_healthcheck.py || exit 1
+
+# macOS Rosetta virtualization creates junk directory which gets owned by root further up.
+# It'll get re-created, but as USER runner after the next directive so hopefully should not cause permission issues.
+#
+# More info: https://github.com/jupyter/docker-stacks/issues/2296
+RUN rm -rf "/home/${NB_USER}/.cache/"
 
 # Switch back to jovyan to avoid accidental container runs as root
 USER ${NB_UID}
@@ -303,6 +327,13 @@ RUN apt-get update --yes && \
 # Create alternative for nano -> nano-tiny
 RUN update-alternatives --install /usr/bin/nano nano /bin/nano-tiny 10
 
+# macOS Rosetta virtualization creates junk directory which gets owned by root further up.
+# It'll get re-created, but as USER runner after the next directive so hopefully should not cause permission issues.
+#
+# More info: https://github.com/jupyter/docker-stacks/issues/2296
+# hadolint ignore=DL3059
+RUN rm -rf "/home/${NB_USER}/.cache/"
+
 # Switch back to jovyan to avoid accidental container runs as root
 USER ${NB_UID}
 
@@ -339,6 +370,12 @@ RUN apt-get update --yes && \
     # for matplotlib anim
     ffmpeg && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# macOS Rosetta virtualization creates junk directory which gets owned by root further up.
+# It'll get re-created, but as USER runner after the next directive so hopefully should not cause permission issues.
+#
+# More info: https://github.com/jupyter/docker-stacks/issues/2296
+RUN rm -rf "/home/${NB_USER}/.cache/"
 
 USER ${NB_UID}
 
@@ -378,17 +415,15 @@ RUN mamba install --yes \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
-# Install facets package which does not have a `pip` or `conda-forge` package at the moment
-WORKDIR /tmp
-RUN git clone https://github.com/PAIR-code/facets && \
-    jupyter nbclassic-extension install facets/facets-dist/ --sys-prefix && \
-    rm -rf /tmp/facets && \
-    fix-permissions "${CONDA_DIR}" && \
-    fix-permissions "/home/${NB_USER}"
-
 # Import matplotlib the first time to build the font cache
 RUN MPLBACKEND=Agg python -c "import matplotlib.pyplot" && \
     fix-permissions "/home/${NB_USER}"
+
+# macOS Rosetta virtualization creates junk directory which gets owned by root further up.
+# It'll get re-created, but as USER runner after the next directive so hopefully should not cause permission issues.
+#
+# More info: https://github.com/jupyter/docker-stacks/issues/2296
+RUN rm -rf "/home/${NB_USER}/.cache/"
 
 USER ${NB_UID}
 
@@ -414,7 +449,8 @@ RUN mamba install --quiet --yes \
 # using device_lib.list_local_devices() the cudNN version is shown, adapt version to tested compat
 USER ${NB_UID}
 RUN pip install --upgrade pip && \
-    pip install --no-cache-dir tensorflow==2.18.0 keras==3.8.0 && \
+    pip install --no-cache-dir "protobuf>=5.28.3,<6" && \
+    pip install --no-cache-dir tensorflow[and-cuda]==2.20.0 keras==3.13.0 && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
@@ -425,11 +461,11 @@ RUN pip install --upgrade pip && \
 #  && torchviz==0.0.2 --extra-index-url https://download.pytorch.org/whl/cu121
 RUN set -ex \
  && buildDeps=' \
-    torch==2.6.0 \
-    torchvision==0.21.0 \
-    torchaudio==2.6.0 \
+    torch==2.9.1 \
+    torchvision==0.24.1 \
+    torchaudio==2.9.1 \
 ' \
- && pip install --no-cache-dir $buildDeps  --index-url https://download.pytorch.org/whl/cu126\
+ && pip install --no-cache-dir $buildDeps  --index-url https://download.pytorch.org/whl/cu128\
  && fix-permissions "${CONDA_DIR}" \
  && fix-permissions "/home/${NB_USER}"
 
@@ -445,14 +481,15 @@ RUN apt-get update && \
 USER $NB_UID
 # These need to be two separate pip install commands, otherwise it will throw an error
 # attempting to resolve the nvidia-cuda-nvcc package at the same time as nvidia-pyindex
-RUN pip install --no-cache-dir nvidia-pyindex && \
+RUN pip install wheel && \
+#    pip install --no-cache-dir nvidia-pyindex && \
     pip install --no-cache-dir nvidia-cuda-nvcc && \
     fix-permissions "${CONDA_DIR}" && \
     fix-permissions "/home/${NB_USER}"
 
-# Install cuda-nvcc with sepecific version, see here:
+# Install cuda-nvcc with specific version, see here:
 # https://anaconda.org/nvidia/cuda-nvcc/labels
-RUN mamba install -c nvidia cuda-nvcc=12.6.85 -y && \
+RUN mamba install -c nvidia cuda-nvcc=12.9.86 -y && \
     mamba clean --all -f -y && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
