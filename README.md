@@ -19,7 +19,7 @@
 Welcome to this project, which provides a **GPU-capable environment** based on NVIDIA's official CUDA Docker image and the popular [Jupyter's Docker Stacks](https://github.com/jupyter/docker-stacks).
 By utilizing version control for the source code, tagged data spaces, seeds for the random functions within isolated Docker containers, our solution **empowers researchers to conduct fully reproducible and sharable machine-learning experiments**.
 
-![GPU-Jupyter Architecture](https://raw.githubusercontent.com/iot-salzburg/gpu-jupyter/master/extra/GPU_Jupyter_arch.png)
+![GPU-Jupyter Architecture](https://raw.githubusercontent.com/iot-salzburg/gpu-jupyter/refs/heads/master/extra/GPU_Jupyter_arch.png)
 
 Please find an example of how to **use GPU-Jupyter to make your deep learning research reproducible with one single command on [github.com/iot-salzburg/reproducible-research-with-gpu-jupyter](https://github.com/iot-salzburg/reproducible-research-with-gpu-jupyter)**.
 
