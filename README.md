@@ -20,6 +20,7 @@ Welcome to this project, which provides a **GPU-capable environment** based on N
 By utilizing version control for the source code, tagged data spaces, seeds for the random functions within isolated Docker containers, our solution **empowers researchers to conduct fully reproducible and sharable machine-learning experiments**.
 
 ![GPU-Jupyter Architecture](https://raw.githubusercontent.com/iot-salzburg/gpu-jupyter/refs/heads/master/extra/GPU_Jupyter_arch.png)
+Architecture of the GPU-Jupyter Docker image on top of NVIDIA and Docker.
 
 Please find an example of how to **use GPU-Jupyter to make your deep learning research reproducible with one single command on [github.com/iot-salzburg/reproducible-research-with-gpu-jupyter](https://github.com/iot-salzburg/reproducible-research-with-gpu-jupyter)**.
 
@@ -28,8 +29,6 @@ Please find an example of how to **use GPU-Jupyter to make your deep learning re
 
 1. [Quickstart](#quickstart)
 2. [Configuration](#configuration)
-3. [Tracing](#tracing)
-3. [Customization](#customization)
 2. [Build Your image](#build-your-image)
 6. [Issues and Contributing](#issues-and-contributing)
 
@@ -76,7 +75,7 @@ Please find an example of how to **use GPU-Jupyter to make your deep learning re
     ```
 
    If your computer doesn't have an NVIDIA GPU, you can get a cloud solution, e.g., using [Saturn Cloud](https://saturncloud.io/?utm_source=Github+&utm_Github=TDS&utm_campaign=ChristophSchranz&utm_term=GPUJupyter).
-   **To install the NVIDIA drivers, CUDA, Docker, and the NVIDIA Container Toolkit, follow the [installation script](https://raw.githubusercontent.com/iot-salzburg/gpu-jupyter/master/extra/README-installations.md) or the guide in this [Medium article: Set up Your own GPU-based Jupyter easily using Docker](https://medium.com/@christoph.schranz/set-up-your-own-gpu-based-jupyterlab-e0d45fcacf43)**.
+   **To install the NVIDIA drivers, CUDA, Docker, and the NVIDIA Container Toolkit, follow the [installation script](https://github.com/iot-salzburg/gpu-jupyter/blob/master/extra/README-installations.md) or the guide in this [Medium article: Set up Your own GPU-based Jupyter easily using Docker](https://medium.com/@christoph.schranz/set-up-your-own-gpu-based-jupyterlab-e0d45fcacf43)**.
 
 
 
@@ -110,7 +109,7 @@ Please find an example of how to **use GPU-Jupyter to make your deep learning re
 
 
 
-## Customization
+## Configuration
 
 ### Docker parameters
 
@@ -148,10 +147,10 @@ Customize the container using the following Docker parameters:
 
 All pre-built images are available on [Dockerhub](https://hub.docker.com/r/cschranz/gpu-jupyter). Here are the latest:
 
- - `v1.10_cuda-12.9_ubuntu-24.04` (full image, see package [versions](#extra/README-versions.md))
+ - `v1.10_cuda-12.9_ubuntu-24.04` (full image, see package [README-versions](https://github.com/iot-salzburg/gpu-jupyter/blob/master/extra/README-versions.md))
  - `v1.10_cuda-12.9_ubuntu-24.04` (only with a python interpreter and without Julia and R)
  - `v1.10_cuda-12.9_ubuntu-24.04` (only with a python interpreter and without additional packages)
- - `v1.9_cuda-12.6_ubuntu-24.04` (full image, see package [versions](#extra/README-versions.md))
+ - `v1.9_cuda-12.6_ubuntu-24.04` (full image, see package [README-versions](https://github.com/iot-salzburg/gpu-jupyter/blob/master/extra/README-versions.md))
  - `v1.9_cuda-12.6_ubuntu-24.04_python-only` (only with a python interpreter and without Julia and R)
  - `v1.9_cuda-12.6_ubuntu-24.04_slim` (only with a python interpreter and without additional packages)
 
@@ -159,16 +158,16 @@ All pre-built images are available on [Dockerhub](https://hub.docker.com/r/cschr
 <details>
 <summary><font color=blue> Older images</font></summary>
 
- - `v1.8_cuda-12.5_ubuntu-22.04` (full image, see package [versions](#extra/README-versions.md))
+ - `v1.8_cuda-12.5_ubuntu-22.04` (full image, see package [README-versions](https://github.com/iot-salzburg/gpu-jupyter/blob/master/extra/README-versions.md))
  - `v1.8_cuda-12.5_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
  - `v1.8_cuda-12.5_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
- - `v1.7_cuda-12.3_ubuntu-22.04` (full image, see package [versions](#extra/README-versions.md))
+ - `v1.7_cuda-12.3_ubuntu-22.04` (full image)
  - `v1.7_cuda-12.3_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
  - `v1.7_cuda-12.3_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
- - `v1.6_cuda-12.0_ubuntu-22.04` (full image, see package [versions](#extra/README-versions.md))
+ - `v1.6_cuda-12.0_ubuntu-22.04` (full image)
  - `v1.6_cuda-12.0_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
  - `v1.6_cuda-12.0_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
- - `v1.6_cuda-11.8_ubuntu-22.04` (full image, see package [versions](#extra/README-versions.md))
+ - `v1.6_cuda-11.8_ubuntu-22.04` (full image)
  - `v1.6_cuda-11.8_ubuntu-22.04_python-only` (only with a python interpreter and without Julia and R)
  - `v1.6_cuda-11.8_ubuntu-22.04_slim` (only with a python interpreter and without additional packages)
 - `v1.5_cuda-12.0_ubuntu-22.04` (full image)
