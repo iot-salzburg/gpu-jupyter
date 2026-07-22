@@ -87,10 +87,10 @@ Please find an example of how to **use GPU-Jupyter to make your deep learning re
    ```bash
    cd your-working-directory
    ll data  # this path will be mounted by default
-   docker run --gpus all -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.10_cuda-12.9_ubuntu-24.04
+   docker run --gpus all -it -p 8848:8888 -v "$(pwd)/data:/home/jovyan/work" -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root cschranz/gpu-jupyter:v1.10_cuda-12.9_ubuntu-24.04_python-only
    ```
    ---
-   This starts a Docker container of **GPU-Jupyter** with the version `v1.10_cuda-12.9_ubuntu-24.04` locally at [http://localhost:8848](http://localhost:8848) on port `8848`.
+   This starts a Docker container of **GPU-Jupyter** with the version `v1.10_cuda-12.9_ubuntu-24.04_python-only` locally at [http://localhost:8848](http://localhost:8848) on port `8848`.
    Log in with the token that is displayed in the output (here `5b96bb15be315ccb24643ea368a52cc0ba13657fbc29e409`):
    ```bash
    docker exec -it [container-ID/name] jupyter server list
@@ -148,8 +148,8 @@ Customize the container using the following Docker parameters:
 All pre-built images are available on [Dockerhub](https://hub.docker.com/r/cschranz/gpu-jupyter). Here are the latest:
 
  - `v1.10_cuda-12.9_ubuntu-24.04` (full image, see package [README-versions](https://github.com/iot-salzburg/gpu-jupyter/blob/master/extra/README-versions.md))
- - `v1.10_cuda-12.9_ubuntu-24.04` (only with a python interpreter and without Julia and R)
- - `v1.10_cuda-12.9_ubuntu-24.04` (only with a python interpreter and without additional packages)
+ - `v1.10_cuda-12.9_ubuntu-24.04_python-only` (only with a python interpreter and without Julia and R)
+ - `v1.10_cuda-12.9_ubuntu-24.04_slim` (only with a python interpreter and without additional packages)
  - `v1.9_cuda-12.6_ubuntu-24.04` (full image, see package [README-versions](https://github.com/iot-salzburg/gpu-jupyter/blob/master/extra/README-versions.md))
  - `v1.9_cuda-12.6_ubuntu-24.04_python-only` (only with a python interpreter and without Julia and R)
  - `v1.9_cuda-12.6_ubuntu-24.04_slim` (only with a python interpreter and without additional packages)
