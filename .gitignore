@@ -120,7 +120,9 @@ src/jupyter_notebook_config.json
 /build_push_full.sh
 /build_push_python-only.sh
 /build_push_slim.sh
-extra/Getting_Started/tensorboard/runs
+extra/Getting_Started/tensorboard/
+extra/Getting_Started/tensorflow/
+extra/Getting_Started/clang*
 *copy.sh
 *.save.*
 test_generate-Dockerfile.sh
