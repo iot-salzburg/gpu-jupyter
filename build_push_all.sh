@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-cd $(cd -P -- "$(dirname -- "$0")" && pwd -P)
+SCRIPT_DIR="$(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+cd "$SCRIPT_DIR"
 
 # extract the branch-name that is built and pushed
 export TAGNAME=$(git symbolic-ref -q HEAD)
@@ -25,7 +26,7 @@ echo "push image with ID $IMG_ID and Tag $TAGNAME ."
 
 docker tag $IMG_ID cschranz/gpu-jupyter:$TAGNAME
 docker rm -f gpu-jupyter_1
-docker run --gpus all -d -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root --restart always --name gpu-jupyter_1 cschranz/gpu-jupyter:$TAGNAME
+docker run --gpus all -d -it -p 8848:8888 -v "$(pwd)/data:/home/jovyan/work" -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes --user root --restart always --name gpu-jupyter_1 cschranz/gpu-jupyter:$TAGNAME
 
 docker push cschranz/gpu-jupyter:$TAGNAME
 

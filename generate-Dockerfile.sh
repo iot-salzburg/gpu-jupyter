@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-cd $(cd -P -- "$(dirname -- "$0")" && pwd -P)
+SCRIPT_DIR="$(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+cd "$SCRIPT_DIR"
 
 # Set the path of the generated Dockerfile
 export DOCKERFILE=".build/Dockerfile"
@@ -172,8 +173,10 @@ else
 fi
 
 # Copy the demo notebooks and change permissions
-cp -r extra/Getting_Started data
-chmod -R 755 data/
+mkdir -p data/Getting_Started
+cp -a extra/Getting_Started/. data/Getting_Started/
+find data/Getting_Started -type d -exec chmod 755 {} +
+find data/Getting_Started -type f -exec chmod 644 {} +
 
 # set static token (optional if set)
 # copy jupyter server config token addendum to .build

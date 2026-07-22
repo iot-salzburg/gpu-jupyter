@@ -5,7 +5,7 @@
      width=661/>
 
 #### GPU-Jupyter: Your GPU-accelerated JupyterLab with PyTorch, TensorFlow, and a rich data science toolstack for your reproducible deep learning experiments.
- 
+
 <!--![Github Workflow](https://github.com/iot-salzburg/gpu-jupyter/actions/workflows/default.yml/badge.svg) Remove as the workflow can't be finished to to No space left on device error-->
 [![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://github.com/iot-salzburg/gpu-jupyter/graphs/commit-activity)
 [![GitHub pull-requests closed](https://badgen.net/github/closed-prs/iot-salzburg/gpu-jupyter)](https://github.com/iot-salzburg/gpu-jupyter/pulls?q=is%3Aclosed)
@@ -42,7 +42,7 @@ Please find an example of how to **use GPU-Jupyter to make your deep learning re
    - **CUDA**
    - **Docker**
    - **NVIDIA Container Toolkit**
-    
+
     You can confirm that all requirements are matched if the Docker command below returns a result similar to this one:
 
     ```bash
@@ -52,7 +52,7 @@ Please find an example of how to **use GPU-Jupyter to make your deep learning re
     ...
     CUDA Version 12.9.1
     ...
-    Thu Jan  8 11:33:16 2026       
+    Thu Jan  8 11:33:16 2026
     +-----------------------------------------------------------------------------------------+
     | NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
     +-----------------------------------------+------------------------+----------------------+
@@ -64,7 +64,7 @@ Please find an example of how to **use GPU-Jupyter to make your deep learning re
     | 38%   67C    P0            107W /  300W |       1MiB /  49140MiB |      0%      Default |
     |                                         |                        |                  N/A |
     +-----------------------------------------+------------------------+----------------------+
-    
+
     +-----------------------------------------------------------------------------------------+
     | Processes:                                                                              |
     |  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
@@ -83,7 +83,7 @@ Please find an example of how to **use GPU-Jupyter to make your deep learning re
 
    This may take some time as the whole environment for data science will be downloaded:
 
-   
+
    ```bash
    cd your-working-directory
    ll data  # this path will be mounted by default
@@ -99,7 +99,7 @@ Please find an example of how to **use GPU-Jupyter to make your deep learning re
    ```
 
     ![Jupyterlab Overview](https://raw.githubusercontent.com/iot-salzburg/gpu-jupyter/master/extra/jupyterlab-overview.png)
-    
+
     Within JupyterLab, you can access your GPU using `nvidia-smi`.
     Install custom packages on top of the built image with `apt` (run `sudo apt update` before).
     To help you get started with using the GPU, the repository includes some sample code located in `extra/Getting_Started`.
@@ -129,9 +129,9 @@ Customize the container using the following Docker parameters:
 
     <details>
     <summary><font color=blue>The most important Docker commands</font></summary>
-    
+
     With these commands we can investigate the container:
-    
+
     ```bash
     docker ps  # use the flat '-a' to view all
     docker stats
@@ -197,8 +197,8 @@ All pre-built images are available on [Dockerhub](https://hub.docker.com/r/cschr
 </details>
 
 The version number, e.g. `v1.10`, declares the version of the generator setup and is directly linked to a commit hash of the [Jupyter Docker Stacks](https://github.com/jupyter/docker-stacks).
-See the installed package versions, including (Python, Julia, R, PyTorch, and TensorFlow) under [README-versions](https://github.com/iot-salzburg/gpu-jupyter/blob/master/extra/README-versions.md). 
-The Cuda version, e.g. `cuda-12.9`, must be supported by the installed NVIDIA driver version on the host. Note that the images built for Ubuntu 20.04 LTS or Ubuntu 22.04 LTS also work on Ubuntu 24.04 LTS. 
+See the installed package versions, including (Python, Julia, R, PyTorch, and TensorFlow) under [README-versions](https://github.com/iot-salzburg/gpu-jupyter/blob/master/extra/README-versions.md).
+The Cuda version, e.g. `cuda-12.9`, must be supported by the installed NVIDIA driver version on the host. Note that the images built for Ubuntu 20.04 LTS or Ubuntu 22.04 LTS also work on Ubuntu 24.04 LTS.
 In case you are using another version or the GPU libraries don't work on your hardware, please try to build the image on your own as described in [Build Your Image](#build-your-image).
 
 
@@ -286,7 +286,7 @@ GPU-Jupyter is very flexible and allows custom installations even on the OS leve
 
 For the best reproducibility, it is recommended to build on top of the Dockerfile, as described below.
 
-    
+
 ### Build own Dockerfile
 
 Build additional layers on top of GPU-Jupyter by creating a new `Dockerfile` for your setup:
@@ -351,7 +351,11 @@ git checkout v1.10_cuda-12.9_ubuntu-24.04  # select or create a new version
 # generate the Dockerfile with Python and without Julia and R (see options: --help)
 ./generate-Dockerfile.sh --python-only
 docker build -t gpu-jupyter .build/ --progress=plain  # will take a while
-docker run --rm --gpus all -it -p 8848:8888 -v $(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes -e NB_UID="$(id -u)" -e NB_GID="$(id -g)" --user root --name gpu-jupyter gpu-jupyter
+docker run --rm --gpus all -it -p 8848:8888 -v "$(pwd)/data:/home/jovyan/work" -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes -e NB_UID="$(id -u)" -e NB_GID="$(id -g)" --user root --name gpu-jupyter gpu-jupyter
+
+docker exec -it gpu-jupyter_1 jupyter server list  # print token
+# Currently running servers:
+# http://localhost:8888/?token=b7d21295f604e8444981fdfff68a035539c61d1aeffc27d2 :: /home/jovyan
 ```
 
 This command starts a container with GPU support and a shared local data volume `/data`, along with other necessary configurations, such as root permissions to install packages within the container. For more configuration options, see [Configuration of the Dockerfile-Generation](#configuration-of-the-dockerfile-generation) below.
@@ -389,7 +393,7 @@ the essential `gpulibs` are installed, but not the packages within `custom/usefu
 Note that only one of the parameters `--slim`, `--python-only`, and `--no-useful-packages` can be used at the same time:
 
 
-### Set NVIDIA CUDA Base Image 
+### Set NVIDIA CUDA Base Image
 
 The GPU libraries such as PyTorch and Tensorflow in `custom/Docker.gpulibs` must support the CUDA version and NVIDIA drivers on the host machine. Check out the compatibility lists for [PyTorch](https://pytorch.org/get-started/locally/) and [Tensorflow](https://www.tensorflow.org/install/source#gpu) or search online for the explicit versions.
 
