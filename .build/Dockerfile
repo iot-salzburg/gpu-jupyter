@@ -7,7 +7,7 @@
 
 # Use NVIDIA CUDA as base image and run the same installation as in the other packages.
 # The version of cuda must match those of the packages installed in src/Dockerfile.gpulibs
-FROM nvidia/cuda:12.9.1-cudnn-runtime-ubuntu24.04
+FROM nvidia/cuda:13.0.3-cudnn-runtime-ubuntu24.04
 LABEL authors="Christoph Schranz <christoph.schranz@salzburgresearch.at>"
 
 # This is a concatenated Dockerfile, the maintainers of subsequent sections may vary.
@@ -26,7 +26,7 @@ RUN apt-get update && \
 
 # Ubuntu 24.04 (noble)
 # https://hub.docker.com/_/ubuntu/tags?page=1&name=noble
-ARG ROOT_IMAGE=ubuntu:24.04
+ARG ROOT_IMAGE=ubuntu:24.04@sha256:c4a8d5503dfb2a3eb8ab5f807da5bc69a85730fb49b5cfca2330194ebcc41c7b
 
 
 LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
@@ -136,14 +136,9 @@ RUN mkdir "/home/${NB_USER}/work" && \
 COPY --chown="${NB_UID}:${NB_GID}" initial-condarc "${CONDA_DIR}/.condarc"
 WORKDIR /tmp
 RUN set -x && \
-    arch=$(uname -m) && \
-    if [ "${arch}" = "x86_64" ]; then \
-        # Should be simpler, see <https://github.com/mamba-org/mamba/issues/1437>
-        arch="64"; \
-    fi && \
     # https://mamba.readthedocs.io/en/latest/installation/micromamba-installation.html#linux-and-macos
     wget --progress=dot:giga -O - \
-        "https://micro.mamba.pm/api/micromamba/linux-${arch}/latest" | tar -xvj bin/micromamba && \
+        "https://micro.mamba.pm/api/micromamba/$(uname)-$(uname -m)/latest" | tar -xvj bin/micromamba && \
     PYTHON_SPECIFIER="python=${PYTHON_VERSION}" && \
     if [[ "${PYTHON_VERSION}" == "default" ]]; then PYTHON_SPECIFIER="python"; fi && \
     # Install the packages
@@ -164,7 +159,7 @@ RUN set -x && \
     fix-permissions "/home/${NB_USER}"
 
 # Copy local files as late as possible to avoid cache busting
-COPY run-hooks.sh start.sh /usr/local/bin/
+COPY _docker_stacks_log.sh run-hooks.sh start.sh /usr/local/bin/
 
 # Configure container entrypoint
 ENTRYPOINT ["tini", "-g", "--", "start.sh"]
@@ -515,8 +510,8 @@ RUN apt-get update \
 USER $NB_UID
 RUN set -ex \
  && buildDeps=' \
-    graphviz==0.20.3 \
-    pytest==8.3.4 \
+    graphviz==0.21 \
+    pytest==9.1.1 \
  ' \
  && pip install --no-cache-dir $buildDeps \
  && fix-permissions "${CONDA_DIR}" \
@@ -525,8 +520,8 @@ RUN set -ex \
 # upgrade jupyter-server for compatibility
 RUN set -ex \
  && buildDeps=' \
-    distributed==2025.2.0 \
-    jupyter-server==2.15.0 \
+    distributed==2026.7.1 \
+    jupyter-server==2.20.0 \
  ' \
  && pip install --no-cache-dir $buildDeps \
  && fix-permissions "${CONDA_DIR}" \
@@ -534,19 +529,18 @@ RUN set -ex \
 
 RUN set -ex \
  && buildDeps=' \
-    # install extension manager
-    jupyter_contrib_nbextensions==0.7.0 \
-    jupyter_nbextensions_configurator==0.6.4 \
     # install git extension
-    jupyterlab-git==0.51.0 \
+    jupyterlab-git==0.54.0 \
     # install plotly extension
-    plotly==5.24.1 \
-    # install drawio and graphical extensions, not compatible with Jupyterlab 4.X yet
+    plotly==6.9.0 \
+    # don't install drawio and graphical extensions, not compatible with Jupyterlab 4.X yet
     # ipydrawio==1.3.0 \
-    ipyleaflet==0.19.2 \
-    ipywidgets==8.1.5 \
+    ipyleaflet==0.20.0 \
+    ipywidgets==8.1.8 \
     # install spell checker
-    jupyterlab-spellchecker==0.8.4 \
+    jupyterlab-spellchecker==0.9.0 \
+    # install computer vision library (headless version for server applications)
+    opencv-python-headless==5.0.0.93 \
     ' \
     && pip install --no-cache-dir $buildDeps \
     && fix-permissions "${CONDA_DIR}" \
