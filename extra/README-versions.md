@@ -1,5 +1,36 @@
 # Versions in GPU-Jupyter Images
 
+## cschranz/gpu-jupyter:v1.11_cuda-13.0_ubuntu-24.04 bash /get_versions.sh
+
+```
+VERSION="24.04.4 LTS (Noble Numbat)"
+nvcc: NVIDIA (R) Cuda compiler driver
+Copyright (c) 2005-2025 NVIDIA Corporation
+Built on Tue_May_27_02:21:03_PDT_2025
+Cuda compilation tools, release 12.9, V12.9.86
+Build cuda_12.9.r12.9/compiler.36037853_0
+Selected Jupyter core packages...
+IPython : 9.15.0
+ipykernel : 7.3.0
+ipywidgets : 8.1.8
+jupyter_client : 8.9.1
+jupyter_core : 5.9.1
+jupyter_server : 2.20.0
+jupyterlab : 4.6.2
+nbclient : 0.11.0
+nbconvert : 7.17.1
+nbformat : 5.10.4
+notebook : 7.6.1
+qtconsole : not installed
+traitlets : 5.15.1
+Python 3.13.14
+R version 4.5.3 (2026-03-11) -- "Reassured Reassurer"
+julia version 1.12.6
+NumPy: 2.4.6
+PyTorch: 2.9.1+cu128 PyTorch's CUDA: 12.8
+TensorFlow: 2.20.0
+```
+
 ## cschranz/gpu-jupyter:v1.10_cuda-12.9_ubuntu-24.04 bash /get_versions.sh
 
 ```
