@@ -8,17 +8,12 @@ services:
           devices:
             - capabilities:
               - gpu
-    # # Set hardware limits: one GPU, max. 48GB RAM, max. 31 GPUs
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           capabilities: [gpu]
-    #           device_ids: ["0"]  # select one GPU
-    #     limits:
-    #       cpus: "31.0"
-    #       memory: 48g
+              # Uncomment to select a single GPU instead of all of them
+              # device_ids: ["0"]
+        # Uncomment to set hardware limits: max. 48GB RAM, max. 31 CPUs
+        # limits:
+        #   cpus: "15.0"
+        #   memory: 48g
     ports:
       - 8848:8888
     volumes:
@@ -29,7 +24,8 @@ services:
       NB_UID: ${JUPYTER_UID:-1000}
       NB_GID: ${JUPYTER_GID:-1000}
     env_file:
-      - token.env
+      - path: token.env
+        required: false
     # enable sudo permissions
     user:
       "root"

@@ -1,5 +1,6 @@
 cff-version: 1.2.0
 message: "If you use or refer to the GPU-Jupyter framework, please cite as follows."
+type: conference-paper
 title: "GPU-Jupyter: A Framework for Reproducible Deep Learning Research"
 authors:
   - family-names: Schranz
@@ -14,11 +15,14 @@ authors:
     given-names: Moritz
     orcid: https://orcid.org/0000-0002-7870-8127
     affiliation: Salzburg Research
-date-released: 2025-05-28
 version: "1.0"
-license: "Apache-2.0"
+date-released: 2025-05-28
+year: 2025
+conference:
+  name: "Interdisciplinary Data Science Conference"
 doi: 10.13140/RG.2.2.15549.99040
-repository-code: https://github.com/iot-salzburg/reproducible-research-with-gpu-jupyter
+repository-code: https://github.com/iot-salzburg/gpu-jupyter
+license: "Apache-2.0"
 keywords:
   - GPU-Jupyter
   - FAIR4RS
@@ -27,4 +31,3 @@ keywords:
   - Deep Learning
   - Docker
   - Containerization
-  

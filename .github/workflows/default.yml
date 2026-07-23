@@ -9,6 +9,10 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master, docker-swarm ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -16,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v7
 
     - name: Generate Dockerfile
       run: ./generate-Dockerfile.sh --python-only

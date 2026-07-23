@@ -127,3 +127,4 @@ extra/Getting_Started/clang*
 *.save.*
 test_generate-Dockerfile.sh
 extra/crossval_generic.ipynb
+build_*.log

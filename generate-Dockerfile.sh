@@ -6,7 +6,7 @@ cd "$SCRIPT_DIR"
 export DOCKERFILE=".build/Dockerfile"
 export STACKS_DIR=".build/docker-stacks"
 # please test the build of the commit in https://github.com/jupyter/docker-stacks/commits/main in advance
-export HEAD_COMMIT="3f40fd03030369beb419c5a3ccc7e73b2d058631"
+export HEAD_COMMIT="2169105158ff77c74366bf154fbc4659b92bc145"
 
 while [[ "$#" -gt 0 ]]; do case $1 in
   -p|--pw|--password) PASSWORD="$2" && USE_PASSWORD=1; shift;;
@@ -41,7 +41,6 @@ if [[ "$HEAD_COMMIT" == "latest" ]]; then
 else
   export GOT_HEAD="false"
   cd $STACKS_DIR && git pull && git reset --hard "$HEAD_COMMIT" > /dev/null 2>&1  && cd - && export GOT_HEAD="true"
-  echo "$HEAD"
   if [[ "$GOT_HEAD" == "false" ]]; then
     echo "Error: The provided sha-commit is invalid."
     echo "Usage: $0 -c [sha-commit] # set the head commit of the docker-stacks submodule (https://github.com/jupyter/docker-stacks/commits/master)."
@@ -75,6 +74,10 @@ if [ -f "$STACKS_DIR/images/docker-stacks-foundation/Dockerfile" ]; then
     cp $STACKS_DIR/images/docker-stacks-foundation/start.sh .build/
     cp $STACKS_DIR/images/docker-stacks-foundation/run-hooks.sh .build/
     cp $STACKS_DIR/images/docker-stacks-foundation/10activate-conda-env.sh .build/
+    # _docker_stacks_log.sh was only introduced in newer docker-stacks commits (2026)
+    if [ -f "$STACKS_DIR/images/docker-stacks-foundation/_docker_stacks_log.sh" ]; then
+        cp $STACKS_DIR/images/docker-stacks-foundation/_docker_stacks_log.sh .build/
+    fi
 else
     cat $STACKS_DIR/docker-stacks-foundation/Dockerfile | grep -v 'BASE_IMAGE' | grep -v 'FROM $ROOT_IMAGE' >> $DOCKERFILE
     # copy files that are used during the build
@@ -145,7 +148,7 @@ if [[ "$no_datascience_notebook" != 1 ]]; then
     if [ -f "$STACKS_DIR/images/datascience-notebook/Dockerfile" ]; then
         cat $STACKS_DIR/images/datascience-notebook/Dockerfile | grep -v BASE_IMAGE >> $DOCKERFILE
     else
-        cat $STACKS_DIR/images/datascience-notebook/Dockerfile | grep -v BASE_IMAGE >> $DOCKERFILE
+        cat $STACKS_DIR/datascience-notebook/Dockerfile | grep -v BASE_IMAGE >> $DOCKERFILE
     fi
 else
   echo "Set 'no-datascience-notebook' = 'python-only', not installing the datascience-notebook with Julia and R."
@@ -177,6 +180,7 @@ mkdir -p data/Getting_Started
 cp -a extra/Getting_Started/. data/Getting_Started/
 find data/Getting_Started -type d -exec chmod 755 {} +
 find data/Getting_Started -type f -exec chmod 644 {} +
+chmod u+x data/Getting_Started/get_versions.sh
 
 # set static token (optional if set)
 # copy jupyter server config token addendum to .build
@@ -218,4 +222,4 @@ echo
 echo "The GPU Dockerfile was generated successfully in file ${DOCKERFILE}."
 echo "To build an image and run a container of GPU-Juyter, run:"
 echo "  docker build -t gpu-jupyter .build/ --progress=plain  # will take a while"
-echo "  docker run --gpus all --rm -it -p 8848:8888 -v \$(pwd)/data:/home/jovyan/work -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes -e NB_UID=\$(id -u) -e NB_GID=\$(id -g) --user root --name gpu-jupyter_1 gpu-jupyter"
+echo "  docker run --gpus all --rm -it -p 8848:8888 -v \"\$(pwd)/data:/home/jovyan/work\" -e GRANT_SUDO=yes -e JUPYTER_ENABLE_LAB=yes -e NB_UID=\$(id -u) -e NB_GID=\$(id -g) --user root --name gpu-jupyter_1 gpu-jupyter"
