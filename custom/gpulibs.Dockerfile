@@ -30,7 +30,7 @@ RUN set -ex \
     torchvision==0.24.1 \
     torchaudio==2.9.1 \
 ' \
- && pip install --no-cache-dir $buildDeps  --index-url https://download.pytorch.org/whl/cu128\
+ && pip install --no-cache-dir $buildDeps  --index-url https://download.pytorch.org/whl/cu130\
  && fix-permissions "${CONDA_DIR}" \
  && fix-permissions "/home/${NB_USER}"
 
